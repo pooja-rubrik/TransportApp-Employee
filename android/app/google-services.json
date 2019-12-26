@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "108089587719",
+    "firebase_url": "https://rubrikcab.firebaseio.com",
+    "project_id": "rubrikcab",
+    "storage_bucket": "rubrikcab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108089587719:android:cdbe770a160294f985d2a2",
+        "android_client_info": {
+          "package_name": "com.rubrikcab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "108089587719-v01t2gm8v07palmk4tb3i2bibssns8bc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rubrikcab",
+            "certificate_hash": "7c5c3ff524eea5655628808d395c9fe5d7a50492"
+          }
+        },
+        {
+          "client_id": "108089587719-h28uis99p6hpou9q4vob0k813opt5bqp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGZINr1ze5-gTpo2ChdHKLeffXvu49uYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "108089587719-h28uis99p6hpou9q4vob0k813opt5bqp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "108089587719-502nro7jsd2868r1cirdsbg63n7i4c95.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.rubrik.employee"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
