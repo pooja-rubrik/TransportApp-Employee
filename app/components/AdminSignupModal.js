@@ -11,15 +11,18 @@ import STRCONSTANT from '../services/StringConstants';
 export default class AdminSignupModal extends React.PureComponent {
     
     state = {
-        contact: '',
-        admName: '',
-        admId: '',
-        admEmail: '',
+        empName: '',
+        empID: '',
+        empEmail: '',
+        empType: 'admin'
+    }
+
+    componentWillReceiveProps () {
+        this.setState({empName: '', empID: '', empEmail: ''})
     }
     
     closeModalFunc = (visible) => {
-        this.setState({contact: ''});
-		this.props.closeModalFunc(visible);
+        this.props.closeModalFunc(visible);
 	}
 
     submitRequest = () => {
@@ -29,7 +32,7 @@ export default class AdminSignupModal extends React.PureComponent {
 
 
 	render() {
-        let { contact, admName, admId, admEmail } = this.state;
+        let {  empName, empID, empEmail } = this.state;
 	    return (
 		<Modal
             animationType='slide'
@@ -45,41 +48,40 @@ export default class AdminSignupModal extends React.PureComponent {
                     <View>
                         <View style={styles.TextInputView}>
                             <View>
-                                <Text style={styles.headText}>
+                                {/* <Text style={styles.headText}>
                                    Admin Signup
-                                </Text>
+                                </Text> */}
 
                                 <TextInput
                                     label=''
-                                    value={`${admId}`}
+                                    value={`${empID}`}
                                     style={styles.textInputStyles}
                                     labelFontSize={0}
-                                    onChangeText={(admId) => this.setState({ admId })}
-                                    placeholder='ADMIN ID'
+                                    onChangeText={(empID) => this.setState({ empID })}
+                                    placeholder='Employee Id'
+                                    autoCapitalize = {'none'}
+                                    autoCorrect = {false}
                                 />
                                 <TextInput
                                     label=''
-                                    value={`${admEmail}`}
+                                    value={`${empEmail}`}
                                     style={styles.textInputStyles}
                                     labelFontSize={0}
-                                    onChangeText={(admEmail) => this.setState({ admEmail })}
-                                    placeholder='EMAIL'
+                                    onChangeText={(empEmail) => this.setState({ empEmail })}
+                                    placeholder='Email'
+                                    autoCapitalize = {'none'}
+                                    autoCorrect = {false}
                                 />
-                                {/* <TextInput
-                                    label=''
-                                    value={`${contact}`}
-                                    style={styles.textInputStyles}
-                                    labelFontSize={0}
-                                    onChangeText={(contact) => this.setState({ contact })}
-                                    placeholder='Contact Number'
-                                /> */}
+                                
                                 <TextInput
                                     label=''
-                                    value={`${admName}`}
+                                    value={`${empName}`}
                                     style={styles.textInputStyles}
                                     labelFontSize={0}
-                                    onChangeText={(contact) => this.setState({ contact })}
-                                    placeholder='ADMIN NAME'
+                                    onChangeText={(empName) => this.setState({ empName })}
+                                    placeholder='Employee Name'
+                                    autoCapitalize = {'none'}
+                                    autoCorrect = {false}
                                 />
                             </View>
                             <View style={styles.ButtonSubmit}>
@@ -89,6 +91,7 @@ export default class AdminSignupModal extends React.PureComponent {
                                     titleColor={COLOR.BUTTON_FONT_COLOR}
                                     onPress={this.submitRequest}
                                     style={styles.buttonEmail}
+                                    titleStyle={styles.titleStyle}
                                 />
                                 {/* <RaisedTextButton
                                     title={STRCONSTANT.CANCEL_REQUEST}
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingLeft: 10,
 		height: hp('4%'),
-		// width: wp('95%'),
+		width: wp('80%'),
         marginTop: 5
 	},
 	textAreaStyles: {
@@ -170,6 +173,7 @@ const styles = StyleSheet.create({
         color: '#575C58'
     },
     titleStyle:{
-		fontSize: 18
+        fontSize: 18,
+        textTransform: 'capitalize'
 	}
 })

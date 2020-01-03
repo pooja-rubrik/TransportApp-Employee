@@ -24,12 +24,14 @@ class AdminEmployee extends React.PureComponent {
     constructor(props) {
         super(props);
         this.adminStore = this.props.rootStore.adminStore;
+        this.driverStore = this.props.rootStore.driverStore;
+        this.empStore = this.props.rootStore.empStore;
         this.currentDate = moment().format('YYYY-MM-DD');
         this.state = {
             currOpenId: '',
             isExpand: false,
             timePick: '',
-            pickPlaceHolder: this.props.isCheckIn ? 'PICK TIME': 'DROP TIME',
+            pickPlaceHolder: this.props.isCheckIn ? 'Pick Time': 'Drop Time',
             loginMin: 30,
             formatTime: 'HH:mm',
             driverList: [
@@ -38,16 +40,23 @@ class AdminEmployee extends React.PureComponent {
                 // {value: 'driver3', vehicle: 'vehicle3', status: '3 seats left'}
             ],
             selectedDriver: '',
-            assignDisable: true
+            assignDisable: true,
+            defaultSelect: 'Select Driver   ▼',
+            driverName: ''
         }
         console.log(this.props, toJS(this.adminStore))
     }
 
     getAvailDriver = (tripDate = '', tripTime = '') => {
         this.adminStore.getDriverListByTime( tripDate, tripTime).then(()=> {
-			console.log(toJS(this.adminStore.adminData.availableDriverList))
-			this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList)})
+            console.log(toJS(this.adminStore.adminData.availableDriverList))
+            if(this.props.employee.assignDriver=='') {
+                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: 'Select Driver   ▼'})
+            } else {
+                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: this.props.employee.assignDriver+ '    ▼'})
+            }
 			
+			// this.setState({defaultSelect: this.props.employee.assignDriver})
 		});
     }
 
@@ -61,37 +70,65 @@ class AdminEmployee extends React.PureComponent {
             this.setState(isExpand ? { isExpand: false, currOpenId: currId } : { isExpand: true, currOpenId: currId })
             console.log(this.state, currId);
         }
+        if(this.props.employee.assignDriver!=''){
+            this.callDriverData(this.props.employee.assignDriver);
+        }
         this.getAvailDriver( this.props.checkInDate, tripTime )
     }
 
-    // tripAction = (action, empID) => {
-    //     isOTPOpen = false
+    callDriverData = (vehicleNo) => {
+        this.driverStore.setDriverData( vehicleNo ).then(()=> {
+            console.log(this.driverStore.driverData.driverName, this.props.employee.assignDriver )
+            this.setState({'driverName': this.driverStore.driverData.driverName? this.driverStore.driverData.driverName: '' })
+        } )
+    }
 
-    //     if (this.state.buttonLabel == STRCONSTANT.DRIVER_END_TRIP) {
-    //         isOTPOpen = true;
-    //     }
-    //     this.setState({ buttonLabel: STRCONSTANT.DRIVER_END_TRIP })
-    //     console.log('call parent from child>>>')
-    //     this.props.tripAction(action, empID, isOTPOpen);
-    // }
-    onChangeDate = (date, empid) =>{
+    onChangePick = (timePick, empid, changeType = '') =>{
         //api hit
         //refresh data
+        if(changeType == ''){
+            this.adminStore.addPickTime(`${timePick}:00`, empid).then(() => {
+                console.log(this.adminStore.adminData.pickData);
+                // this.props.refreshEmployee()
+                if(this.adminStore.adminData.pickData.code == 200 ){
+                    
+                    this.props.showMessage('Pickup time has been updated.')
+                    
+                }  else {
+                    Alert.alert('Something went wrong!')
+                }
+                
+            })
+        } else {
+            this.empStore.submitEmpTime( `${timePick}:00`, empid, 'ASSIGN', 'drop' ).then( () => {
+                console.log( 'success>>', toJS(this.empStore.empData.submitTime) )
+                if ( this.empStore.empData.submitTime && this.empStore.empData.submitTime.code == 200 ) {
+                    this.props.showMessage('Time updated successfully.')
+                } else {
+                    Alert.alert( 'Something went wrong.' )
+                }
+            })
+        }
+        
     }
 
     renderPrompt = (rowData) => {
         console.log('render prompt..', rowData);
+        this.props.employee.assignDriver = ''
         this.setState({ selectedDriver: rowData.vehicle, assignDisable: false })
-        return rowData.vehicle;
+        return rowData.vehicle+ '   ▼';
     }
 
     assignDriver = (empId) => {
-        param  = {empID: empId, type: this.props.assignType, tripDay: this.props.checkInDate, vehicleNumber: this.state.selectedDriver};
+        assignType = this.props.assignType == 'Assign Login' ? 'LOGIN':'LOGOUT'
+        param  = {empID: empId, type: assignType, tripDay: this.props.checkInDate, vehicleNumber: this.state.selectedDriver};
         this.adminStore.assignDriver( param ).then(()=> {
             console.log(toJS(this.adminStore.adminData.assignDriver))
             this.setState({assignDisable: true})
             if(this.adminStore.adminData.assignDriver.code == 200) {
-                Alert.alert('Driver has assigned successfully.')
+                this.props.refreshEmployee();
+                this.callDriverData(this.state.selectedDriver);
+                Alert.alert('Driver has been assigned successfully.')
             } else {
                 Alert.alert('Please try again!')
             }
@@ -104,7 +141,8 @@ class AdminEmployee extends React.PureComponent {
     }
 
     render() {
-        let { isExpand, currOpenId, timePick, pickPlaceHolder, formatTime, loginMin, driverList, assignDisable} = this.state;
+        let { isExpand, currOpenId, pickPlaceHolder, formatTime, 
+            loginMin, driverList, assignDisable, defaultSelect, driverName } = this.state;
         let { employee, loginMinTime, loginMaxTime, isCheckIn,  } = this.props;
         
         
@@ -124,7 +162,7 @@ class AdminEmployee extends React.PureComponent {
                         <View style={platform == "ios" ? styles.iconViewIOS : styles.iconView}>
                             {(employee.status == 'ASSIGN' || employee.status == null)?
                                 <Image style={styles.statusIcon} source={statusIconNotBook} />
-                                : (employee.status == 'COMPLETED')?
+                                : (employee.status == 'BOOKED')?
                                 <Image style={styles.statusIcon} source={statusIconBook} />
                                 : null
                                 // :<Image style={styles.statusIcon} source={statusIconBook} />
@@ -148,35 +186,49 @@ class AdminEmployee extends React.PureComponent {
                                     {
                                     isCheckIn?
                                         <Text style={[styles.cardText, styles.textPadTop]}>
-                                            CHECK-IN: {employee.tripTime && employee.tripTime != null ? moment(employee.tripTime, 'HH:mm:ss').format('HH:mm'): 'No Trip'}
+                                            Check-In: {employee.tripTime && employee.tripTime != null ? moment(employee.tripTime, 'HH:mm:ss').format('HH:mm'): 'No Trip'}
                                             
                                         </Text>
                                         :
                                         <Text style={[styles.cardText, styles.textPadTop]}>
-                                            CHECK-OUT: {employee.tripTime && employee.tripTime != null ? moment(employee.tripTime, 'HH:mm:ss').format('HH:mm'): 'No Trip'}
+                                            Check-Out: {employee.tripTime && employee.tripTime != null ? moment(employee.tripTime, 'HH:mm:ss').format('HH:mm'): 'No Trip'}
                                         </Text>
                                     }
                                     
                                     <View>
-                                    {(employee.status == 'ASSIGN' || employee.status == null)?
-                                        <DateTime 
-                                            date = {employee.pickupTime} 
-                                            changeDate = {(timePick) => {this.onChangeDate(timePick, employee.empID);}} 
-                                            placeholder = {pickPlaceHolder}
-                                            format = {formatTime}
-                                            inputStyle = {styles.timeinputStyle}
-                                            iconStyle = {{left:0, height: 20, width: 20}}
-                                            style = {styles.timeStyle}
-                                            minDate = {loginMinTime}
-                                            maxDate = {loginMaxTime}
-                                            minuteInterval={loginMin}
-                                        />
+                                    {(employee.status == 'ASSIGN' || employee.status == null || employee.status == 'BOOKED' ) ?
+                                        isCheckIn ?
+                                            <DateTime 
+                                                date = {employee.pickupTime} 
+                                                changeDate = {(timePick) => {this.onChangePick( timePick, employee.empID );}} 
+                                                placeholder = {pickPlaceHolder}
+                                                format = {formatTime}
+                                                inputStyle = {styles.timeinputStyle}
+                                                iconStyle = {{left:0, height: 20, width: 20}}
+                                                style = {styles.timeStyle}
+                                                minDate = {loginMinTime}
+                                                maxDate = {loginMaxTime}
+                                                minuteInterval={loginMin}
+                                            />:
+                                            <DateTime 
+                                                date = {employee.tripTime} 
+                                                changeDate = {(timePick) => {this.onChangePick(timePick, employee.empID, 'logout');}} 
+                                                placeholder = {pickPlaceHolder}
+                                                format = {formatTime}
+                                                inputStyle = {styles.timeinputStyle}
+                                                iconStyle = {{left:0, height: 20, width: 20}}
+                                                style = {styles.timeStyle}
+                                                minDate = {loginMinTime}
+                                                maxDate = {loginMaxTime}
+                                                minuteInterval={loginMin}
+                                            />
                                         : null
                                     }
                                     </View>
                                 </View>
                                 <View style={styles.rightSec}>
-                                {(employee.status == 'ASSIGN' || employee.status == null)?
+                                {(employee.status == 'ASSIGN' || employee.status == null || employee.status == 'BOOKED' )?
+                                    (employee.assignDriver != '') ? 
                                     <View>
                                         <ModalDropdown 
                                             options={driverList}
@@ -188,14 +240,46 @@ class AdminEmployee extends React.PureComponent {
                                             </View>}
                                             style={styles.driverDrop}
                                             textStyle={styles.dropTextVisible}
-                                            defaultValue = {"Select Driver   ▼"}
+                                            defaultValue = {defaultSelect}
                                             renderButtonText={this.renderPrompt}
                                             // dropdownTextStyle={styles.dropdownText}
                                             dropdownStyle={styles.dropdownStyle}
                                         >
                                         </ModalDropdown>
                                     
+                                        <Text style={[styles.cardText, styles.textPadTop]}>
+                                            {driverName}
+                                        </Text>
+                                        
+                                        <RaisedTextButton
+                                            title={STRCONSTANT.RESEND_OTP}
+                                            color={COLOR.BUTTON_COLOR_EMP}
+                                            titleColor={COLOR.BUTTON_FONT_COLOR_EMP}
+                                            onPress={this.sendOTP}
+                                            style={styles.buttonTrip}
+                                            titleStyle={styles.titleStyle}
+                                        />
+                                    </View>
+                                    :
+                                    <View>
+                                        <ModalDropdown 
+                                            options={driverList}
+                                            renderRow={({ vehicle, status }) => 
+                                            <View style={styles.driverOption}>
+                                                {/* <Text style={styles.dropTextVisible}>{value} ({vehicle})</Text> */}
+                                                <Text style={styles.dropTextVisible}>{vehicle}</Text>
+                                                <Text style={styles.driverStatus}>{status}</Text>
+                                            </View>}
+                                            style={styles.driverDrop}
+                                            textStyle={styles.dropTextVisible}
+                                            defaultValue = {defaultSelect}
+                                            renderButtonText={this.renderPrompt}
+                                            // dropdownTextStyle={styles.dropdownText}
+                                            dropdownStyle={styles.dropdownStyle}
+                                        >
+                                        </ModalDropdown>
                                     
+                                        
                                         <RaisedTextButton
                                             title={STRCONSTANT.ASSIGN_TRIP}
                                             color={COLOR.BUTTON_COLOR_EMP}
@@ -313,7 +397,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     titleStyle: {
-        fontSize: 12
+        fontSize: 12,
+        textTransform: 'capitalize'
     },
     buttonTrip: {
         borderRadius: 20,

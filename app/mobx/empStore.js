@@ -166,11 +166,11 @@ class EmpStore {
         }
     }
 
-    @action async updateProfile(profileParam, userType, accessToken) { 
+    @action async updateProfile(profileParam, accessToken) { 
         try {
             this.isLoading = true;
-            console.log('profileParam>>', profileParam, userType, accessToken);
-            data = await UsersService.registerUser( profileParam, userType, accessToken )
+            console.log('profileParam>>', profileParam, accessToken);
+            data = await UsersService.registerUser( profileParam, accessToken )
             runInAction( () => {
                 this.isLoading = false;
                 console.log('is profileUpdate>', data)

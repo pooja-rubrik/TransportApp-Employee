@@ -30,9 +30,10 @@ class EmpHome extends Component {
 			alertTitle: 'Oops!',
 			showConfirm: false,
 			showCancel: true,
-			
-        };
-        
+			confirmAction: 'confirm',
+		};
+		this.usersStore =  this.props.rootStore.usersStore;
+        this.empID = this.usersStore.users.empDetail.empID;
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -41,8 +42,8 @@ class EmpHome extends Component {
         return {
             headerRight: (
                 <HeaderMenu>
-                    <Item title="OPT OUT" show="never" onPress={() => params.optOut()} />
-                    <Item title="SIGNOUT" show="never" onPress={() => params.logout()} />
+                    <Item title="Opt Out" show="never" onPress={() => params.optOut()} />
+                    <Item title="Sign Out" show="never" onPress={() => params.logout()} />
                 </HeaderMenu>
             ),
             
@@ -69,10 +70,11 @@ class EmpHome extends Component {
 		
 		this.signOutSuccess = EventEmitter.addListener('signOutSuccess', (e: Event) => {
 			console.log('sign out>>', e)
-			StorageService.removeData('okta_data').then( data => {
-				ApiService.removeHeader();
-				this.props.navigation.navigate('LoginScreen' );
-			})
+			// StorageService.removeData('okta_data').then( data => {
+			// 	ApiService.removeHeader();
+			// 	this.props.navigation.navigate('LoginScreen' );
+			// })
+			this.loginRedirect();
 			
 		});
 		this.onError = EventEmitter.addListener('onError', (e: Event) => {
@@ -102,10 +104,17 @@ class EmpHome extends Component {
 
 	logoutProfile = () => {
 		signOut();
-    }
+	}
+	
+    loginRedirect = () => {
+		StorageService.removeData('okta_data').then( data => {
+			ApiService.removeHeader();
+			this.props.navigation.navigate('LoginScreen' );
+		})
+	}
     
     optOutEmp = () => {
-		this.setState({'confirmAction': 'confirm'})
+		this.setState({'confirmAction': 'optout'})
 		this.showAlert('optout')
 	}
 	
@@ -164,6 +173,21 @@ class EmpHome extends Component {
 	confirmBtnAlert = () => {
 		console.log('data>>', data)
 		this.hideAlert('confirm');
+		if( this.state.confirmAction == 'optout' ) {
+			this.usersStore.removeEmp(this.empID).then(() => {
+				console.log(toJS(this.usersStore.users.remove))
+				if(this.usersStore.users.remove.status == 'Deleted') {
+					setTimeout(()=>{
+						this.loginRedirect();
+					}, 2000)
+					// this.setState({ errorText: 'Admin has been Opted out successfully.'})
+            		// this.showAlert('error')
+				} else {
+					Alert.alert(this.usersStore.users.remove.message ? this.usersStore.users.remove.message : 'Something went wrong')
+				}
+			})
+		} 
+		
 	}
 
     render() {

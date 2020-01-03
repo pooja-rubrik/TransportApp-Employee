@@ -26,12 +26,17 @@ export default class AdminSubSections extends React.PureComponent {
         this.setState({currentTab: type});
         this.props.adminSubSwitch(type);
     }
-
+    addDriver = () =>{
+        this.props.addDriver();
+    }
+    showAlert = (type, admId) => {
+        this.props.showAlertChild(type, admId)
+    }
     render() {
         let {adminSubTab} = this.props;
         let {currentTab} = this.state;
         return (
-            <View>
+            <View >
                 <View style={styles.adminTab}>
                     <TouchableOpacity onPress= {() => this.adminSubSwitch('cab-status')}>
                         <View style={adminSubTab == 'cab-status' ? [styles.singleTab, styles.activeTab]: [styles.singleTab, styles.inActiveTab]}>
@@ -59,7 +64,7 @@ export default class AdminSubSections extends React.PureComponent {
                 {
                     currentTab == 'cab-status' ? <CabStatus /> :
                     currentTab == 'emp-list' ? <EmpList /> :
-                    currentTab == 'driver-list' ? <DriverList /> : <AdminList />
+                    currentTab == 'driver-list' ? <DriverList addDriver = {this.addDriver} showAlert = {this.showAlert}/> : <AdminList showAlert = {this.showAlert}/>
                 }
             </View>
             

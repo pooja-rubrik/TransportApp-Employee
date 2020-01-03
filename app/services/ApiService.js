@@ -49,7 +49,9 @@ class ApiService {
 
     
     buildHeaders = ( token = false ) => {
+        // console.log(token)
         isAuthenticated().then( (auth) => {
+            console.log(auth);
             if( auth.authenticated ) {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             } else {

@@ -30,9 +30,9 @@ class EmpRoster extends React.PureComponent {
             formatTime: 'HH:mm',
             format: 'YYYY-MM-DD',
             datePickerMode: 'date',
-            fromPlaceHolder: 'FROM DATE',
-            toPlaceHolder: 'TO DATE',
-            pickPlaceHolder: 'CHECK-IN TIME',
+            fromPlaceHolder: 'From Date',
+            toPlaceHolder: 'To Date',
+            pickPlaceHolder: 'Check-In Time',
         }
         console.log('mintime>>>', this.props.loginMaxTime, this.isCheckIn);
     }
@@ -41,8 +41,13 @@ class EmpRoster extends React.PureComponent {
         this.setState({
             timePickValue: '',
 			toPickValue: '',
-			fromPickValue: '',
+            fromPickValue: '',
+            pickPlaceHolder: !this.props.isCheckIn ? 'Check-In Time': 'Check-Out Time'
         })
+    }
+
+    componentWillUpdate() {
+        this.setState({pickPlaceHolder: this.props.isCheckIn ? 'Check-In Time': 'Check-Out Time'})
     }
 
     updateDefault = () => {
@@ -51,9 +56,9 @@ class EmpRoster extends React.PureComponent {
         } else {
             this.empStore.setDefaultTime( this.empId, moment(this.state.timePickValue, 'HH:mm').format('HH:mm:ss'), this.props.isCheckIn ).then( () => {
                 console.log('default time update>>', toJS(this.empStore.empData.defaultTime))
-                if( this.empStore.empData.defaultTime.code == 200 ) {
-                    this.props.isCheckIn ? Alert.alert(`User default Check In time has updated`):
-                    Alert.alert(`User default Check Out time has updated`);
+                if( this.empStore.empData.defaultTime.code == 200 || this.empStore.empData.defaultTime.code == 201 ) {
+                    this.props.isCheckIn ? Alert.alert(`User default Check In time has been updated`):
+                    Alert.alert(`User default Check Out time has been updated`);
                 }
             })
         }
@@ -66,11 +71,11 @@ class EmpRoster extends React.PureComponent {
         } else {
             type = this.props.isCheckIn? 'pick': 'drop'
             timeParam = (this.props.isCheckIn) ? {fromDate: this.state.fromPickValue, toDate: this.state.toPickValue, loginTime: moment(this.state.timePickValue, 'HH:mm').format('HH:mm:ss'), empID: this.empId, status: 'ASSIGN'}
-                        : {fromDate: this.state.fromPickValue, toDate: this.state.toPickValue, logoutTime: this.state.timePickValue, empID: this.empId, status: 'ASSIGN'}
+                        : {fromDate: this.state.fromPickValue, toDate: this.state.toPickValue, logoutTime: moment(this.state.timePickValue, 'HH:mm').format('HH:mm:ss'), empID: this.empId, status: 'ASSIGN'}
             this.empStore.updateRoster( this.empId, timeParam, type ).then( () => {
                 console.log(toJS(this.empStore.empData.updateRoster))
                 if( this.empStore.empData.updateRoster.code == 200 ) {
-                    Alert.alert(`User ${type} time has updated`);
+                    Alert.alert(`User ${type} time has been updated`);
                 }
             });
         }
@@ -84,7 +89,7 @@ class EmpRoster extends React.PureComponent {
 		this.empStore.cancelRoster( this.empId, timeParam, type ).then( () => {
 			console.log(this.empStore.empData.cancelRoster)
 			if( this.empStore.empData.cancelRoster.code == 200 ) {
-				Alert.alert(`User ${type} time has cancelled`);
+				Alert.alert(`User ${type} time has been cancelled`);
 			}
 		});
 	}
@@ -98,7 +103,7 @@ class EmpRoster extends React.PureComponent {
 
         } = this.state;
         return (
-            <View>
+            <View >
                 <CardView
                     cardElevation={4}
                     cardMaxElevation={4}
@@ -107,7 +112,7 @@ class EmpRoster extends React.PureComponent {
                 >
                     <View style={styles.cardHead}>
                         <Text style={styles.headText}>
-                            UPDATE ROSTER
+                            Update Recurring Trips
                         </Text>
                     </View>
                     <View style={styles.cardContent}>
@@ -246,7 +251,8 @@ const styles = StyleSheet.create({
         // marginLeft: 60
     },
     titleStyle: {
-        fontSize: 13
+        fontSize: 13,
+        textTransform: 'capitalize'
     }
 
 })

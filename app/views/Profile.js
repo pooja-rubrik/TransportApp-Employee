@@ -70,7 +70,7 @@ class Profile extends Component {
         profileParam.empPhoneNumber = this.state.contact
         profileParam.empHomeAddress = this.state.address;
 
-        this.empStore.updateProfile(profileParam, this.userType, this.usersStore.users.oktaDetail.accessToken).then(() => {
+        this.empStore.updateProfile(profileParam, this.usersStore.users.oktaDetail.accessToken).then(() => {
             console.log('profileUpdate success>>', toJS(this.empStore.empData.profileUpdate))
             if (this.empStore.empData.profileUpdate.code == 200) {
                 this.setState({ isContactVisible: true, isAddrVisible: true, updateBtnVisible: false })

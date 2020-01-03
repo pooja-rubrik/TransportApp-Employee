@@ -31,7 +31,8 @@ class EmpHomeData extends React.PureComponent {
 		this.utilities  = this.usersStore.utilities;
         this.empId = this.usersStore.users.oktaDetail.empid
         this.loginInterval = toJS( this.utilities.loginInterval );
-        this.logoutInterval = toJS( this.utilities.logoutInterval );
+		this.logoutInterval = toJS( this.utilities.logoutInterval );
+		this.driverStore.driverData = [];
         this.state = {
 			accessToken: '',
 			address: 'IT Park, Dehradun',
@@ -46,7 +47,8 @@ class EmpHomeData extends React.PureComponent {
 			showCancel: true,
 			profileModalVisible: false,
 			profileField: '',
-			location: ''
+			location: '',
+			profileData: ''
         };
         console.log(this.empStore.empData.dailyLogin);
     }
@@ -56,9 +58,15 @@ class EmpHomeData extends React.PureComponent {
 		
 		//set daily login data
 		this.setDailyLogin();
+		this.getProfileData();
     }
 
-    
+    getProfileData = () => {
+		this.usersStore.getEmployee().then(() => {
+			console.log(toJS(this.usersStore.users.empDetail))
+			this.setState({profileData: this.usersStore.users.empDetail})
+		})
+	}
 
 	setMapMarker = () => {
 		Geocoder.init(this.mapStore.mapData.currentAPIKey);
@@ -77,7 +85,7 @@ class EmpHomeData extends React.PureComponent {
 
 	setDailyLogin = () => {
 		this.empStore.dailyLogin( this.empId ).then( () => {
-			console.log('default login success>>', toJS(this.empStore.empData.dailyLogin))
+			console.log('default login success>>', toJS(this.empStore.empData.dailyLogin), this.empStore.empData.dailyLogin.vehicleNumber)
 			if ( this.empStore.empData.dailyLogin && this.empStore.empData.dailyLogin.code == 200 ) {
 				if(this.empStore.empData.dailyLogin.vehicleNumber){
 					this.setDriverData(this.empStore.empData.dailyLogin.vehicleNumber, 'LOGIN');
@@ -156,19 +164,20 @@ class EmpHomeData extends React.PureComponent {
 	//submit profile data
 	submitProfile= (profileParam) => {
 		this.setState({profileModalVisible: false});
-		console.log('epdetail>>', toJS(this.empDetail))
+		
 		// if(this.empDetail.admID){
 		// 	profileParam.admID = this.empDetail.admID;
 		// } else {
 			profileParam.empID = this.empDetail.empID;
 		// }
-		profileParam.type = this.userType
-		
-		this.empStore.updateProfile(profileParam, this.userType, this.usersStore.users.oktaDetail.accessToken).then(() => {
+		profileParam.empType = this.userType
+		console.log('epdetail>>', profileParam, this.usersStore.users.oktaDetail.accessToken)
+		this.empStore.updateProfile(profileParam, this.usersStore.users.oktaDetail.accessToken).then(() => {
             console.log('profileUpdate success>>', toJS(this.empStore.empData.profileUpdate), this.userType)
             if (this.empStore.empData.profileUpdate.code == 200) {
 				this.usersStore.getEmployee().then(() => {
-					Alert.alert(`User profile has updated.`);
+					this.setState({profileData: this.usersStore.users.empDetail})
+					Alert.alert(`User profile has been updated.`);
 				})
 			} else {
 				Alert.alert('Something went wrong!')
@@ -179,7 +188,7 @@ class EmpHomeData extends React.PureComponent {
     
     render() {
        let { 
-            checkInTabVisible, profileModalVisible, profileField, location
+            checkInTabVisible, profileModalVisible, profileField, location, profileData
         } = this.state;
        
         return (
@@ -228,51 +237,54 @@ class EmpHomeData extends React.PureComponent {
 					
                 </View>
 				<View >
-					<ProfileModal profileModalVisible = {profileModalVisible} closeModalFunc = {this.closeModalFunc} submitProfile = {this.submitProfile} profileField = {profileField}/>
+					<ProfileModal profileModalVisible = {profileModalVisible} closeModalFunc = {this.closeModalFunc} submitProfile = {this.submitProfile} profileField = {profileField} profileData = {toJS(profileData)}/>
 				</View>
-				<Provider>
-					<Portal>
-						<FAB.Group
-							open={this.state.open}
-							// fabStyle = {{fontSize:24}}
-							icon='add'
-							theme={{ colors: { accent: '#C9004F' } }}
-							actions={[
-								{
-									icon: ()=><CustomIcon name='contact_new'  size={26} color = "#fff"/> ,
-									// icon: ()=><MaterialIconsCom name="home-map-marker" size={28} color="#fff"  />,  
-									style : { backgroundColor: '#228574', paddingRight:6, paddingBottom: 6, padding:4},
-									onPress: () => { }
-								},
-								{
-									icon: ()=><MaterialIcons name="call" size={20} color="#fff"  />,  
-									// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
-									style : { backgroundColor: '#228574',padding:4},
-									onPress: () => { this.floatIconBtn('phone_number');}
-								},
-								{
-									icon: ()=><CustomIcon name='emergency_new'  size={33} color = "#fff"/> ,  
-									// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
-									style : {paddingRight: 8, paddingBottom: 8, backgroundColor: '#228574'},
-									onPress: () => { this.floatIconBtn('emergency_contact');}
-								},
-								{
-									icon: ()=><CustomIcon name='location_new'  size={33} color = "#fff"/> ,  
-									// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
-									style : { backgroundColor: '#228574', alignItem:'center',paddingRight: 8, paddingBottom: 8,},
-									onPress: () => { this.floatIconBtn('address');}
-								}
-							]}
-							onStateChange={({ open }) => this.setState({ open })}
-							onPress={() => {
-								if (this.state.open) {
-									// do something if the speed dial is open
-									console.log('open>>')
-								}
-							}}
-						/>
-					</Portal>
-				</Provider>
+				{/* <View style={{ position: 'relative' }}> */}
+					<Provider >
+						<Portal>
+							<FAB.Group
+								open={this.state.open}
+								// fabStyle = {{fontSize:24}}
+								icon='angle-double-up'
+								theme={{ colors: { accent: '#C9004F' } }}
+								actions={[
+									{
+										icon: ()=><CustomIcon name='contact_new'  size={26} color = "#fff"/> ,
+										// icon: ()=><MaterialIconsCom name="home-map-marker" size={28} color="#fff"  />,  
+										style : { backgroundColor: '#228574', paddingRight:6, paddingBottom: 6, padding:4},
+										onPress: () => { }
+									},
+									{
+										icon: ()=><MaterialIcons name="call" size={20} color="#fff"  />,  
+										// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
+										style : { backgroundColor: '#228574',padding:4},
+										onPress: () => { this.floatIconBtn('phone_number');}
+									},
+									{
+										icon: ()=><CustomIcon name='emergency_new'  size={33} color = "#fff"/> ,  
+										// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
+										style : {paddingRight: 8, paddingBottom: 8, backgroundColor: '#228574'},
+										onPress: () => { this.floatIconBtn('emergency_contact');}
+									},
+									{
+										icon: ()=><CustomIcon name='location_new'  size={33} color = "#fff"/> ,  
+										// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
+										style : { backgroundColor: '#228574', alignItem:'center',paddingRight: 8, paddingBottom: 8,},
+										onPress: () => { this.floatIconBtn('address');}
+									}
+								]}
+								onStateChange={({ open }) => this.setState({ open })}
+								onPress={() => {
+									if (this.state.open) {
+										// do something if the speed dial is open
+										console.log('open>>')
+									}
+								}}
+							/>
+						</Portal>
+					</Provider>
+				{/* </View> */}
+				
 				
             </View>
         )
@@ -293,7 +305,7 @@ const styles = StyleSheet.create({
     },
     contentSection: {
         // backgroundColor: '#E2F1E4',
-        flex:1
+        flex:2
 	},
 	floatPlus: {
 		// backgroundColor: 'red'

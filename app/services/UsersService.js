@@ -4,9 +4,9 @@ class UsersService {
     constructor(){
        
     }
-    registerUser = async (user_from_okta, loginName, accessToken) => { //register user
+    registerUser = async (user_from_okta, accessToken) => { //register user
         console.log('users param>>>',user_from_okta)
-        apiURL = (loginName == "employee") ? api.employee : api.register_admin;
+        apiURL = api.employee;
         const res = await ApiService.apiCall(apiURL, 'POST', user_from_okta, accessToken);
         ApiService.handleCommonError(res);
         return res.body;
@@ -46,6 +46,13 @@ class UsersService {
         const res = await ApiService.apiCall(apiURL, 'GET');
         ApiService.handleCommonError(res);
         console.log('res all employees>>>>', res)
+        return res.body;
+    }
+
+    removeEmp = async (empId) => {
+        apiURL = `${api.employee_delete}/${empId}`;
+        const res = await ApiService.apiCall(apiURL, 'DELETE');
+        ApiService.handleCommonError(res);
         return res.body;
     }
     

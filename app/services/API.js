@@ -29,7 +29,8 @@ const api = {
     cancel_roster_drop: '/logout/exception/cancel',
     driver_emp_list: '/driver/trip/vehicle',
     driver_trip_list: '/driver/trip/list',
-    driver_trip: '/driver/trip'
+    driver_trip: '/driver/trip',
+    employee_delete: '/employee/details'
 }
 
 export default api;

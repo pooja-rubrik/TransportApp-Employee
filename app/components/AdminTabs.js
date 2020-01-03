@@ -23,7 +23,7 @@ export default class AdminTab extends React.PureComponent {
                     <View style={adminTabVisible ? [styles.singleTab, styles.activeTab]: [styles.singleTab, styles.inActiveTab]}>
                         
                         <Text style={adminTabVisible ? [styles.tabTextStyle, styles.activeTextStyle]: [styles.tabTextStyle]}>
-                            ADMINISTRATOR
+                            Administrator
                         </Text> 
                     </View>
                 </TouchableOpacity>
@@ -32,7 +32,7 @@ export default class AdminTab extends React.PureComponent {
                     <View style={!adminTabVisible ? [styles.singleTab, styles.activeTab]: [styles.singleTab, styles.inActiveTab]}>
                         
                         <Text style={!adminTabVisible ? [styles.tabTextStyle, styles.activeTextStyle]: [styles.tabTextStyle]}>
-                            EMPLOYEE
+                            Employee
                         </Text>
                     
                     </View>

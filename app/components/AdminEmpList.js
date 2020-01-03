@@ -14,13 +14,7 @@ export default class AdminEmpList extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.state = {
-            isExpand: false,
-            isBooked: true,
-            currOpenId: '',
-            currIndex: 0,
-            currEndTripEmp: 0,
-        }
+        
     }
     componentDidMount() {
         console.log(this.props)

@@ -11,18 +11,33 @@ import COLOR from '../services/AppColor';
 import STRCONSTANT from '../services/StringConstants';
 
 export default class ProfileModal extends React.PureComponent {
-    
+
+    constructor(props) {
+        super(props);
+        // console.log(this.props.profileData);
+    }
     state = {
         phoneNumber: '',
         emergencyContact: '',
         homeAddress: '',
     }
+    componentWillReceiveProps() {
+        console.log(this.props.profileData);  
+        this.setState({
+            phoneNumber: this.props.profileData.empPhoneNumber ? this.props.profileData.empPhoneNumber : '',
+            emergencyContact: this.props.profileData.empEmergencyContact ? this.props.profileData.empEmergencyContact : '',
+            homeAddress: this.props.profileData.empHomeAddress ? this.props.profileData.empHomeAddress : ''
+        })
+    }
+    
+    
     
     closeModalFunc = (visible) => {
 		this.props.closeModalFunc(visible);
 	}
 
     submitRequest = () => {
+        console.log(this.props.profileData);
         // this.props.submitProfile();
         profileParam = {};
         callParent = false;
@@ -126,6 +141,7 @@ export default class ProfileModal extends React.PureComponent {
                                         titleColor={COLOR.BUTTON_FONT_COLOR}
                                         onPress={this.submitRequest}
                                         style={styles.buttonEmail}
+                                        titleStyle={styles.titleStyle}
                                     />
                                 </View>
                             </View>
@@ -192,5 +208,7 @@ const styles = StyleSheet.create({
 		width: wp('85%'),
 		height: 100,
 	},
-	
+	titleStyle:{
+        textTransform: 'capitalize'
+	}
 })

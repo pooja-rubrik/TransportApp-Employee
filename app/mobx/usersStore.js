@@ -43,15 +43,30 @@ class ObservableUsersStore {
         }
     }
 
+    @action async removeEmp(empId) { 
+        try {
+            this.isLoading = true;
+            data = await UsersService.removeEmp(empId)
+            runInAction( () => {
+                this.users.remove = data;
+            } )
+        } catch (e) {
+            console.log('error all emps', e)
+            runInAction(() => {
+                this.isLoading = false;
+            } )
+        }
+    }
+
 	@action async registerUser(loginName, regData) { 
         try {
             if(this.users.oktaDetail){
-                console.log(this.users.oktaDetail);
+                console.log(this.users.oktaDetail, loginName);
                 this.isLoading = true;
                 let regParam = ( loginName == "employee" ) ? 
                     { empID: this.users.oktaDetail.empid, empHomeAddress:regData.homeAddress, empName: this.users.oktaDetail.name, empPhoneNumber: regData.contact, empEmail:this.users.oktaDetail.preferred_username  }
-                    : { admID: this.users.oktaDetail.empid, admPhoneNumber:regData.contact, admName: this.users.oktaDetail.name  }
-                data = await UsersService.registerUser( regParam, loginName, this.users.oktaDetail.accessToken )
+                    : regData
+                data = await UsersService.registerUser( regParam, this.users.oktaDetail.accessToken )
                 runInAction( () => {
                     this.isLoading = false;
                     console.log('is register>>', data)
@@ -78,8 +93,8 @@ class ObservableUsersStore {
                 runInAction(() => {
                     this.isLoading = false;
                     this.users.empDetail = data;
-                    // this.users.empDetail.userType = data.empType;
-                    this.users.empDetail.userType = 'admin';
+                    this.users.empDetail.userType = data.empType;
+                    // this.users.empDetail.userType = 'admin';
                     console.log('login>>', data)
                     StorageService.storeData('okta_data', toJS(this.users.oktaDetail));
                     StorageService.storeData('emp_data', toJS(this.users.empDetail));
@@ -179,10 +194,14 @@ class ObservableUsersStore {
         this.users.filterEmployees = [];
         empIDs.forEach(empid => {
             let employee = this.users.allemps.filter(emp => { return (emp.empID == empid.empid) });
+            console.log(employee)
+            if(employee.length !== 0) {
+                employee[0].status = empid.status;
+                employee[0].tripTime = empid.loginTime ? empid.loginTime : empid.logoutTime;
+                employee[0].pickupTime = empid.pickupTime;
+                employee[0].assignDriver = empid.vehicleNumber ? empid.vehicleNumber : '';
+            }
             
-            employee[0].status = empid.status;
-            employee[0].tripTime = empid.loginTime ? empid.loginTime : empid.logoutTime;
-            employee[0].pickupTime = empid.pickupTime;
             // console.log('single>>',toJS(empid),toJS(employee[0]) );
             this.users.filterEmployees = this.users.filterEmployees.concat(employee)
         })

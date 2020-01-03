@@ -26,6 +26,14 @@ export default class AdminEmpListCab extends React.PureComponent {
         console.log(this.props)
     }
 
+    refreshEmployee = () => {
+        this.props.refreshEmployee()
+    }
+
+    showMessage = (message) => {
+        this.props.showMessage(message);
+    }
+    
     render() {
         let { empData, assignType, isCheckIn, loginMinTime, loginMaxTime, checkInDate, checkInTime } = this.props;
         
@@ -43,6 +51,8 @@ export default class AdminEmpListCab extends React.PureComponent {
                         checkInDate = {checkInDate} 
                         checkInTime = {checkInTime}
                         assignType = {assignType}
+                        refreshEmployee = {this.refreshEmployee}
+                        showMessage = {this.showMessage}
                     />
                         
                 )

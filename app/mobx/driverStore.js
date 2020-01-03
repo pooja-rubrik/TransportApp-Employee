@@ -23,7 +23,6 @@ class DriverStore {
                 this.isLoading = false;
                 console.log('is driver data>>', data)
                 this.driverData = data;
-                StorageService.storeData('driver_data', toJS(this.driverData));
             })
 
         } catch (e) {

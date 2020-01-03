@@ -43,8 +43,9 @@ export default {
     DEL_ROSTER: 'DELETE ROSTER',
     UPDATE_ROSTER: 'UPDATE ROSTER',
     SET_DEFAULT: 'SET AS DEFAULT',
-    PHONE_NUM: 'PHONE NUMBER',
-    EMERGENCY_CONTACT: 'EMERGENCY CONTACT',
-    HOME_ADDR: 'HOME ADDRESS',
-    SEND_OTP: 'SEND OTP'
+    PHONE_NUM: 'Phone Number',
+    EMERGENCY_CONTACT: 'Emergency Contact',
+    HOME_ADDR: 'Home Address',
+    SEND_OTP: 'Send OTP',
+    RESEND_OTP: 'Resend OTP'
 }

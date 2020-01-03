@@ -30,7 +30,7 @@ class AdminService {
         return res.body;
     }
 
-    assignDriver = async (assignParam) => { //get all available driver for employee
+    assignDriver = async (assignParam) => { 
         apiURL = `${api.driver_trip}`;
         const res = await ApiService.apiCall(apiURL, 'POST', assignParam);
         ApiService.handleCommonError(res);
@@ -44,9 +44,23 @@ class AdminService {
         return res.body;
     }
 
+    getAllAdmins = async () => {
+        apiURL = api.register_admin;
+        const res = await ApiService.apiCall(apiURL, 'GET');
+        ApiService.handleCommonError(res);
+        return res.body;
+    }
+
     removeDriver = async (vehicleNo) => {
         apiURL = `${api.get_driver}/${vehicleNo}`;
         const res = await ApiService.apiCall(apiURL, 'DELETE');
+        ApiService.handleCommonError(res);
+        return res.body;
+    }
+
+    addPickTime = async (pickTime, empid) => { //get all available driver for employee
+        apiURL = `${api.daily_login}/${empid}/${pickTime}`;
+        const res = await ApiService.apiCall(apiURL, 'POST');
         ApiService.handleCommonError(res);
         return res.body;
     }

@@ -27,7 +27,9 @@ class EmpList extends React.PureComponent {
             empTabVisible: (tab=='today') ? true : false,
             selectedDate: (tab == 'today') ? this.currentDate: this.tomorrowDate
         })
-        this.getEmployeeData();
+        changeDate = (tab == 'today') ? this.currentDate: this.tomorrowDate;
+        console.log('change>>>>>>', changeDate, tab);
+        this.getEmployeeData( changeDate);
     }
 
     componentDidMount () {
@@ -36,7 +38,7 @@ class EmpList extends React.PureComponent {
 
     getEmployeeData = (changeDate = '', changeTime = '') => {
         console.log('changeDate>>>', changeDate, this.state.selectedDate)
-        changeDate = (changeDate == '')?this.state.selectedDate: this.currentDate;
+        changeDate = (changeDate == '')?this.currentDate: changeDate;
         this.adminStore.getDailyLoginData( 'Assign Login', changeDate, changeTime ).then(()=> {
 			console.log(toJS(this.adminStore.adminData.empDetails))
 			this.usersStore.filterEmployeeForLogin(this.adminStore.adminData.empDetails).then(()=>{

@@ -96,6 +96,24 @@ class AdminStore {
         }
     }
 
+    @action async getAllAdmins() { 
+        try {
+            this.isLoading = true;
+            data = await AdminService.getAllAdmins()
+            runInAction( () => {
+                this.isLoading = false;
+                this.adminData.admins = data;
+                console.log(toJS(this.adminData.admins))
+            } )
+            
+        } catch (e) {
+            console.log('error pick', e)
+            runInAction(() => {
+                this.isLoading = false;
+            })
+        }
+    }
+
     @action async removeDriver(vehicleNo) { 
         try {
             this.isLoading = true;
@@ -112,6 +130,25 @@ class AdminStore {
                 this.isLoading = false;
             })
         }
+    }
+
+    @action async addPickTime(pickTime, empid) {
+        try {
+            this.isLoading = true;
+            data = await AdminService.addPickTime(pickTime, empid)
+            runInAction( () => {
+                this.isLoading = false;
+                this.adminData.pickData = data;
+                console.log(toJS(this.adminData.pickData))
+            } )
+            
+        } catch (e) {
+            console.log('error pick', e)
+            runInAction(() => {
+                this.isLoading = false;
+            })
+        }
+    
     }
 
 }

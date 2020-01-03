@@ -24,7 +24,7 @@ export default class EmpListTab extends React.PureComponent {
                     <View style={empTabVisible ? [styles.singleTab, styles.activeTab]: [styles.singleTab, styles.inActiveTab]}>
                         
                         <Text style={empTabVisible ? [styles.tabTextStyle, styles.activeTextStyle]: [styles.tabTextStyle]}>
-                            TODAY
+                            Today
                         </Text> 
                     </View>
                 </TouchableOpacity>
@@ -33,7 +33,7 @@ export default class EmpListTab extends React.PureComponent {
                     <View style={!empTabVisible ? [styles.singleTab, styles.activeTab]: [styles.singleTab, styles.inActiveTab]}>
                         
                         <Text style={!empTabVisible ? [styles.tabTextStyle, styles.activeTextStyle]: [styles.tabTextStyle]}>
-                            TOMORROW
+                            Tomorrow
                         </Text>
                     
                     </View>

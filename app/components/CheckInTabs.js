@@ -23,7 +23,7 @@ export default class CheckInTab extends React.PureComponent {
                     <View style={checkInTabVisible ? [styles.singleTab, styles.activeTab]: [styles.singleTab, styles.inActiveTab]}>
                         
                         <Text style={checkInTabVisible ? [styles.tabTextStyle, styles.activeTextStyle]: [styles.tabTextStyle]}>
-                            CHECK-IN
+                            Check-In
                         </Text> 
                     </View>
                 </TouchableOpacity>
@@ -32,7 +32,7 @@ export default class CheckInTab extends React.PureComponent {
                     <View style={!checkInTabVisible ? [styles.singleTab, styles.activeTab]: [styles.singleTab, styles.inActiveTab]}>
                         
                         <Text style={!checkInTabVisible ? [styles.tabTextStyle, styles.activeTextStyle]: [styles.tabTextStyle]}>
-                            CHECK-OUT
+                            Check-Out
                         </Text>
                     
                     </View>

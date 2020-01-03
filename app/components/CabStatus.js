@@ -1,6 +1,6 @@
 import React from "react";
 import {
-	Text, StyleSheet, Image, 
+	Text, StyleSheet, Image, Alert,
     View,  Platform, TouchableOpacity
 } from "react-native";
 import { observer, inject } from "mobx-react";
@@ -58,19 +58,20 @@ class CabStatus extends React.PureComponent {
 
     filterByDate = (selectDate) => {
 		this.setState({selectDate: selectDate});
-		this.getAssignData(selectDate, this.state.selectTime);
+		this.getAssignData(selectDate, this.state.assignType, this.state.selectTime);
 	}
 
 	filterByTime = (selectTime) => {
 		if(this.state.selectDate != '') {
 			this.setState({selectTime: selectTime});
-			this.getAssignData(this.state.selectDate, selectTime);
+			this.getAssignData(this.state.selectDate, this.state.assignType, selectTime);
 		}
 		
     }
     
-    getAssignData = (changeDate = '', assignType, changeTime = '') => {
-		this.adminStore.getDailyLoginData(assignType, changeDate, changeTime).then(()=> {
+    getAssignData = async (changeDate = '', assignType, changeTime = '') => {
+        // console.log(changeDate, assignType, changeTime)
+		await this.adminStore.getDailyLoginData(assignType, changeDate, changeTime?changeTime +':00': '').then(()=> {
 			console.log(toJS(this.adminStore.adminData.empDetails))
 			this.usersStore.filterEmployeeForAssign(this.adminStore.adminData.empDetails).then(()=>{
 				this.setState({empDetails: toJS(this.usersStore.users.filterEmployees)})
@@ -79,9 +80,22 @@ class CabStatus extends React.PureComponent {
 		});
     }
     
-    assignDriver = (empId, tripTime) => {
-		// 
-	}
+    
+    removeTime = () => {
+		this.setState({selectTime: ''})
+		this.getAssignData(this.state.selectDate, this.state.assignType, '');
+    }
+    
+    refreshEmployee = () => {
+        this.getAssignData(this.state.selectDate, this.state.assignType, this.state.selectTime);
+    }
+
+    showMessage = (message) => {
+        this.getAssignData(this.state.selectDate, this.state.assignType, this.state.selectTime).then(() => {
+            console.log('mesaaee>>>', message);
+            Alert.alert(message)
+        })
+    }
     
     render() {
         let {checkInTabVisible, selectDate, datePlaceHolder, timePlaceHolder, format, selectTime, 
@@ -134,6 +148,8 @@ class CabStatus extends React.PureComponent {
                         loginMaxTime = {loginMaxTime} 
                         checkInDate = {selectDate} 
                         checkInTime = {selectTime}
+                        refreshEmployee = {this.refreshEmployee}
+                        showMessage = {this.showMessage}
                     />
                 </View>
             

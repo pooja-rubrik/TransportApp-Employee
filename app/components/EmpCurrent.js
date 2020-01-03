@@ -22,17 +22,28 @@ class EmpCurrent extends React.PureComponent {
         this.driverStore = this.props.rootStore.driverStore;
         this.state = {
             timePick: '',
-            pickPlaceHolder: this.props.isCheckIn ? 'CHECK-IN TIME': 'CHECK-OUT TIME',
+            pickPlaceHolder: 'Check-In Time',
             loginMin: 30,
             formatTime: 'HH:mm',
         }
         
         console.log(this.empStore.empData.dailyLogin);
     }
+
+
+    componentWillReceiveProps() {
+        console.log('componentWillReceiveProps');
+        console.log(toJS(this.driverStore));
+        console.log(toJS(this.props.isCheckIn))
+        console.log(toJS(this.empStore.empData))
+        this.setState({pickPlaceHolder: !this.props.isCheckIn ? 'Check-In Time': 'Check-Out Time'})
+    }
     
     componentWillUpdate() {
+        console.log('componentWillUpdate');
         this.setState({timePick:  this.props.isCheckIn ? this.empStore.empData.dailyLogin ? this.empStore.empData.dailyLogin.loginTime: '': 
         this.empStore.empData.dailyLogout? this.empStore.empData.dailyLogout.logoutTime: ''})
+        this.setState({pickPlaceHolder: this.props.isCheckIn ? 'Check-In Time': 'Check-Out Time'})
         // console.log(this.props.isCheckIn, this.state.timePick, this.empStore.empData.dailyLogin ? moment(this.empStore.empData.dailyLogin.loginTime, 'HH:mm:ss').format('HH:mm'): '' )
     }
 
@@ -70,21 +81,21 @@ class EmpCurrent extends React.PureComponent {
                 >
                     <View style={styles.cardHead}>
                         <Text style={styles.headText}>
-                            CURRENT DATE
+                            Current Date
                         </Text>
                     </View>
                     <View style={styles.cardContent}>
                         <View style={styles.cardLeftView}>
                             <Text style={styles.leftText}>
-                                {isCheckIn? empData.dailyLogin && empData.dailyLogin.loginTime != null ? moment(empData.dailyLogin.loginTime, 'HH:mm:ss').format('HH:mm'): 'No Trip'
+                                Pick Time: {isCheckIn? empData.dailyLogin && empData.dailyLogin.loginTime != null ? moment(empData.dailyLogin.loginTime, 'HH:mm:ss').format('HH:mm'): 'No Trip'
                                                     : empData.dailyLogout && empData.dailyLogout.logoutTime != null? moment(empData.dailyLogout.logoutTime ,'HH:mm:ss').format('HH:mm'): 'No Trip'}
                                                    
                             </Text>
                             <Text style={styles.leftText}>
-                                {driverData.code ==200? driverData.vehicleNo: 'No Vehicle'}
+                                Vehicle No: {driverData.code ==200? driverData.vehicleNumber: 'No Vehicle'}
                             </Text>
                             <Text style={styles.leftText}>
-                                {driverData.code ==200? driverData.driverPhone: 'No Driver Contact'}
+                                Contact: {driverData.code ==200? driverData.driverPhone: 'No Contact'}
                             </Text>
                         </View>
                         <View style={styles.cardRightView}>
@@ -180,9 +191,11 @@ const styles = StyleSheet.create({
         marginTop: 0,
         width: wp('43%'),
         // marginLeft: 60
+        
     },
     titleStyle: {
-        fontSize: 12
+        fontSize: 12,
+        textTransform: 'capitalize'
     }
 
 })

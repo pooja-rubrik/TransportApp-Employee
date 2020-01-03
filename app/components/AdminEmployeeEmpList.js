@@ -5,18 +5,9 @@ import {
 } from "react-native";
 import CardView from 'react-native-cardview'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { RaisedTextButton } from 'react-native-material-buttons';
 import moment from 'moment';
-import ModalDropdown from 'react-native-modal-dropdown';
 import { observer, inject } from "mobx-react";
 import { toJS } from 'mobx';
-
-import DateTime from './DateTimePicker';
-import statusIconBook from '../assets/icons/cabbooked.png'
-import statusIconNotBook from '../assets/icons/cabnotbooked.png'
-import STRCONSTANT from '../services/StringConstants';
-import COLOR from '../services/AppColor';
-
 
 const platform = Platform.OS;
 class AdminEmployeeEmpList extends React.PureComponent {
@@ -28,28 +19,11 @@ class AdminEmployeeEmpList extends React.PureComponent {
         this.state = {
             currOpenId: '',
             isExpand: false,
-            timePick: '',
-            pickPlaceHolder: this.props.isCheckIn ? 'PICK TIME': 'DROP TIME',
-            loginMin: 30,
-            formatTime: 'HH:mm',
-            driverList: [
-                // {value: 'driver1', vehicle: 'vehicle1', status: '2 seats left'},
-                // {value: 'driver2', vehicle: 'vehicle2', status: '1 seats left'},
-                // {value: 'driver3', vehicle: 'vehicle3', status: '3 seats left'}
-            ],
-            selectedDriver: '',
-            assignDisable: true
+            
         }
         console.log(this.props, toJS(this.adminStore))
     }
 
-    getAvailDriver = (tripDate = '', tripTime = '') => {
-        this.adminStore.getDriverListByTime( tripDate, tripTime).then(()=> {
-			console.log(toJS(this.adminStore.adminData.availableDriverList))
-			this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList)})
-			
-		});
-    }
 
     expandCard = (isExpand, currId) => {
         console.log('>>>>>>', isExpand, currId, this.state.currOpenId)
@@ -63,20 +37,6 @@ class AdminEmployeeEmpList extends React.PureComponent {
         }
     }
 
-    // tripAction = (action, empID) => {
-    //     isOTPOpen = false
-
-    //     if (this.state.buttonLabel == STRCONSTANT.DRIVER_END_TRIP) {
-    //         isOTPOpen = true;
-    //     }
-    //     this.setState({ buttonLabel: STRCONSTANT.DRIVER_END_TRIP })
-    //     console.log('call parent from child>>>')
-    //     this.props.tripAction(action, empID, isOTPOpen);
-    // }
-    onChangeDate = (date, empid) =>{
-        //api hit
-        //refresh data
-    }
 
     renderPrompt = (rowData) => {
         console.log('render prompt..', rowData);
@@ -97,13 +57,10 @@ class AdminEmployeeEmpList extends React.PureComponent {
 		});
     }
 
-    sendOTP = () => {
-
-    }
 
     render() {
-        let { isExpand, currOpenId, timePick, pickPlaceHolder, formatTime, loginMin, driverList, assignDisable} = this.state;
-        let { employee, loginMinTime, loginMaxTime, isCheckIn,  } = this.props;
+        let { isExpand, currOpenId, } = this.state;
+        let { employee,  } = this.props;
         // employee = employee.empDetail
         
         return (
@@ -135,22 +92,22 @@ class AdminEmployeeEmpList extends React.PureComponent {
                                         {employee.empPhoneNumber}
                                     </Text> */}
                                     <Text style={[styles.cardText, styles.textPadTop]}>
-                                        CHECK-IN {employee.login.loginTime && employee.login.loginTime != null ? moment(employee.login.loginTime, 'HH:mm:ss').format('HH:mm'): 'CANCELLED'}
+                                        Check-In: {employee.login.loginTime && employee.login.loginTime != null ? moment(employee.login.loginTime, 'HH:mm:ss').format('HH:mm'): 'Cancelled'}
                                             
                                     </Text>
                                     <Text style={[styles.cardText, styles.textPadTop]}>
-                                        {employee.login.status == 'BOOKED' ? employee.login.vehicleNo : employee.login.status == 'CANCEL' ? '' : 'VEHICLE NOT ASSIGNED'}
+                                        {employee.login.status == 'BOOKED' ? 'Vehicle No: ' + employee.login.vehicleNo : employee.login.status == 'CANCEL' ? '' : 'Vehicle Not Assigned'}
                                     </Text>
                                     
                                     
                                 </View>
                                 <View style={styles.rightSec}>
                                     <Text style={[styles.cardText, styles.textPadTop]}>
-                                        CHECK-OUT {employee.logout.logoutTime && employee.logout.logoutTime != null ? moment(employee.logout.logoutTime, 'HH:mm:ss').format('HH:mm'): 'CANCELLED'}
+                                        Check-Out: {employee.logout.logoutTime && employee.logout.logoutTime != null ? moment(employee.logout.logoutTime, 'HH:mm:ss').format('HH:mm'): 'Cancelled'}
                                             
                                     </Text>
                                     <Text style={[styles.cardText, styles.textPadTop]}>
-                                        {employee.logout.status == 'BOOKED' ? employee.logout.vehicleNo : employee.logout.status == 'CANCEL' ? '' : 'VEHICLE NOT ASSIGNED'}
+                                        {employee.logout.status == 'BOOKED' ? 'Vehicle No: ' + employee.logout.vehicleNo : employee.logout.status == 'CANCEL' ? '' : 'Vehicle Not Assigned'}
                                     </Text>
                                 </View>
                             </View>
@@ -259,41 +216,7 @@ const styles = StyleSheet.create({
     fontAddr: {
         fontSize: 14
     },
-    timeinputStyle: {
-		marginLeft:0, 
-        backgroundColor: '#fff', 
-		paddingRight:0, 
-		// paddingLeft: 10,
-        borderWidth: 0, 
-        height: 22,
-        borderRadius: 10
-    },
-    timeStyle:{ 
-        'width': wp('43%'), 
-        marginBottom:0,
-        height: 35,
-    },
-    dropdownStyle: {
-        width: wp('30%'),
-        alignItems: 'center',
-        borderWidth: 2,
-        backgroundColor: '#EFEEEE',
-        
-    },
     
-    dropTextVisible:{
-        color: '#406353',
-    },
-    
-    driverDrop:{
-        marginTop: 5
-    },
-    driverOption: {
-        borderBottomWidth: .4,
-        height: hp('5.5%'),
-        paddingTop: 6,
-        width: wp('25%')
-    }
 })
 
 
