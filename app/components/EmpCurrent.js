@@ -67,8 +67,8 @@ class EmpCurrent extends React.PureComponent {
     }
 
     render() {
-        let {loginMinTime, loginMaxTime, isCheckIn} = this.props
-        let {timePick, pickPlaceHolder, formatTime, loginMin } = this.state;
+        let {loginMinTime, loginMaxTime, isCheckIn, accountStatus} = this.props
+        let {timePick, pickPlaceHolder, formatTime, loginMin  } = this.state;
         let {empData} = this.empStore;
         let {driverData} = this.driverStore;
         return (
@@ -84,42 +84,52 @@ class EmpCurrent extends React.PureComponent {
                             Current Date
                         </Text>
                     </View>
-                    <View style={styles.cardContent}>
-                        <View style={styles.cardLeftView}>
-                            <Text style={styles.leftText}>
-                                Pick Time: {isCheckIn? empData.dailyLogin && empData.dailyLogin.loginTime != null ? moment(empData.dailyLogin.loginTime, 'HH:mm:ss').format('HH:mm'): 'No Trip'
-                                                    : empData.dailyLogout && empData.dailyLogout.logoutTime != null? moment(empData.dailyLogout.logoutTime ,'HH:mm:ss').format('HH:mm'): 'No Trip'}
-                                                   
-                            </Text>
-                            <Text style={styles.leftText}>
-                                Vehicle No: {driverData.code ==200? driverData.vehicleNumber: 'No Vehicle'}
-                            </Text>
-                            <Text style={styles.leftText}>
-                                Contact: {driverData.code ==200? driverData.driverPhone: 'No Contact'}
-                            </Text>
+                    <View>
+                        {
+                        accountStatus != '' ? 
+                        <Text style={styles.accountMsg}>
+                            {accountStatus}
+                        </Text>
+                        : 
+                        <View style={styles.cardContent}>
+                            <View style={styles.cardLeftView}>
+                                <Text style={styles.leftText}>
+                                    Pick Time: {isCheckIn? (empData.dailyLogin && empData.dailyLogin.pickupTime != null) ? moment(empData.dailyLogin.pickupTime, 'HH:mm:ss').format('HH:mm'): (empData.dailyLogin && empData.dailyLogin.loginTime != null) ? moment(empData.dailyLogin.loginTime, 'HH:mm:ss').format('HH:mm') : 'No Trip'
+                                                        : empData.dailyLogout && empData.dailyLogout.logoutTime != null? moment(empData.dailyLogout.logoutTime ,'HH:mm:ss').format('HH:mm'): 'No Trip'}
+                                                    
+                                </Text>
+                                <Text style={styles.leftText}>
+                                    Vehicle No: {driverData.code ==200? driverData.vehicleNumber: 'No Vehicle'}
+                                </Text>
+                                <Text style={styles.leftText}>
+                                    Contact: {driverData.code ==200? driverData.driverPhone: 'No Contact'}
+                                </Text>
+                            </View>
+                            <View style={styles.cardRightView}>
+                                <DateTime 
+                                    date = {timePick} 
+                                    changeDate = {(timePick) => {this.onChangeDate(timePick);}} 
+                                    placeholder = {pickPlaceHolder}
+                                    format = {formatTime}
+                                    inputStyle = {styles.timeinputStyle}
+                                    iconStyle = {{left:0, height: 20, width: 20}}
+                                    style = {styles.timeStyle}
+                                    minDate = {loginMinTime}
+                                    maxDate = {loginMaxTime}
+                                    minuteInterval={loginMin}
+                                />
+                                <RaisedTextButton
+                                    title={STRCONSTANT.CANCEL_PICK}
+                                    color={COLOR.BUTTON_COLOR_EMP}
+                                    titleColor={COLOR.BUTTON_FONT_COLOR_EMP}
+                                    onPress={ () => this.cancelTime() }
+                                    style={styles.buttonTrip}
+                                    titleStyle={styles.titleStyle}
+                                />
+                            </View>
                         </View>
-                        <View style={styles.cardRightView}>
-                            <DateTime 
-                                date = {timePick} 
-                                changeDate = {(timePick) => {this.onChangeDate(timePick);}} 
-                                placeholder = {pickPlaceHolder}
-                                format = {formatTime}
-                                inputStyle = {styles.timeinputStyle}
-								iconStyle = {{left:0, height: 20, width: 20}}
-								style = {styles.timeStyle}
-                                minDate = {loginMinTime}
-                                maxDate = {loginMaxTime}
-                                minuteInterval={loginMin}
-                            />
-                            <RaisedTextButton
-                                title={STRCONSTANT.CANCEL_PICK}
-                                color={COLOR.BUTTON_COLOR_EMP}
-                                titleColor={COLOR.BUTTON_FONT_COLOR_EMP}
-                                onPress={ () => this.cancelTime() }
-                                style={styles.buttonTrip}
-                                titleStyle={styles.titleStyle}
-                            />
-                        </View>
+                        }
+                        
                     </View>
                 </CardView>
             </View>
@@ -128,15 +138,16 @@ class EmpCurrent extends React.PureComponent {
 }
 const styles = StyleSheet.create({
     cardView:{
-        backgroundColor: '#C4DCC8',
-        width: wp('98%'),
+        // backgroundColor: '#C4DCC8',
+        backgroundColor: '#fff',
+        width: wp('97%'),
         // height: hp('12%'),
         alignSelf: 'center',
         marginTop: 5,
         borderRadius: 10,
         //paddingLeft: 6,
         paddingRight:6,
-        paddingBottom:5
+        paddingBottom:10
     },
     cardHead: {
         paddingTop:5,
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
         paddingLeft: 7
     },
     headText: {
-        color: '#4D554D',
+        color: COLOR.HEADER_TXT_COLOR,
         fontWeight: '700',
         fontSize: 16
     },
@@ -154,7 +165,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
     },
     cardLeftView: {
-        backgroundColor: '#AFCEB2',
+        backgroundColor: '#fff',
         width: wp('48%'),
         borderRadius: 10,
         marginTop: 3,
@@ -177,7 +188,9 @@ const styles = StyleSheet.create({
 		// paddingLeft: 10,
         borderWidth: 0, 
         height: 22,
-        borderRadius: 10
+        borderRadius: 10,
+        borderColor: '#333',
+        borderWidth: .3
     },
     timeStyle:{ 
         'width': wp('43%'), 
@@ -196,6 +209,10 @@ const styles = StyleSheet.create({
     titleStyle: {
         fontSize: 12,
         textTransform: 'capitalize'
+    },
+    accountMsg: {
+        marginLeft: 10,
+        marginTop: 8
     }
 
 })

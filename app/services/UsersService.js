@@ -49,8 +49,8 @@ class UsersService {
         return res.body;
     }
 
-    removeEmp = async (empId) => {
-        apiURL = `${api.employee_delete}/${empId}`;
+    removeEmp = async (empId, optoutType) => {
+        apiURL = `${api.employee_delete}/${empId}/${optoutType}`;
         const res = await ApiService.apiCall(apiURL, 'DELETE');
         ApiService.handleCommonError(res);
         return res.body;

@@ -4,6 +4,7 @@ import {
 	View, TouchableOpacity
 } from "react-native";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Color from '../services/AppColor';
 
 export default class EmpListTab extends React.PureComponent {
 
@@ -49,26 +50,34 @@ const styles = StyleSheet.create({
     adminTab:{
         flexDirection: 'row',
         height: hp('5%'),
-        marginBottom: 5
+        // marginBottom: 5,
+        backgroundColor: '#fff',
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+        // borderBottomWidth: 1,
+        // borderBottomColor: '#333'
     },
     
     singleTab: {
-        width: wp('50%'),
+        width: wp('48%'),
         alignItems: 'center',
         paddingTop: 14,
-        height: hp('5%'),
-        // textDecorationLine: 'underline'
+        height: hp('4.5%'),
+        borderBottomLeftRadius: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#333',
+        
     },
     activeTab: {
         borderBottomWidth: 1, 
-        borderBottomColor: '#CA0B52',
+        borderBottomColor: Color.ACTIVE_TXT_COLOR,
     },
     tabTextStyle : {
         fontSize: 13,
         color: '#676767'
     },
     activeTextStyle: {
-        color: '#333',
+        color: Color.ACTIVE_TXT_COLOR,
         fontWeight: 'bold'
     },
     inActiveTab: {

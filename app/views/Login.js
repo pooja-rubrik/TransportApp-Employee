@@ -66,14 +66,14 @@ class Login extends Component {
 							if(this.usersStore.users.empDetail.status == 404) {
 								this.setState({signupModalVisible: true})
 							} else {
-								if(this.usersStore.users.empDetail.userType == 'employee') {
-									this.loginName = 'employee'
+								if(this.usersStore.users.empDetail.userType == 'EMPLOYEE') {
+									this.loginName = 'EMPLOYEE'
 									data.userType = this.loginName;
 									console.log('data for okta>>', data)
 									this.usersStore.addOktaDetail(data);
 									this.navigateHome();
 								} else {
-									this.loginName = 'admin'
+									this.loginName = 'ADMIN'
 									// this.usersStore.getAdmin().then( () => {
 										data.userType = this.loginName;
 										console.log('data for okta>>', data)
@@ -86,27 +86,7 @@ class Login extends Component {
 									// })
 								}
 							}
-							// this.usersStore.addOktaDetail(data).then( () => {
-							// 	console.log('login type>>', this.loginName)
-							// 	if(this.loginName == 'Employee Login') {
-							// 		if(this.usersStore.users.empDetail.status == 404) {
-							// 			this.setState({signupModalVisible: true})
-							// 		} else {
-							// 			// this.usersStore.currUserSet(this.loginName);
-										
-							// 			this.navigateHome();
-							// 		}
-									
-							// 	} else {
-							// 		if(this.usersStore.users.empDetail.status == 404) {
-							// 			this.setState({adminModalVisible: true})
-							// 		} else {
-							// 			this.navigateAdmin();
-							// 		}
-									
-							// 	}
-							
-							// });
+						
 						});
 					});
 				})
@@ -177,7 +157,7 @@ class Login extends Component {
 	submitSignup = (data) => {
 		console.log('signup data>>', data)
 		this.usersStore.registerUser(this.loginName, data).then(()=>{
-			if(this.loginName == 'employee'){
+			if(this.loginName == 'EMPLOYEE'){
 				if(this.usersStore.users.empDetail.code == 200 || this.usersStore.users.empDetail.code == 201){
 					this.setState({signupModalVisible: false})
 					this.navigateHome();
@@ -229,7 +209,7 @@ class Login extends Component {
 					{/* <View style={styles.textViewStyle}> */}
 						<RaisedTextButton
 							title={STRCONSTANT.OKTA_LOGIN}
-							color={COLOR.BUTTON_COLOR}
+							color={COLOR.BUTTON_COLOR_EMP}
 							titleColor={COLOR.BUTTON_FONT_COLOR}
 							onPress={this.authorize}
 							style={styles.buttonHelp}
@@ -253,7 +233,15 @@ class Login extends Component {
                     showConfirmButton={showConfirm}
                     cancelText="Cancel"
                     confirmText="Okay"
-					cancelButtonColor="rgb(29,115,99)"
+					cancelButtonColor="#1A3E50"
+					confirmButtonColor = "#FFFFFF"
+                    contentContainerStyle = {{backgroundColor: COLOR.HEADER_BG_COLOR}}
+                    cancelButtonTextStyle = {{color: '#fff', fontSize: 15}}
+					cancelButtonStyle = {{borderWidth: .5, borderColor: '#fff', width: wp('20%'), alignItems: 'center'}}
+					messageStyle = {{color: '#fff'}}
+					titleStyle = {{color: '#fff'}}
+					confirmButtonStyle = {{borderWidth: .5, borderColor: '#165155', width: wp('20%'), alignItems: 'center'}}
+					confirmButtonTextStyle = {{color: '#165155', fontSize: 15}}
 					onCancelPressed={() => {
 						this.hideAlert('error');
                     }}

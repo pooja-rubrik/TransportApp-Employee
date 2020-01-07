@@ -8,6 +8,7 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import moment from 'moment';
 import { observer, inject } from "mobx-react";
 import { toJS } from 'mobx';
+import Color from '../services/AppColor';
 
 const platform = Platform.OS;
 class AdminEmployeeEmpList extends React.PureComponent {
@@ -121,16 +122,16 @@ class AdminEmployeeEmpList extends React.PureComponent {
 }
 const styles = StyleSheet.create({
     cardView: {
-        backgroundColor: '#94EBC5',
-        width: wp('98%'),
+        backgroundColor: '#fff',
+        width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',
         marginTop: 5,
         borderRadius: 10
     },
     cardViewChange: {
-        backgroundColor: '#94EBC5',
-        width: wp('98%'),
+        backgroundColor: '#fff',
+        width: wp('97%'),
         // height: hp('15%'),
         alignSelf: 'center',
         marginTop: 5,
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
 
     },
     cardText: {
-        color: '#406353',
+        color: Color.HEADER_TXT_COLOR,
     },
     leftSec: {
         flexDirection: 'column',
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
     },
     rightSec:{
         width: wp('48%'),
-        alignItems: 'center'
+        // alignItems: 'center'
     },
     textPadTop: {
         paddingTop: 2

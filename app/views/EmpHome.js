@@ -14,7 +14,7 @@ import StorageService from '../services/StorageService';
 import ApiService from '../services/ApiService';
 import { HeaderMenu, Item } from '../components/HeaderDropdownAndroid';
 import { AppAlert } from '../components/Alert';
-// import MaterialIconsCom from 'react-native-vector-icons/MaterialCommunityIcons';
+import Color from '../services/AppColor';
 
 import EmpHomeData from '../components/EmpHomeData';
 
@@ -135,7 +135,7 @@ class EmpHome extends Component {
 			this.setState({
 				showAlertError: true,
 				showConfirm: true,
-				errorText: 'Please confirm if you want to opt out of cab service. You will not be assigned cab from tomorrow onwards.', 
+				errorText: 'Please click Okay to confirm!', 
 				alertTitle: 'Confirm!'
 			});
 		} else {
@@ -174,7 +174,7 @@ class EmpHome extends Component {
 		console.log('data>>', data)
 		this.hideAlert('confirm');
 		if( this.state.confirmAction == 'optout' ) {
-			this.usersStore.removeEmp(this.empID).then(() => {
+			this.usersStore.removeEmp(this.empID, 'EMPLOYEE').then(() => {
 				console.log(toJS(this.usersStore.users.remove))
 				if(this.usersStore.users.remove.status == 'Deleted') {
 					setTimeout(()=>{
@@ -191,11 +191,15 @@ class EmpHome extends Component {
 	}
 
     render() {
+		console.disableYellowBox = true;
 		let { showAlertError, showAlertLoader, errorText,
 			alertTitle, showCancel, showConfirm,} = this.state;
         return (
 			<View style={styles.mainContainer}>
-				<EmpHomeData />
+				<View style = {styles.childContainerEmployee}>
+					<EmpHomeData />
+				</View>
+				
 				<AppAlert
 					show={showAlertError}
 					showProgress={false}
@@ -207,13 +211,17 @@ class EmpHome extends Component {
                     showConfirmButton={showConfirm}
                     cancelText="Cancel"
                     confirmText="Okay"
-					cancelButtonColor="red"
-					confirmButtonColor = "#59997E"
+					cancelButtonColor="#1A3E50"
+					confirmButtonColor = "#FFFFFF"
 					onCancelPressed={() => {
 						this.hideAlert('error');
                     }}
                     onConfirmPressed={(data) => { this.confirmBtnAlert()}}
-					contentContainerStyle = {{backgroundColor: '#317770'}}
+					contentContainerStyle = {{backgroundColor: Color.HEADER_BG_COLOR}}
+					cancelButtonTextStyle = {{color: '#fff', fontSize: 15}}
+					cancelButtonStyle = {{borderWidth: .5, borderColor: '#fff', width: wp('20%'), alignItems: 'center'}}
+					confirmButtonStyle = {{borderWidth: .5, borderColor: '#165155', width: wp('20%'), alignItems: 'center'}}
+					confirmButtonTextStyle = {{color: '#165155', fontSize: 15}}
 					messageStyle = {{color: '#fff'}}
 					titleStyle = {{color: '#fff'}}
 				/>
@@ -237,8 +245,16 @@ class EmpHome extends Component {
 }
 const styles = StyleSheet.create({
     mainContainer: {
-        flex:1,
+		flex:1,
+		backgroundColor: Color.HEADER_BG_COLOR, 
+		
     },
-	
+	childContainerEmployee: {
+		flex: 1,
+		backgroundColor: '#fff', 
+		width: wp('97%'),
+		alignSelf: 'center',
+		
+	},
 })
 export default inject("rootStore")(observer(EmpHome));

@@ -43,10 +43,10 @@ class ObservableUsersStore {
         }
     }
 
-    @action async removeEmp(empId) { 
+    @action async removeEmp(empId, optoutType) { 
         try {
             this.isLoading = true;
-            data = await UsersService.removeEmp(empId)
+            data = await UsersService.removeEmp(empId, optoutType)
             runInAction( () => {
                 this.users.remove = data;
             } )
@@ -63,8 +63,8 @@ class ObservableUsersStore {
             if(this.users.oktaDetail){
                 console.log(this.users.oktaDetail, loginName);
                 this.isLoading = true;
-                let regParam = ( loginName == "employee" ) ? 
-                    { empID: this.users.oktaDetail.empid, empHomeAddress:regData.homeAddress, empName: this.users.oktaDetail.name, empPhoneNumber: regData.contact, empEmail:this.users.oktaDetail.preferred_username  }
+                let regParam = ( loginName == "EMPLOYEE" ) ? 
+                    { empID: this.users.oktaDetail.empid, empHomeAddress:regData.homeAddress, empName: this.users.oktaDetail.name, empPhoneNumber: regData.contact, empEmail:this.users.oktaDetail.preferred_username, empType: 'EMPLOYEE'  }
                     : regData
                 data = await UsersService.registerUser( regParam, this.users.oktaDetail.accessToken )
                 runInAction( () => {
@@ -94,7 +94,7 @@ class ObservableUsersStore {
                     this.isLoading = false;
                     this.users.empDetail = data;
                     this.users.empDetail.userType = data.empType;
-                    // this.users.empDetail.userType = 'admin';
+                    // this.users.empDetail.userType = 'ADMIN';
                     console.log('login>>', data)
                     StorageService.storeData('okta_data', toJS(this.users.oktaDetail));
                     StorageService.storeData('emp_data', toJS(this.users.empDetail));
@@ -219,7 +219,8 @@ class ObservableUsersStore {
                     empID: empid.empID,
                     empName: empid.empName,
                     empPhoneNumber: empid.empPhoneNumber,
-                    empHomeAddress: empid.empHomeAddress
+                    empHomeAddress: empid.empHomeAddress,
+                    empType: empid.empType
                 }
                 empTemp.login = {
                     loginTime: employee[0].loginTime,

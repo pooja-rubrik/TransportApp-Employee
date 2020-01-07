@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
     // width: null,
     // height: null,
     // resizeMode: "cover"
-    backgroundColor: COLOR.ROOT_BG_COLOR
+    // backgroundColor: COLOR.ROOT_BG_COLOR
+    backgroundColor: COLOR.HEADER_BG_COLOR
   }
 });

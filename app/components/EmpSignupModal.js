@@ -108,7 +108,7 @@ export default class EmpSignupModal extends React.PureComponent {
                             <View style={styles.ButtonSubmit}>
                                 <RaisedTextButton
                                     title={STRCONSTANT.SIGNUP_BTN}
-                                    color={COLOR.BUTTON_COLOR}
+                                    color={COLOR.BUTTON_COLOR_EMP}
                                     titleColor={COLOR.BUTTON_FONT_COLOR}
                                     onPress={this.submitRequest}
                                     style={styles.buttonEmail}
@@ -137,7 +137,7 @@ export default class EmpSignupModal extends React.PureComponent {
 
 const styles = StyleSheet.create({
     modalView: {
-		backgroundColor: COLOR.APP_BG_COLOR,
+		backgroundColor: COLOR.HEADER_BG_COLOR,
 		padding: 20,
 		borderRadius: 5,
         height: hp('45%'),
@@ -146,14 +146,14 @@ const styles = StyleSheet.create({
 	},
 	closeText: {
 		backgroundColor: COLOR.APP_BG_COLOR,
-		color: COLOR.HEADER_BG_COLOR,
+		color: COLOR.BUTTON_COLOR_EMP,
 		borderRadius: 17,
 		width: 32,
 		padding: 6,
 		alignSelf: 'flex-end',
 		textAlign: 'center',
 		borderWidth: 1,
-		borderColor: COLOR.HEADER_BG_COLOR,
+		borderColor: COLOR.BUTTON_COLOR_EMP,
 		marginRight: 0,
 		marginTop: 0
 	},

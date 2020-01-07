@@ -41,7 +41,7 @@ class AdminEmployee extends React.PureComponent {
             ],
             selectedDriver: '',
             assignDisable: true,
-            defaultSelect: 'Select Driver   ▼',
+            defaultSelect: 'Select Driver                     ▼',
             driverName: ''
         }
         console.log(this.props, toJS(this.adminStore))
@@ -51,9 +51,9 @@ class AdminEmployee extends React.PureComponent {
         this.adminStore.getDriverListByTime( tripDate, tripTime).then(()=> {
             console.log(toJS(this.adminStore.adminData.availableDriverList))
             if(this.props.employee.assignDriver=='') {
-                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: 'Select Driver   ▼'})
+                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: 'Select Driver                     ▼'})
             } else {
-                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: this.props.employee.assignDriver+ '    ▼'})
+                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: this.props.employee.assignDriver+ '             ▼'})
             }
 			
 			// this.setState({defaultSelect: this.props.employee.assignDriver})
@@ -116,7 +116,7 @@ class AdminEmployee extends React.PureComponent {
         console.log('render prompt..', rowData);
         this.props.employee.assignDriver = ''
         this.setState({ selectedDriver: rowData.vehicle, assignDisable: false })
-        return rowData.vehicle+ '   ▼';
+        return rowData.vehicle+ '             ▼';
     }
 
     assignDriver = (empId) => {
@@ -316,16 +316,18 @@ class AdminEmployee extends React.PureComponent {
 }
 const styles = StyleSheet.create({
     cardView: {
-        backgroundColor: '#94EBC5',
-        width: wp('98%'),
+        // backgroundColor: '#94EBC5',
+        backgroundColor: '#fff',
+        width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',
         marginTop: 5,
         borderRadius: 10
     },
     cardViewChange: {
-        backgroundColor: '#94EBC5',
-        width: wp('98%'),
+        // backgroundColor: '#94EBC5',
+        backgroundColor: '#fff',
+        width: wp('97%'),
         // height: hp('15%'),
         alignSelf: 'center',
         marginTop: 5,
@@ -339,7 +341,7 @@ const styles = StyleSheet.create({
     },
     statusIcon: {
         height: 28,
-        width: 30,
+        width: 34,
         right: 0,
     },
     iconView: {
@@ -355,13 +357,13 @@ const styles = StyleSheet.create({
     headTextIOS: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#375346',
+        color: COLOR.HEADER_TXT_COLOR,
         paddingTop: 10,
     },
     headText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#375346',
+        color: COLOR.HEADER_TXT_COLOR,
         paddingTop: 6,
         paddingBottom: 6
     },
@@ -419,7 +421,9 @@ const styles = StyleSheet.create({
 		// paddingLeft: 10,
         borderWidth: 0, 
         height: 22,
-        borderRadius: 10
+        borderRadius: 10,
+        borderColor: '#333',
+        borderWidth: .2
     },
     timeStyle:{ 
         'width': wp('43%'), 

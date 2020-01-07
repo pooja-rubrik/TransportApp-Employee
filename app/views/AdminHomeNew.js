@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {
-	StyleSheet,
-	Platform, Alert,
+	StyleSheet, Alert,
 	View, ScrollView
 } from "react-native";
 import { signOut, EventEmitter, createConfig } from '@okta/okta-react-native';
@@ -18,8 +17,8 @@ import AdminTab from '../components/AdminTabs';
 import AdminSubSections from '../components/AdminSubSections';
 import EmpHomeData from '../components/EmpHomeData';
 import AdminSignupModal from '../components/AdminSignupModal';
-
-const platform = Platform.OS;
+import Color from '../services/AppColor'
+import { widthPercentageToDP as wp  } from "react-native-responsive-screen";
 
 class AdminHomeNew extends Component {
     constructor(props) {
@@ -51,7 +50,9 @@ class AdminHomeNew extends Component {
         return {
             headerRight: (
                 <HeaderMenu>
-                    <Item title="Opt Out" show="never" onPress={() => params.optOut()} />
+                    <Item title="Opt Out of Employee Role" show="never" onPress={() => params.optOut('optoutEmp')} />
+					<Item title="Opt Out of Admin Role" show="never" onPress={() => params.optOut('optoutAdmin')} />
+					{/* <Item title="Opt Out of All Roles" show="never" onPress={() => params.optOut('optoutAll')} /> */}
                     <Item title="Sign Out" show="never" onPress={() => params.logout()} />
                 </HeaderMenu>
             ),
@@ -105,9 +106,9 @@ class AdminHomeNew extends Component {
 		signOut();
     }
     
-    optOutEmp = () => {
-		this.setState({'confirmAction': 'optout'})
-		this.showAlert('optout')
+    optOutEmp = (role) => {
+		this.setState({ 'confirmAction': role })
+		this.showAlert(role)
 	}
 	
 	closeModalFunc = (visible) => {
@@ -135,7 +136,7 @@ class AdminHomeNew extends Component {
 	}
 
     showAlert = (type) => {
-		console.log(this.state.otherAdmId);
+		console.log(this.state.otherAdmId, type);
 		if (type == 'error') {
 			this.setState({
 				showAlertError: true,
@@ -151,11 +152,11 @@ class AdminHomeNew extends Component {
 				alertTitle: 'Confirm!'
 			});
 			
-		} else if(type == 'optout') {
+		} else if(type == 'optoutEmp' || type == 'optoutAdmin' ) {
 			this.setState({
 				showAlertError: true,
 				showConfirm: true,
-				errorText: 'Please confirm if you want to opt out of cab service. You will not be assigned cab from tomorrow onwards.', 
+				errorText: 'Please click Okay to confirm!', 
 				alertTitle: 'Confirm!'
 			});
 		} else if(type == 'confirmDelete') {
@@ -182,13 +183,14 @@ class AdminHomeNew extends Component {
 
 	confirmBtnAlert = () => {
 		this.hideAlert(this.state.confirmAction)
-		if( this.state.confirmAction == 'optout' ) {
-			this.usersStore.removeEmp(this.admId).then(() => {
+		if( this.state.confirmAction == 'optoutEmp' ||  this.state.confirmAction == 'optoutAdmin' ) {
+			let optoutType = this.state.confirmAction == 'optoutEmp' ? 'EMPLOYEE' : 'ADMIN';
+			this.usersStore.removeEmp(this.admId, optoutType).then(() => {
 				console.log(toJS(this.usersStore.users.remove))
 				if(this.usersStore.users.remove && this.usersStore.users.remove.status == 'Deleted') {
 					setTimeout(()=>{
 						this.loginRedirect();
-					}, 2000)
+					}, 3000)
 					this.setState({ errorText: 'Admin has been Opted out successfully.'})
             		this.showAlert('error')
 				} else {
@@ -198,7 +200,7 @@ class AdminHomeNew extends Component {
 		} else if( this.state.confirmAction == 'confirmDelete' ) {
 			// Alert.alert('confirm')otherAdmId
 			// console.log(this.state.otherAdmId)
-			this.usersStore.removeEmp(this.state.otherAdmId).then(() => {
+			this.usersStore.removeEmp(this.state.otherAdmId, 'ADMIN').then(() => {
 				console.log(toJS(this.usersStore.users.remove))
 				
 				if(this.usersStore.users.remove.status == 'Deleted') {
@@ -235,7 +237,7 @@ class AdminHomeNew extends Component {
 			this.setState({
 				showAlertError: false
 			});
-        } else if(type == 'confirm' || type == 'optout' || type == 'confirmDelete' || type == 'confirmDeleteDriver') { 
+        } else if(type == 'confirm' || type == 'optoutEmp' || type == 'optoutAdmin' || type == 'confirmDelete' || type == 'confirmDeleteDriver') { 
             this.setState({
 				showAlertError: false
 			});
@@ -299,35 +301,56 @@ class AdminHomeNew extends Component {
 	}
 
     render() {
+		console.disableYellowBox = true;
         let { 
              showAlertError, showAlertLoader, errorText, alertTitle, showCancel, 
             showConfirm, adminTabVisible, adminSubTab
        } = this.state;
         return(
             <View style={styles.mainContainer}>
-				<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
+				{/* <View style={styles.childContainer}>
+					<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
+					{
+						adminTabVisible?
+						
+						<ScrollView>
+							<AdminSubSections adminSubTab = {adminSubTab} adminSubSwitch = {this.adminSubSwitch} addDriver = {this.addDriver} showAlertChild ={this.showAlertChild}/>
+						</ScrollView>
+						
+						: <EmpHomeData />
+					}
+				</View> */}
 				{
 					adminTabVisible?
-					<ScrollView>
-						<AdminSubSections adminSubTab = {adminSubTab} adminSubSwitch = {this.adminSubSwitch} addDriver = {this.addDriver} showAlertChild ={this.showAlertChild}/>
-					</ScrollView>
+					<View style={styles.childContainer}>
+						<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
+						<ScrollView>
+							<AdminSubSections adminSubTab = {adminSubTab} adminSubSwitch = {this.adminSubSwitch} addDriver = {this.addDriver} showAlertChild ={this.showAlertChild}/>
+						</ScrollView>
+					</View> : 
+					<View style = {styles.childContainerEmployee}>
+						<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
+						<EmpHomeData />
+					</View>
 					
-					: <EmpHomeData />
 				}
+				
 				{
 					adminSubTab == 'driver-list'?
 					<FAB
 						style={styles.fab}
 						size={18}
 						icon = 'person-add'
-						theme={{ colors: { accent: '#C9004F' } }}
+						// theme={{ colors: { accent: '#C9004F' } }}
+						theme={{ colors: { accent: Color.BUTTON_COLOR_EMP } }}
 						onPress={() => this.addDriver()}
-					/> :  adminSubTab == 'admin-list'?
+					/> :  
+					adminSubTab == 'admin-list'?
 					<FAB
 						style={styles.fab}
 						size={18}
 						icon = 'person-add'
-						theme={{ colors: { accent: '#C9004F' } }}
+						theme={{ colors: { accent: Color.BUTTON_COLOR_EMP } }}
 						onPress={() => this.addAdmin()}
 					/> :
 					null
@@ -345,13 +368,17 @@ class AdminHomeNew extends Component {
                     showConfirmButton={showConfirm}
                     cancelText="Cancel"
                     confirmText="Okay"
-					cancelButtonColor="red"
-					confirmButtonColor = "#59997E"
+					cancelButtonColor="#1A3E50"
+					confirmButtonColor = "#FFFFFF"
 					onCancelPressed={() => {
 						this.hideAlert('error');
                     }}
                     onConfirmPressed={(data) => { this.confirmBtnAlert()}}
-					contentContainerStyle = {{backgroundColor: '#317770'}}
+					contentContainerStyle = {{backgroundColor: Color.HEADER_BG_COLOR}}
+					cancelButtonTextStyle = {{color: '#fff', fontSize: 15}}
+					cancelButtonStyle = {{borderWidth: .5, borderColor: '#fff', width: wp('20%'), alignItems: 'center'}}
+					confirmButtonStyle = {{borderWidth: .5, borderColor: '#165155', width: wp('20%'), alignItems: 'center'}}
+					confirmButtonTextStyle = {{color: '#165155', fontSize: 15}}
 					messageStyle = {{color: '#fff'}}
 					titleStyle = {{color: '#fff'}}
 				/>
@@ -368,7 +395,29 @@ class AdminHomeNew extends Component {
 }
 const styles = StyleSheet.create({
     mainContainer: {
-        flex:1,
+		flex:1,
+		backgroundColor: Color.HEADER_BG_COLOR
+	},
+	childContainer: { 
+		backgroundColor: '#fff', 
+		width: wp('97%'),
+		alignSelf: 'center',
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+        borderTopColor: '#fff',
+		borderTopWidth: 1,
+		marginTop: 10
+	},
+	childContainerEmployee: {
+		flex: 1,
+		backgroundColor: '#fff', 
+		width: wp('97%'),
+		alignSelf: 'center',
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+        borderTopColor: '#fff',
+		borderTopWidth: 1,
+		marginTop: 10
 	},
 	fab: {
       position: 'absolute',

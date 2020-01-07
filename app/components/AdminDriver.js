@@ -112,16 +112,16 @@ class AdminDriver extends React.PureComponent {
 }
 const styles = StyleSheet.create({
     cardView: {
-        backgroundColor: '#94EBC5',
-        width: wp('98%'),
+        backgroundColor: '#fff',
+        width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',
         marginTop: 5,
         borderRadius: 10
     },
     cardViewChange: {
-        backgroundColor: '#94EBC5',
-        width: wp('98%'),
+        backgroundColor: '#fff',
+        width: wp('97%'),
         // height: hp('15%'),
         alignSelf: 'center',
         marginTop: 5,

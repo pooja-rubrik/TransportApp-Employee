@@ -12,6 +12,7 @@ import CabStatus from '../components/CabStatus';
 import EmpList from '../components/EmpList';
 import DriverList from '../components/DriverList';
 import AdminList from '../components/AdminList';
+import Color from '../services/AppColor'
 
 export default class AdminSubSections extends React.PureComponent {
 
@@ -36,10 +37,10 @@ export default class AdminSubSections extends React.PureComponent {
         let {adminSubTab} = this.props;
         let {currentTab} = this.state;
         return (
-            <View >
-                <View style={styles.adminTab}>
+            <View style = {{backgroundColor: Color.HEADER_BG_COLOR, }}>
+                <View style={styles.adminTab }>
                     <TouchableOpacity onPress= {() => this.adminSubSwitch('cab-status')}>
-                        <View style={adminSubTab == 'cab-status' ? [styles.singleTab, styles.activeTab]: [styles.singleTab, styles.inActiveTab]}>
+                        <View style={adminSubTab == 'cab-status' ? [currentTab == 'cab-status' || currentTab == 'emp-list' ? styles.singleTab : styles.singleTabChangeFirst, styles.activeTab]: [currentTab == 'cab-status' || currentTab == 'emp-list' ? styles.singleTab : styles.singleTabChangeFirst, styles.inActiveTab]}>
                             <Image style={styles.subTabImg} source={cabStatusIcon} />
                         </View>
                     </TouchableOpacity>
@@ -55,7 +56,7 @@ export default class AdminSubSections extends React.PureComponent {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress= {() => this.adminSubSwitch('admin-list')}>
-                        <View style={adminSubTab == 'admin-list' ? [styles.singleTab, styles.activeTab]: [styles.singleTab, styles.inActiveTab]}>
+                        <View style={adminSubTab == 'admin-list' ? [currentTab == 'cab-status' || currentTab == 'emp-list' ? styles.singleTab: styles.singleTabChangeLast, styles.activeTab]: [currentTab == 'cab-status' || currentTab == 'emp-list' ? styles.singleTab: styles.singleTabChangeLast, styles.inActiveTab]}>
                             <Image style={styles.subTabImg} source={adminIcon} />
                         </View>
                     </TouchableOpacity>
@@ -78,12 +79,31 @@ const styles = StyleSheet.create({
         borderTopColor: '#333',
         borderBottomWidth: .5,
         borderBottomColor: '#333',
-        paddingTop:3,
-        paddingBottom:3
+        paddingTop:0.5,
+        paddingBottom:.5,
     },
+   
     singleTab: {
-        width: wp('25%'),
+        width: wp('24.2%'),
         alignItems: 'center',
+        paddingTop: 5,
+        paddingBottom: 5
+    },
+    singleTabChangeFirst : {
+        width: wp('24.2%'),
+        alignItems: 'center',
+        // backgroundColor: 'red', 
+        borderBottomLeftRadius: 10, 
+        paddingTop: 5,
+        paddingBottom: 5
+    },
+    singleTabChangeLast : {
+        width: wp('24.2%'),
+        alignItems: 'center',
+        // backgroundColor: 'red', 
+        borderBottomRightRadius: 10, 
+        paddingTop: 5,
+        paddingBottom: 5
     },
     activeTab: {
         backgroundColor: '#AAADAF'
@@ -92,8 +112,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff'
     },
     subTabImg: {
-        height: wp('22%'),
-        width: wp('22%')
+        height: wp('21.3%'),
+        width: wp('21.3%')
     }
 
 })

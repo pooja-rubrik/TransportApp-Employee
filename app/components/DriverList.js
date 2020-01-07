@@ -55,7 +55,7 @@ class DriverList extends React.PureComponent {
     render() {
         let { drivers } = this.state;
         return (
-            <View style = {{flex:1}}>
+            <View>
                 <AdminDriverList 
                     driverData = {drivers} 
                     removeDriver = {this.removeDriver}

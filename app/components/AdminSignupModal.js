@@ -14,7 +14,7 @@ export default class AdminSignupModal extends React.PureComponent {
         empName: '',
         empID: '',
         empEmail: '',
-        empType: 'admin'
+        empType: 'ADMIN'
     }
 
     componentWillReceiveProps () {
@@ -40,17 +40,22 @@ export default class AdminSignupModal extends React.PureComponent {
         >
             <View>
                 <View style={styles.modalView} >
-                    <TouchableOpacity
-                        onPress={this.closeModalFunc}
-                    >
-                        <Text style={styles.closeText}>X</Text>
-                    </TouchableOpacity>
+                    {/* <View style ={{flexDirection: 'row'}}> */}
+                        {/* <Text style={styles.headText}>
+                            Admin Signup
+                        </Text> */}
+                        <TouchableOpacity
+                            onPress={this.closeModalFunc}
+                        >
+                            <Text style={styles.closeText}>X</Text>
+                        </TouchableOpacity>
+                        
+                    {/* </View> */}
+                    
                     <View>
                         <View style={styles.TextInputView}>
                             <View>
-                                {/* <Text style={styles.headText}>
-                                   Admin Signup
-                                </Text> */}
+                                
 
                                 <TextInput
                                     label=''
@@ -87,7 +92,7 @@ export default class AdminSignupModal extends React.PureComponent {
                             <View style={styles.ButtonSubmit}>
                                 <RaisedTextButton
                                     title={STRCONSTANT.SIGNUP_ADMIN}
-                                    color={COLOR.BUTTON_COLOR}
+                                    color={COLOR.BUTTON_COLOR_EMP}
                                     titleColor={COLOR.BUTTON_FONT_COLOR}
                                     onPress={this.submitRequest}
                                     style={styles.buttonEmail}
@@ -113,23 +118,23 @@ export default class AdminSignupModal extends React.PureComponent {
 
 const styles = StyleSheet.create({
     modalView: {
-		backgroundColor: COLOR.APP_BG_COLOR,
+		backgroundColor: COLOR.HEADER_BG_COLOR,
 		padding: 20,
 		borderRadius: 5,
         height: hp('32%'),
-        borderColor: COLOR.HEADER_BG_COLOR,
-        borderWidth: .2,
+        borderColor: '#333',
+        borderWidth: 1,
 	},
 	closeText: {
 		backgroundColor: COLOR.APP_BG_COLOR,
-		color: COLOR.HEADER_BG_COLOR,
+		color: COLOR.BUTTON_COLOR_EMP,
 		borderRadius: 17,
 		width: 32,
 		padding: 6,
 		alignSelf: 'flex-end',
 		textAlign: 'center',
 		borderWidth: 1,
-		borderColor: COLOR.HEADER_BG_COLOR,
+		borderColor: COLOR.BUTTON_COLOR_EMP,
 		marginRight: 0,
 		marginTop: 0
 	},
@@ -170,7 +175,9 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#575C58'
+        color: '#fff',
+        alignSelf: 'center',
+        width: wp('80%'),
     },
     titleStyle:{
         fontSize: 18,

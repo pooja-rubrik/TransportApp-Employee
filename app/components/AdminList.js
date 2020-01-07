@@ -5,7 +5,6 @@ import {
 import { observer, inject } from "mobx-react";
 import {toJS} from 'mobx';
 import AdminAdminList from './AdminAdminList'
-import { AppAlert } from '../components/Alert';
 
 class AdminList extends React.PureComponent {
 
@@ -50,7 +49,7 @@ class AdminList extends React.PureComponent {
             //     "empType": "admin",
             //     "code": 200
             //   } ]
-            admins = allemps.filter(user=> user.empType == 'admin' )
+            admins = allemps.filter(user=> user.empType == 'ADMIN' )
             console.log(admins)
 			this.setState({admins: admins})
 		});

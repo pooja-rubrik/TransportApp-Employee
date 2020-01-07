@@ -7,6 +7,7 @@ import { observer, inject } from "mobx-react";
 import {toJS} from 'mobx';
 import EmpListTab from "./EmpListTab";
 import AdminEmpList from "./AdminEmpList";
+import Color from '../services/AppColor'
 
 class EmpList extends React.PureComponent {
 
@@ -46,7 +47,8 @@ class EmpList extends React.PureComponent {
                 this.adminStore.getDailyLoginData( 'Assign Logout', changeDate, changeTime ).then(()=> {
                     this.usersStore.filterEmployeeForLogout(this.adminStore.adminData.empDetails).then(()=>{
                         console.log(toJS(this.usersStore.users.filterEmployees))
-                        this.setState({empDetails: toJS(this.usersStore.users.filterEmployees)})
+                        employees = toJS(this.usersStore.users.filterEmployees).filter(user=> (user.empDetail.empType == 'ADMIN' || user.empDetail.empType == 'EMPLOYEE'))
+				        this.setState({empDetails: employees})
                     })
                 })
 			})
@@ -57,7 +59,7 @@ class EmpList extends React.PureComponent {
     render() {
         let {empTabVisible, empDetails} = this.state;
         return (
-            <View>
+            <View style = {{backgroundColor: Color.HEADER_BG_COLOR}}>
                 <EmpListTab empTabVisible = {empTabVisible} empSwitch= {this.empSwitch}/>
                 <AdminEmpList 
                     empData = {empDetails} 

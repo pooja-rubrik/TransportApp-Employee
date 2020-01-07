@@ -189,15 +189,15 @@ class EmpRoster extends React.PureComponent {
 }
 const styles = StyleSheet.create({
     cardView:{
-        backgroundColor: '#C4DCC8',
-        width: wp('98%'),
+        backgroundColor: '#fff',
+        width: wp('97%'),
         // height: hp('14%'),
         alignSelf: 'center',
         marginTop: 10,
         borderRadius: 10,
         //paddingLeft: 6,
         paddingRight:6,
-        paddingBottom:10
+        paddingBottom:14
     },
     cardHead: {
         paddingTop:5,
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
         paddingLeft: 7
     },
     headText: {
-        color: '#4D554D',
+        color: COLOR.HEADER_TXT_COLOR,
         fontWeight: '700',
         fontSize: 16
     },
@@ -235,6 +235,8 @@ const styles = StyleSheet.create({
         borderWidth: 0, 
         height: 22,
         borderRadius: 10,
+        borderWidth: .3,
+        borderColor: '#333'
         // alignContent: 'flex-start'
     },
     timeStyle:{ 

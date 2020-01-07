@@ -12,6 +12,8 @@ import DateTime from '../components/DateTimePicker';
 import CheckInTab from '../components/CheckInTabs';
 import AdminEmpListCab from './AdminEmpListCab';
 import cancelTime from '../assets/icons/cancel.png';
+import Color from '../services/AppColor';
+
 const platform = Platform.OS;
 
 class CabStatus extends React.PureComponent {
@@ -74,7 +76,8 @@ class CabStatus extends React.PureComponent {
 		await this.adminStore.getDailyLoginData(assignType, changeDate, changeTime?changeTime +':00': '').then(()=> {
 			console.log(toJS(this.adminStore.adminData.empDetails))
 			this.usersStore.filterEmployeeForAssign(this.adminStore.adminData.empDetails).then(()=>{
-				this.setState({empDetails: toJS(this.usersStore.users.filterEmployees)})
+                employees =  toJS(this.usersStore.users.filterEmployees).filter(user=> (user.empType == 'ADMIN' || user.empType == 'EMPLOYEE'))
+				this.setState({empDetails: employees})
 			})
 			
 		});
@@ -161,18 +164,16 @@ const styles = StyleSheet.create({
         // flex:1,
         flexDirection:'row',
         
-        backgroundColor:'#d2d2d2',
-        height: hp('4.8%')
+        backgroundColor: Color.HEADER_BG_COLOR,
+        height: hp('5%'),
+       
     },
     dateinputStyle: {
         marginLeft:0, 
         backgroundColor: '#fff', 
         paddingRight:20, 
         borderWidth: 0, 
-        borderBottomWidth: 1, 
-        borderBottomColor: '#333',
-        // borderRightWidth:1, 
-        // borderRightColor: '#333' 
+        borderBottomLeftRadius: 10, 
 	},
 	timeinputStyle: {
 		marginLeft:0, 
@@ -180,13 +181,12 @@ const styles = StyleSheet.create({
 		paddingRight:0, 
 		paddingLeft: 10,
         borderWidth: 0, 
-        borderBottomWidth: 1, 
-        borderBottomColor: '#333',
+        
 	},
     dateStyle:{ 
 		flex:1,
         'width': wp('49%'), 
-		marginLeft:3, 
+
 	},
 	timeStyle:{ 
         'width': wp('40%'), 
@@ -198,21 +198,18 @@ const styles = StyleSheet.create({
 	},
 	iconOuter: {
 		backgroundColor: '#fff',
-		// borderBottomWidth: 1, 
-		// borderBottomColor: '#333',
-		// height: hp('5.3%'),
 		width: wp('9%'),
 		padding:7,
-		paddingTop:9
+        paddingTop:9,
+        borderBottomRightRadius: 10
 	}, 
 	iconOuterIOS: {
 		backgroundColor: '#fff',
-		// borderBottomWidth: 1, 
-		// borderBottomColor: '#333',
-		height: hp('5%'),
+		// height: hp('5%'),
 		width: wp('9%'),
 		padding:7,
-		paddingTop:9
+        paddingTop:9,
+        borderBottomRightRadius: 10
 	}, 
     
 })

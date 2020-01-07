@@ -4,6 +4,7 @@ import {
 	View, TouchableOpacity
 } from "react-native";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Color from '../services/AppColor'
 
 export default class CheckInTab extends React.PureComponent {
 
@@ -49,11 +50,11 @@ const styles = StyleSheet.create({
         // flex: 1
         flexDirection: 'row',
         height: hp('5%'),
-        // backgroundColor: '#F9F9F9'
+        backgroundColor: '#fff'
     },
     
     singleTab: {
-        width: wp('50%'),
+        width: wp('48%'),
         alignItems: 'center',
         paddingTop: 12,
         height: hp('5%'),
@@ -61,14 +62,14 @@ const styles = StyleSheet.create({
     },
     activeTab: {
         borderBottomWidth: 1, 
-        borderBottomColor: '#CA0B52',
+        borderBottomColor: Color.ACTIVE_TXT_COLOR,
     },
     tabTextStyle : {
         fontSize: 13,
         color: '#676767'
     },
     activeTextStyle: {
-        color: '#333',
+        color: Color.ACTIVE_TXT_COLOR,
         fontWeight: 'bold'
     },
     inActiveTab: {

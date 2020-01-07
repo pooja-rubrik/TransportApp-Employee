@@ -6,7 +6,7 @@ import {
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import CardView from 'react-native-cardview'
 import AdminEmployeeEmpList from './AdminEmployeeEmpList';
-
+import Color from '../services/AppColor'
 
 const platform = Platform.OS;
 
@@ -37,7 +37,7 @@ export default class AdminEmpList extends React.PureComponent {
            null
            
         return (
-            <View>
+            <View style = {{backgroundColor: Color.HEADER_BG_COLOR}}>
                     {/* */}
                         {(empList == null || empList[0] == null)? 
                             <CardView
@@ -61,8 +61,8 @@ export default class AdminEmpList extends React.PureComponent {
 
 const styles = StyleSheet.create({
     cardView: {
-        backgroundColor: '#94EBC5',
-        width: wp('98%'),
+        backgroundColor: '#fff',
+        width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',
         marginTop: 5,
@@ -78,13 +78,13 @@ const styles = StyleSheet.create({
     headTextIOS: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#375346',
+        color: Color.HEADER_TXT_COLOR,
         paddingTop: 10,
     },
     headText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#375346',
+        color: Color.HEADER_TXT_COLOR,
         paddingTop: 6,
         paddingBottom: 6
     },

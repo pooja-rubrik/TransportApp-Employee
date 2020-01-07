@@ -16,6 +16,7 @@ import EmpRoster from '../components/EmpRoster';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustomIcon from '../components/CustomIcon.js'
 import ProfileModal from '../components/ProfileModal';
+import Color from '../services/AppColor';
 
 class EmpHomeData extends React.PureComponent {
 
@@ -48,7 +49,8 @@ class EmpHomeData extends React.PureComponent {
 			profileModalVisible: false,
 			profileField: '',
 			location: '',
-			profileData: ''
+			profileData: '',
+			accountStatus: ''
         };
         console.log(this.empStore.empData.dailyLogin);
     }
@@ -87,11 +89,16 @@ class EmpHomeData extends React.PureComponent {
 		this.empStore.dailyLogin( this.empId ).then( () => {
 			console.log('default login success>>', toJS(this.empStore.empData.dailyLogin), this.empStore.empData.dailyLogin.vehicleNumber)
 			if ( this.empStore.empData.dailyLogin && this.empStore.empData.dailyLogin.code == 200 ) {
-				if(this.empStore.empData.dailyLogin.vehicleNumber){
+				this.setState({accountStatus : ''})
+				if( this.empStore.empData.dailyLogin.vehicleNumber ) {
 					this.setDriverData(this.empStore.empData.dailyLogin.vehicleNumber, 'LOGIN');
 				} 
 				
-			} 
+			} else if( this.empStore.empData.dailyLogin.status == 404 ) {
+				this.setState({accountStatus : 'Your account will be activated after 1 day.'})
+			} else {
+				this.setState({accountStatus : ''})
+			}
 		})
 	}
 
@@ -99,9 +106,14 @@ class EmpHomeData extends React.PureComponent {
 		this.empStore.dailyLogout( this.empId ).then( () => {
 			console.log('default logout success>>', toJS(this.empStore.empData.dailyLogout))
 			if( this.empStore.empData.dailyLogout && this.empStore.empData.dailyLogout.code == 200 ) {
+				this.setState({accountStatus : ''})
 				if(this.empStore.empData.dailyLogout.vehicleNumber){
 					this.setDriverData(this.empStore.empData.dailyLogout.vehicleNumber, 'LOGOUT');
 				} 
+			} else if( this.empStore.empData.dailyLogin.status == 404 ) {
+				this.setState({accountStatus : 'Your account will be activated after 1 day.'})
+			} else {
+				this.setState({accountStatus : ''})
 			}
 		})
 	}
@@ -170,13 +182,15 @@ class EmpHomeData extends React.PureComponent {
 		// } else {
 			profileParam.empID = this.empDetail.empID;
 		// }
-		profileParam.empType = this.userType
+		profileParam.empType = this.userType;
 		console.log('epdetail>>', profileParam, this.usersStore.users.oktaDetail.accessToken)
 		this.empStore.updateProfile(profileParam, this.usersStore.users.oktaDetail.accessToken).then(() => {
             console.log('profileUpdate success>>', toJS(this.empStore.empData.profileUpdate), this.userType)
-            if (this.empStore.empData.profileUpdate.code == 200) {
+            if (this.empStore.empData.profileUpdate.code == 200 || this.empStore.empData.profileUpdate.code == 201) {
 				this.usersStore.getEmployee().then(() => {
 					this.setState({profileData: this.usersStore.users.empDetail})
+					this.empAddr = this.usersStore.users.empDetail.empHomeAddress;
+					this.setMapMarker();
 					Alert.alert(`User profile has been updated.`);
 				})
 			} else {
@@ -193,7 +207,7 @@ class EmpHomeData extends React.PureComponent {
        
         return (
             <View style={styles.mainContainer}>
-                <View style={styles.mapContainer}>
+                <View style={ this.userType == 'ADMIN' ? styles.mapContainer : styles.mapContainerEmp }>
                     <MapView
                         provider={PROVIDER_GOOGLE}
                         style={styles.map}
@@ -221,13 +235,17 @@ class EmpHomeData extends React.PureComponent {
                     </MapView>
                 </View>
                 <View style={styles.contentSection}>
-                    <CheckInTab checkInTabVisible = {checkInTabVisible} tabSwitch = {this.tabSwitch}/>
+					<View style = {styles.checkInContainer}>
+						<CheckInTab checkInTabVisible = {checkInTabVisible} tabSwitch = {this.tabSwitch}/>
+					</View>
+                    
 					<EmpCurrent
 						isCheckIn={checkInTabVisible} 
 						submitChange = {this.submitChange} 
 						loginMinTime = {this.state.loginMinTime} 
 						loginMaxTime = {this.state.loginMaxTime}
 						cancelTime = {this.cancelTime}
+						accountStatus = {this.state.accountStatus}
 					/>
 					<EmpRoster
 						isCheckIn={checkInTabVisible} 
@@ -244,9 +262,11 @@ class EmpHomeData extends React.PureComponent {
 						<Portal>
 							<FAB.Group
 								open={this.state.open}
-								// fabStyle = {{fontSize:24}}
-								icon='angle-double-up'
-								theme={{ colors: { accent: '#C9004F' } }}
+								fabStyle = {{fontSize:30}}
+								// icon='keyboard-arrow-up'
+								// icon='arrow-upward'
+								icon='more-horiz'
+								theme={{ colors: { accent: Color.BUTTON_COLOR_EMP } }}
 								actions={[
 									{
 										icon: ()=><CustomIcon name='contact_new'  size={26} color = "#fff"/> ,
@@ -293,12 +313,20 @@ class EmpHomeData extends React.PureComponent {
 const styles = StyleSheet.create({
     mainContainer: {
         flex:1,
-        backgroundColor: '#E2F1E4',
-    },
+		// backgroundColor: '#E2F1E4',
+		backgroundColor: Color.HEADER_BG_COLOR
+	},
 	mapContainer: {
-		
-        width: wp('100%'),
+		width: wp('97%'),
 		alignSelf: 'center',
+	},
+	mapContainerEmp: {
+		width: wp('97%'),
+		alignSelf: 'center',
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+		overflow: 'hidden' ,
+		marginTop: 10,
 	},
 	map: {
 		height: hp('28%'),
@@ -312,6 +340,12 @@ const styles = StyleSheet.create({
 	},
 	markerText:{
 		width: wp('60%')
+	},
+	checkInContainer: {
+		height: hp('6%'), 
+		backgroundColor: '#fff', 
+		borderBottomLeftRadius: 10, 
+		borderBottomRightRadius: 10
 	}
 })
 export default inject("rootStore")(observer(EmpHomeData));

@@ -137,7 +137,7 @@ export default class ProfileModal extends React.PureComponent {
                                 <View style={styles.ButtonSubmit}>
                                     <RaisedTextButton
                                         title={STRCONSTANT.SUBMIT_REQUEST}
-                                        color={COLOR.MODAL_BTN}
+                                        color={COLOR.BUTTON_COLOR_EMP}
                                         titleColor={COLOR.BUTTON_FONT_COLOR}
                                         onPress={this.submitRequest}
                                         style={styles.buttonEmail}

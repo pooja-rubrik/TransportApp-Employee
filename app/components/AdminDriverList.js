@@ -6,7 +6,7 @@ import {
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import CardView from 'react-native-cardview'
 import AdminDriver from './AdminDriver';
-
+import Color from '../services/AppColor'
 
 const platform = Platform.OS;
 
@@ -40,7 +40,7 @@ export default class AdminDriverList extends React.PureComponent {
            null
            
         return (
-            <View>
+            <View style = {{backgroundColor: Color.HEADER_BG_COLOR}}>
                     {/* */}
                         {(empList == null || empList[0] == null)? 
                             <CardView
@@ -64,8 +64,8 @@ export default class AdminDriverList extends React.PureComponent {
 
 const styles = StyleSheet.create({
     cardView: {
-        backgroundColor: '#94EBC5',
-        width: wp('98%'),
+        backgroundColor: '#fff',
+        width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',
         marginTop: 5,

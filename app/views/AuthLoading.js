@@ -19,13 +19,13 @@ class AuthLoadingScreen extends React.Component {
             // console.log('users_dataaaa>>', data);
             const userToken = data ? JSON.parse(data).accessToken : {};
             const userType = data ? JSON.parse(data).userType : ''
-            console.log('userToken>>',userToken);
+            console.log('userToken>>',userToken, userType);
             // This will switch to the App screen or Auth screen and this loading
             // screen will be unmounted and thrown away.
             this.props.navigation.navigate(
-                userToken && Object.entries(userToken).length !== 0 && userType == 'employee' ? 'EmpApp' 
+                userToken && Object.entries(userToken).length !== 0 && userType == 'EMPLOYEE' ? 'EmpApp' 
                 // : userToken && Object.entries(userToken).length !== 0 && userType == 'Driver Login' ? 'DriverApp'
-                : userToken && Object.entries(userToken).length !== 0 && userType == 'admin' ? 'AdminApp'
+                : userToken && Object.entries(userToken).length !== 0 && userType == 'ADMIN' ? 'AdminApp'
                 :'Auth');
         });
         

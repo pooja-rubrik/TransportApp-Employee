@@ -29,7 +29,7 @@ const EmpAppStack = createStackNavigator(
   },
   {
     defaultNavigationOptions: {
-      title: 'RUBRIK CAB',
+      title: 'Rubrik Cab',
       headerStyle: {
         backgroundColor: COLOR.HEADER_BG_COLOR,
       },
@@ -54,7 +54,7 @@ const AdminAppStack = createStackNavigator(
   },
   {
     defaultNavigationOptions: {
-      title: 'RUBRIK CAB',
+      title: 'Rubrik Cab',
       headerStyle: {
         backgroundColor: COLOR.HEADER_BG_COLOR,
       },
@@ -74,7 +74,7 @@ const AuthStack = createStackNavigator(
     
   },{
     defaultNavigationOptions: {
-      title: 'RUBRIK CAB',
+      title: 'Rubrik Cab',
       headerStyle: {
         backgroundColor: COLOR.HEADER_BG_COLOR,
       },
