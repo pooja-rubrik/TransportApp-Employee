@@ -34,6 +34,12 @@ export default class AdminEmpListCab extends React.PureComponent {
     showMessage = (message) => {
         this.props.showMessage(message);
     }
+
+    callPickService = (pickChangeData) => {
+        // Alert.alert('called')
+        console.log(pickChangeData)
+        this.adminEmpCabChild.callPickService(pickChangeData)
+    }
     
     render() {
         let { empData, assignType, isCheckIn, loginMinTime, loginMaxTime, checkInDate, checkInTime } = this.props;
@@ -54,6 +60,8 @@ export default class AdminEmpListCab extends React.PureComponent {
                         assignType = {assignType}
                         refreshEmployee = {this.refreshEmployee}
                         showMessage = {this.showMessage}
+                        confirmPickChange = {this.props.confirmPickChange}
+                        ref={child => {this.adminEmpCabChild = child}}
                     />
                         
                 )

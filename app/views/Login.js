@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import {
 	View, StyleSheet,
-	Image, TextInput,
+	Image, TextInput, Alert
 } from "react-native";
 import { RaisedTextButton } from 'react-native-material-buttons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 // import { Alert } from 'react-native';
 import { createConfig, signIn, EventEmitter, isAuthenticated, getUser } from '@okta/okta-react-native';
 import { observer, inject } from "mobx-react";
+import moment from 'moment';
+import { toJS } from 'mobx';
 
 import { AppAlert } from '../components/Alert';
 import Wallpapers from "../components/Wallpaper";
@@ -23,22 +25,29 @@ class Login extends Component {
 	constructor(props) {
 		super(props);
 		this.usersStore = this.props.rootStore.usersStore;
-		this.loginName = 'employee';
+		this.empStore = this.props.rootStore.empStore;
+		this.utilities  = this.usersStore.utilities;
+		this.loginName = 'EMPLOYEE';
+		this.state = {
+			empID: this.usersStore.users.empDetail.empID,
+			showAlertError: false,
+			showAlertLoader: false,
+			hasLoggedInOnce: false,
+			accessToken: '',
+			signupModalVisible: false,
+			adminModalVisible: false,
+			errorText: '',
+			alertTitle: 'ERROR!',
+			showConfirm: false,
+			showCancel: true,
+			loginMinTime: this.utilities.loginTime.split('-')[0],
+			loginMaxTime: this.utilities.loginTime.split('-')[1],
+			logoutMinTime: this.utilities.logoutTime.split('-')[0],
+			logoutMaxTime: this.utilities.logoutTime.split('-')[1],
+		};
 	}
 
-	state = {
-		empID: '',
-		showAlertError: false,
-		showAlertLoader: false,
-		hasLoggedInOnce: false,
-		accessToken: '',
-		signupModalVisible: false,
-		adminModalVisible: false,
-		errorText: '',
-        alertTitle: 'Oops!',
-        showConfirm: false,
-        showCancel: true
-	};
+	
 
 
 	componentDidMount() {
@@ -156,21 +165,39 @@ class Login extends Component {
 
 	submitSignup = (data) => {
 		console.log('signup data>>', data)
-		this.usersStore.registerUser(this.loginName, data).then(()=>{
-			if(this.loginName == 'EMPLOYEE'){
-				if(this.usersStore.users.empDetail.code == 200 || this.usersStore.users.empDetail.code == 201){
-					this.setState({signupModalVisible: false})
-					this.navigateHome();
+		if(data.checkIn == '' || data.checkOut == '') {
+			Alert.alert('CheckIn and CheckOut is required!')
+		} else if(data.employee.empHomeAddress == '') {
+			Alert.alert('Phone Number is required!')
+		} else if(data.employee.empPhoneNumber == '') {
+			Alert.alert('Home Address is required!')
+		} else {
+			this.usersStore.registerUser(this.loginName, data.employee).then(()=>{
+				if(this.loginName == 'EMPLOYEE'){
+					if(this.usersStore.users.empDetail.code == 200 || this.usersStore.users.empDetail.code == 201){
+						this.empStore.setDefaultTime( this.state.empID, moment(data.checkIn, 'HH:mm').format('HH:mm:ss'), true ).then( () => {
+							console.log('default time checkin>>', toJS(this.empStore.empData.defaultTime))
+							if( this.empStore.empData.defaultTime.code == 200 || this.empStore.empData.defaultTime.code == 201 ) {
+								this.empStore.setDefaultTime( this.state.empID, moment(data.checkOut, 'HH:mm').format('HH:mm:ss'), false ).then( () => {
+									console.log('default time checkout>>', toJS(this.empStore.empData.defaultTime))
+									if( this.empStore.empData.defaultTime.code == 200 || this.empStore.empData.defaultTime.code == 201 ) {
+										this.setState({signupModalVisible: false})
+										this.navigateHome();
+									}
+								})
+							}
+						})
+					}
+					
+				} else {
+					if(this.usersStore.users.empDetail.code == 200 || this.usersStore.users.empDetail.code == 201){
+						this.setState({adminModalVisible: false})
+						this.navigateAdmin();
+					}
 				}
 				
-			} else {
-				if(this.usersStore.users.empDetail.code == 200 || this.usersStore.users.empDetail.code == 201){
-					this.setState({adminModalVisible: false})
-					this.navigateAdmin();
-				}
-			}
-			
-		});
+			});
+		}
 	};
 
 	renderOTPInput = () => {
@@ -219,8 +246,21 @@ class Login extends Component {
 					{/* </View> */}
 				</View>
 				<View >
-					<EmpSignupModal signupModalVisible = {this.state.signupModalVisible} closeModalFunc = {this.closeModalFunc} submitSignup = {this.submitSignup} userName = {this.usersStore.users.oktaDetail? this.usersStore.users.oktaDetail.name: ''}/>
-					<AdminSignupModal adminModalVisible = {this.state.adminModalVisible} closeModalFunc = {this.closeModalFunc} submitSignup = {this.submitSignup}/>
+					<EmpSignupModal 
+						signupModalVisible = {this.state.signupModalVisible} 
+						closeModalFunc = {this.closeModalFunc} 
+						submitSignup = {this.submitSignup} 
+						userName = {this.usersStore.users.oktaDetail? this.usersStore.users.oktaDetail.name: ''}
+						loginMinTime = {this.state.loginMinTime}
+						loginMaxTime = {this.state.loginMaxTime}
+						logoutMinTime = {this.state.logoutMinTime}
+						logoutMaxTime = {this.state.logoutMaxTime}
+					/>
+					<AdminSignupModal 
+						adminModalVisible = {this.state.adminModalVisible} 
+						closeModalFunc = {this.closeModalFunc} 
+						submitSignup = {this.submitSignup}
+					/>
 				</View>
 				<AppAlert
 					show={showAlertError}

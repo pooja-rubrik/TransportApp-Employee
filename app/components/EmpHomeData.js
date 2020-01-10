@@ -90,9 +90,9 @@ class EmpHomeData extends React.PureComponent {
 			console.log('default login success>>', toJS(this.empStore.empData.dailyLogin), this.empStore.empData.dailyLogin.vehicleNumber)
 			if ( this.empStore.empData.dailyLogin && this.empStore.empData.dailyLogin.code == 200 ) {
 				this.setState({accountStatus : ''})
-				if( this.empStore.empData.dailyLogin.vehicleNumber ) {
-					this.setDriverData(this.empStore.empData.dailyLogin.vehicleNumber, 'LOGIN');
-				} 
+				// if( this.empStore.empData.dailyLogin.vehicleNumber ) {
+				this.setDriverData(this.empStore.empData.dailyLogin.vehicleNumber);
+				// } 
 				
 			} else if( this.empStore.empData.dailyLogin.status == 404 ) {
 				this.setState({accountStatus : 'Your account will be activated after 1 day.'})
@@ -107,9 +107,9 @@ class EmpHomeData extends React.PureComponent {
 			console.log('default logout success>>', toJS(this.empStore.empData.dailyLogout))
 			if( this.empStore.empData.dailyLogout && this.empStore.empData.dailyLogout.code == 200 ) {
 				this.setState({accountStatus : ''})
-				if(this.empStore.empData.dailyLogout.vehicleNumber){
-					this.setDriverData(this.empStore.empData.dailyLogout.vehicleNumber, 'LOGOUT');
-				} 
+				// if(this.empStore.empData.dailyLogout.vehicleNumber){
+				this.setDriverData(this.empStore.empData.dailyLogout.vehicleNumber);
+				// } 
 			} else if( this.empStore.empData.dailyLogin.status == 404 ) {
 				this.setState({accountStatus : 'Your account will be activated after 1 day.'})
 			} else {
@@ -118,7 +118,7 @@ class EmpHomeData extends React.PureComponent {
 		})
 	}
 
-	setDriverData = (vehicleNo, type) => {
+	setDriverData = (vehicleNo) => {
 		this.driverStore.setDriverData( vehicleNo ).then( () => {
 			console.log( 'driver data>>', toJS(this.driverStore.driverData));
 		})
@@ -137,11 +137,13 @@ class EmpHomeData extends React.PureComponent {
 	
 	submitChange = ( date, submitType, changeType ) => {
 		this.empStore.submitEmpTime( date, this.empId, submitType, changeType ).then( () => {
-			console.log( 'success>>', toJS(this.empStore.empData.submitTime) )
+			console.log( 'success>>', toJS(this.empStore.empData.submitTime), changeType )
 			if ( this.empStore.empData.submitTime && this.empStore.empData.submitTime.code == 200 ) {
-				this.setDailyLogin();
-				this.setDailyLogout();
-				this.setDriverData();
+				if(changeType == 'pick') {
+					this.setDailyLogin();
+				} else {
+					this.setDailyLogout();
+				}
 				Alert.alert( submitType == 'ASSIGN' ? 'Time updated successfully.' : 'Time cancelled successfully.' )
 			} else {
 				Alert.alert( 'Something went wrong.' )

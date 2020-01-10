@@ -30,25 +30,6 @@ class AdminList extends React.PureComponent {
         this.usersStore.getAllEmployee().then(()=> {
             console.log(toJS(this.usersStore.users.allemps))
             allemps = toJS(this.usersStore.users.allemps)
-            // allemps = [{
-            //     "empID": 102006,
-            //     "empName": "Pooja",
-            //     "empEmail": "poojapanwar.evon@gmail.com",
-            //     "empPhoneNumber": "7310946377",
-            //     "empHomeAddress": "Aone tech de",
-            //     "empEmergencyContact": "7310946377",
-            //     "empType": "admin",
-            //     "code": 200
-            //   },{
-            //     "empID": 102002,
-            //     "empName": "Pooja",
-            //     "empEmail": "poojapanwar.evon@gmail.com",
-            //     "empPhoneNumber": "7310946377",
-            //     "empHomeAddress": "Aone tech de",
-            //     "empEmergencyContact": "7310946377",
-            //     "empType": "admin",
-            //     "code": 200
-            //   } ]
             admins = allemps.filter(user=> user.empType == 'ADMIN' )
             console.log(admins)
 			this.setState({admins: admins})

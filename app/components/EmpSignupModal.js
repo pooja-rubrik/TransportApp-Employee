@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput} from "react-native
 import { RaisedTextButton } from 'react-native-material-buttons';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 // import { TextField } from 'react-native-material-textfield';
-
+import DateTime from '../components/DateTimePicker';
 import COLOR from '../services/AppColor';
 import STRCONSTANT from '../services/StringConstants';
 
@@ -13,8 +13,12 @@ export default class EmpSignupModal extends React.PureComponent {
     state = {
         contact: '',
         homeAddress: '',
-        checkIn: '',
-        checkOut: '',
+        timeCheckIn: '',
+        timeCheckOut: '',
+        checkInPlaceHolder: 'Check-In',
+        checkOutPlaceHolder: 'Check-Out',
+        formatTime: 'HH:mm',
+        loginMin: 30
     }
     
     closeModalFunc = (visible) => {
@@ -23,14 +27,26 @@ export default class EmpSignupModal extends React.PureComponent {
 	}
 
     submitRequest = () => {
-        this.props.submitSignup(this.state);
+        let signupData = {
+            employee: {
+                empHomeAddress: this.state.homeAddress, 
+                empPhoneNumber: this.state.contact
+            }, 
+            checkIn: this.state.timeCheckIn, 
+            checkOut: this.state.timeCheckOut 
+        }
+        this.props.submitSignup(signupData);
     }
 
     
-
+    // componentDidMount() {
+    //     console.log(this.props)
+    // }
 
 	render() {
-        let { contact, homeAddress, checkOut, checkIn} = this.state;
+        let { contact, homeAddress, timeCheckOut, timeCheckIn, checkInPlaceHolder, checkOutPlaceHolder,
+            formatTime, loginMin } = this.state;
+        let {loginMinTime, loginMaxTime, logoutMinTime, logoutMaxTime} = this.props;
 	    return (
 		<Modal
             animationType='slide'
@@ -43,19 +59,46 @@ export default class EmpSignupModal extends React.PureComponent {
                     >
                         <Text style={styles.closeText}>X</Text>
                     </TouchableOpacity>
-                    <View>
+                    
                         <View style={styles.TextInputView}>
-                            <View>
+                            
                                 <Text style={styles.headText}>
                                    Welcome {this.props.userName}!
                                 </Text>
-                                <TextInput
+                                <View style = {styles.defaultSec}>
+                                    <DateTime 
+                                        date = {timeCheckIn} 
+                                        changeDate = {(timeCheckIn) => {this.setState({timeCheckIn: timeCheckIn})}} 
+                                        placeholder = {checkInPlaceHolder}
+                                        format = {formatTime}
+                                        inputStyle = {styles.timeinputStyle}
+                                        iconStyle = {{left:5, height: 23, width: 23}}
+                                        style = {styles.timeStyle}
+                                        minDate = {loginMinTime}
+                                        maxDate = {loginMaxTime}
+                                        minuteInterval={loginMin}
+                                    />
+                                    <DateTime 
+                                        date = {timeCheckOut} 
+                                        changeDate = {(timeCheckOut) => {this.setState({timeCheckOut: timeCheckOut})}} 
+                                        placeholder = {checkOutPlaceHolder}
+                                        format = {formatTime}
+                                        inputStyle = {styles.timeinputStyleCheckout}
+                                        iconStyle = {{left:5, height: 23, width: 23}}
+                                        style = {styles.timeStyle}
+                                        minDate = {logoutMinTime}
+                                        maxDate = {logoutMaxTime}
+                                        minuteInterval={loginMin}
+                                    />
+                                </View>
+                                
+                                {/* <TextInput
                                     label=''
                                     value={`${checkIn}`}
                                     style={styles.textInputStyles}
                                     labelFontSize={0}
                                     onChangeText={(checkIn) => this.setState({ checkIn })}
-                                    placeholder='DEFAULT CHECK-IN'
+                                    placeholder='Default Check-In'
                                     lineWidth={0}
                                     activeLineWidth={0}
                                     autoCapitalize='none'
@@ -68,20 +111,20 @@ export default class EmpSignupModal extends React.PureComponent {
                                     style={styles.textInputStyles}
                                     labelFontSize={0}
                                     onChangeText={(checkOut) => this.setState({ checkOut })}
-                                    placeholder='DEFAULT CHECK-OUT'
+                                    placeholder='Default Check-Out'
                                     lineWidth={0}
                                     activeLineWidth={0}
                                     autoCapitalize='none'
                                     autoCorrect={false}
                                     placeholderTextColor={COLOR.PLACEHOLDER}
-                                />
+                                /> */}
                                 <TextInput
                                     label=''
                                     value={`${contact}`}
                                     style={styles.textInputStyles}
                                     labelFontSize={0}
                                     onChangeText={(contact) => this.setState({ contact })}
-                                    placeholder='PHONE NUMBER'
+                                    placeholder='Phone Number'
                                     lineWidth={0}
                                     activeLineWidth={0}
                                     autoCapitalize='none'
@@ -94,7 +137,7 @@ export default class EmpSignupModal extends React.PureComponent {
                                     style={styles.textAreaStyles}
                                     labelFontSize={0}
                                     onChangeText={(homeAddress) => this.setState({ homeAddress })}
-                                    placeholder='HOME ADDRESS'
+                                    placeholder='Home Address'
                                     lineWidth={0}
                                     activeLineWidth={0}
                                     autoCapitalize='none'
@@ -104,7 +147,7 @@ export default class EmpSignupModal extends React.PureComponent {
                                     placeholderTextColor={COLOR.PLACEHOLDER}
                                 />
                                 
-                            </View>
+                            
                             <View style={styles.ButtonSubmit}>
                                 <RaisedTextButton
                                     title={STRCONSTANT.SIGNUP_BTN}
@@ -114,20 +157,11 @@ export default class EmpSignupModal extends React.PureComponent {
                                     style={styles.buttonEmail}
                                     titleStyle = {styles.titleStyle}
                                 />
-{/*                                 
-                                <RaisedTextButton
-                                    title={STRCONSTANT.CANCEL_REQUEST}
-                                    color={COLOR.BUTTON_COLOR}
-                                    titleColor={COLOR.BUTTON_FONT_COLOR}
-                                    onPress={() => this.closeModalFunc(this.props.signupModalVisible)}
-                                    style={styles.buttonEmail}
-                                />
-                                 */}
                                
 
                             </View>
                         </View>
-                    </View>
+                    
                 </View>
             </View>
         </Modal>
@@ -140,9 +174,9 @@ const styles = StyleSheet.create({
 		backgroundColor: COLOR.HEADER_BG_COLOR,
 		padding: 20,
 		borderRadius: 5,
-        height: hp('45%'),
-        borderColor: COLOR.HEADER_BG_COLOR,
-        borderWidth: .2,
+        height: hp('38%'),
+        borderColor: '#333',
+        borderWidth: 1,
 	},
 	closeText: {
 		backgroundColor: COLOR.APP_BG_COLOR,
@@ -154,29 +188,31 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		borderWidth: 1,
 		borderColor: COLOR.BUTTON_COLOR_EMP,
-		marginRight: 0,
-		marginTop: 0
-	},
+		marginRight: -15,
+		marginTop: -15
+    },
+    defaultSec: {
+        flexDirection: 'row',
+        alignContent: 'space-between',
+        marginBottom: 5,
+        marginTop: 5,
+    },
 	ButtonSubmit: {
-		// marginTop: 20,
-		// flex: 1,
-        // flexDirection: 'row',
-        alignSelf: 'center'
+		alignSelf: 'center'
 	},
 	buttonEmail: {
 		borderRadius: 20,
-		width: wp('80%'),
-        height: hp('5%'),
-        marginTop: 10
+		width: wp('85%'),
+        height: hp('4%'),
+        marginTop: 5
     },
 	textInputStyles: {
 		borderRadius: 20,
 		backgroundColor: 'white',
-		fontSize: 18,
+		fontSize: 15,
 		paddingLeft: 10,
 		height: hp('4%'),
-		// width: wp('95%'),
-        marginTop: 5
+		marginTop: 5
 	},
 	textAreaStyles: {
         borderRadius : 20,
@@ -185,18 +221,48 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingTop: 10,
         height: 100,
-        fontSize: 18
+        fontSize: 15
     },
 	TextInputView: {
-		// flex: 1,
+        // flex: 1,
+        width: wp('85%'),
+        alignSelf: 'center'
     },
     headText:{
         alignSelf: 'flex-start',
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#575C58'
+        color: '#fff'
     },
     titleStyle:{
-		fontSize: 18
-	}
+        fontSize: 18,
+        textTransform: 'capitalize'
+    },
+    timeinputStyle: {
+		marginLeft:0, 
+        backgroundColor: '#fff', 
+        // paddingLeft: 9,
+        paddingRight: 30,
+		borderWidth: 0, 
+        height: 30,
+        borderRadius: 15,
+        borderWidth: .3,
+        borderColor: '#333'
+    },
+    timeinputStyleCheckout: {
+        marginLeft:0, 
+        backgroundColor: '#fff', 
+        paddingRight: 20,
+		borderWidth: 0, 
+        height: 30,
+        borderRadius: 15,
+        borderWidth: .3,
+        borderColor: '#333'
+       
+    },
+    timeStyle:{ 
+        'width': wp('42.5%'), 
+        marginBottom:0,
+        height: 30,
+    },
 })

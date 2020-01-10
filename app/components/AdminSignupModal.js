@@ -11,14 +11,14 @@ import STRCONSTANT from '../services/StringConstants';
 export default class AdminSignupModal extends React.PureComponent {
     
     state = {
-        empName: '',
+        // empName: '',
         empID: '',
-        empEmail: '',
+        // empEmail: '',
         empType: 'ADMIN'
     }
 
     componentWillReceiveProps () {
-        this.setState({empName: '', empID: '', empEmail: ''})
+        this.setState({ empID: ''})
     }
     
     closeModalFunc = (visible) => {
@@ -32,84 +32,72 @@ export default class AdminSignupModal extends React.PureComponent {
 
 
 	render() {
-        let {  empName, empID, empEmail } = this.state;
+        let { empID, } = this.state;
 	    return (
 		<Modal
             animationType='slide'
             visible={this.props.adminModalVisible}
+            // visible = {true}
         >
             <View>
                 <View style={styles.modalView} >
-                    {/* <View style ={{flexDirection: 'row'}}> */}
-                        {/* <Text style={styles.headText}>
-                            Admin Signup
-                        </Text> */}
-                        <TouchableOpacity
-                            onPress={this.closeModalFunc}
-                        >
-                            <Text style={styles.closeText}>X</Text>
-                        </TouchableOpacity>
-                        
-                    {/* </View> */}
+                   
+                    <TouchableOpacity
+                        onPress={this.closeModalFunc}
+                    >
+                        <Text style={styles.closeText}>X</Text>
+                    </TouchableOpacity>
                     
-                    <View>
-                        <View style={styles.TextInputView}>
-                            <View>
-                                
+                   
+                    <View style={styles.TextInputView}>
+                        {/* <View> */}
+                            <TextInput
+                                label=''
+                                value={`${empID}`}
+                                style={styles.textInputStyles}
+                                labelFontSize={0}
+                                onChangeText={(empID) => this.setState({ empID })}
+                                placeholder='Employee Id'
+                                autoCapitalize = {'none'}
+                                autoCorrect = {false}
+                            />
+                            {/* <TextInput
+                                label=''
+                                value={`${empEmail}`}
+                                style={styles.textInputStyles}
+                                labelFontSize={0}
+                                onChangeText={(empEmail) => this.setState({ empEmail })}
+                                placeholder='Email'
+                                autoCapitalize = {'none'}
+                                autoCorrect = {false}
+                            />
+                            
+                            <TextInput
+                                label=''
+                                value={`${empName}`}
+                                style={styles.textInputStyles}
+                                labelFontSize={0}
+                                onChangeText={(empName) => this.setState({ empName })}
+                                placeholder='Employee Name'
+                                autoCapitalize = {'none'}
+                                autoCorrect = {false}
+                            /> */}
+                        {/* </View> */}
+                        <View style={styles.ButtonSubmit}>
+                            <RaisedTextButton
+                                title={STRCONSTANT.SIGNUP_ADMIN}
+                                color={COLOR.BUTTON_COLOR_EMP}
+                                titleColor={COLOR.BUTTON_FONT_COLOR}
+                                onPress={this.submitRequest}
+                                style={styles.buttonEmail}
+                                titleStyle={styles.titleStyle}
+                            />
+                            
 
-                                <TextInput
-                                    label=''
-                                    value={`${empID}`}
-                                    style={styles.textInputStyles}
-                                    labelFontSize={0}
-                                    onChangeText={(empID) => this.setState({ empID })}
-                                    placeholder='Employee Id'
-                                    autoCapitalize = {'none'}
-                                    autoCorrect = {false}
-                                />
-                                <TextInput
-                                    label=''
-                                    value={`${empEmail}`}
-                                    style={styles.textInputStyles}
-                                    labelFontSize={0}
-                                    onChangeText={(empEmail) => this.setState({ empEmail })}
-                                    placeholder='Email'
-                                    autoCapitalize = {'none'}
-                                    autoCorrect = {false}
-                                />
-                                
-                                <TextInput
-                                    label=''
-                                    value={`${empName}`}
-                                    style={styles.textInputStyles}
-                                    labelFontSize={0}
-                                    onChangeText={(empName) => this.setState({ empName })}
-                                    placeholder='Employee Name'
-                                    autoCapitalize = {'none'}
-                                    autoCorrect = {false}
-                                />
-                            </View>
-                            <View style={styles.ButtonSubmit}>
-                                <RaisedTextButton
-                                    title={STRCONSTANT.SIGNUP_ADMIN}
-                                    color={COLOR.BUTTON_COLOR_EMP}
-                                    titleColor={COLOR.BUTTON_FONT_COLOR}
-                                    onPress={this.submitRequest}
-                                    style={styles.buttonEmail}
-                                    titleStyle={styles.titleStyle}
-                                />
-                                {/* <RaisedTextButton
-                                    title={STRCONSTANT.CANCEL_REQUEST}
-                                    color={COLOR.BUTTON_COLOR}
-                                    titleColor={COLOR.BUTTON_FONT_COLOR}
-                                    onPress={this.closeModalFunc}
-                                    style={styles.buttonEmail}
-                                /> */}
-
-                            </View>
                         </View>
                     </View>
                 </View>
+                
             </View>
         </Modal>
 	  );
@@ -121,7 +109,7 @@ const styles = StyleSheet.create({
 		backgroundColor: COLOR.HEADER_BG_COLOR,
 		padding: 20,
 		borderRadius: 5,
-        height: hp('32%'),
+        height: hp('19%'),
         borderColor: '#333',
         borderWidth: 1,
 	},
@@ -135,19 +123,16 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		borderWidth: 1,
 		borderColor: COLOR.BUTTON_COLOR_EMP,
-		marginRight: 0,
-		marginTop: 0
+		marginRight: -15,
+		marginTop: -15
 	},
 	ButtonSubmit: {
-		// marginTop: 20,
-		// flex: 1,
-        // flexDirection: 'row',
         alignSelf: 'center'
 	},
 	buttonEmail: {
 		borderRadius: 20,
-		width: wp('80%'),
-        height: hp('5%'),
+		width: wp('85%'),
+        height: hp('4%'),
         marginTop: 10
     },
 	textInputStyles: {
@@ -156,20 +141,13 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingLeft: 10,
 		height: hp('4%'),
-		width: wp('80%'),
+		width: wp('85%'),
         marginTop: 5
 	},
-	textAreaStyles: {
-        borderRadius : 20,
-        backgroundColor: 'white',
-        marginTop  :5,	
-        paddingLeft: 10,
-        paddingTop: 10,
-        height: 100,
-        fontSize: 18
-    },
 	TextInputView: {
-		// flex: 1,
+        // flex: 1,
+        alignSelf: 'center',
+        marginTop: 6
     },
     headText:{
         alignSelf: 'flex-start',

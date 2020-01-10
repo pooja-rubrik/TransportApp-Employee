@@ -99,6 +99,12 @@ class CabStatus extends React.PureComponent {
             Alert.alert(message)
         })
     }
+
+    callPickService = (pickChangeData) => {
+        // Alert.alert('called')
+        console.log(pickChangeData)
+        this.adminEmpCab.callPickService(pickChangeData)
+    }
     
     render() {
         let {checkInTabVisible, selectDate, datePlaceHolder, timePlaceHolder, format, selectTime, 
@@ -153,6 +159,8 @@ class CabStatus extends React.PureComponent {
                         checkInTime = {selectTime}
                         refreshEmployee = {this.refreshEmployee}
                         showMessage = {this.showMessage}
+                        confirmPickChange = {this.props.confirmPickChange}
+                        ref={child => {this.adminEmpCab = child}}
                     />
                 </View>
             
@@ -205,7 +213,7 @@ const styles = StyleSheet.create({
 	}, 
 	iconOuterIOS: {
 		backgroundColor: '#fff',
-		// height: hp('5%'),
+		height: hp('4.93%'),
 		width: wp('9%'),
 		padding:7,
         paddingTop:9,

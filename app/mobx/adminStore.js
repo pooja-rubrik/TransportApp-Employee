@@ -132,10 +132,10 @@ class AdminStore {
         }
     }
 
-    @action async addPickTime(pickTime, empid) {
+    @action async addPickTime(pickTime, empid, pickDate) {
         try {
             this.isLoading = true;
-            data = await AdminService.addPickTime(pickTime, empid)
+            data = await AdminService.addPickTime(pickTime, empid, pickDate)
             runInAction( () => {
                 this.isLoading = false;
                 this.adminData.pickData = data;

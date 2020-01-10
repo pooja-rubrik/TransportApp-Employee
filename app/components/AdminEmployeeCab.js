@@ -10,6 +10,7 @@ import moment from 'moment';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { observer, inject } from "mobx-react";
 import { toJS } from 'mobx';
+import { Button } from 'react-native-paper';
 
 import DateTime from './DateTimePicker';
 import statusIconBook from '../assets/icons/cabbooked.png'
@@ -41,7 +42,7 @@ class AdminEmployee extends React.PureComponent {
             ],
             selectedDriver: '',
             assignDisable: true,
-            defaultSelect: 'Select Driver                     ▼',
+            defaultSelect: 'Select Driver',
             driverName: ''
         }
         console.log(this.props, toJS(this.adminStore))
@@ -51,14 +52,28 @@ class AdminEmployee extends React.PureComponent {
         this.adminStore.getDriverListByTime( tripDate, tripTime).then(()=> {
             console.log(toJS(this.adminStore.adminData.availableDriverList))
             if(this.props.employee.assignDriver=='') {
-                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: 'Select Driver                     ▼'})
+                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: 'Select Driver'})
             } else {
-                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: this.props.employee.assignDriver+ '             ▼'})
+                this.setState({driverList: toJS(this.adminStore.adminData.formattedDriverList), defaultSelect: this.props.employee.assignDriver})
             }
-			
-			// this.setState({defaultSelect: this.props.employee.assignDriver})
 		});
     }
+
+    callPickService = (pickChangeData) => {
+        this.adminStore.addPickTime(`${pickChangeData.timePick}:00`, pickChangeData.empid, this.props.checkInDate).then(() => {
+            console.log(this.adminStore.adminData.pickData);
+            // this.props.refreshEmployee()
+            if(this.adminStore.adminData.pickData.code == 200 ){
+                
+                this.props.showMessage('Pickup time has been updated.')
+                
+            }  else {
+                Alert.alert('Something went wrong!')
+            }
+            
+        })
+    }
+    
 
     expandCard = (isExpand, currId, tripTime) => {
         console.log('>>>>>>', isExpand, currId, this.state.currOpenId)
@@ -83,22 +98,12 @@ class AdminEmployee extends React.PureComponent {
         } )
     }
 
-    onChangePick = (timePick, empid, changeType = '') =>{
+    onChangePick = (timePick, empid, changeType = '') => {
         //api hit
         //refresh data
         if(changeType == ''){
-            this.adminStore.addPickTime(`${timePick}:00`, empid).then(() => {
-                console.log(this.adminStore.adminData.pickData);
-                // this.props.refreshEmployee()
-                if(this.adminStore.adminData.pickData.code == 200 ){
-                    
-                    this.props.showMessage('Pickup time has been updated.')
-                    
-                }  else {
-                    Alert.alert('Something went wrong!')
-                }
-                
-            })
+            this.props.confirmPickChange(timePick, empid);
+            
         } else {
             this.empStore.submitEmpTime( `${timePick}:00`, empid, 'ASSIGN', 'drop' ).then( () => {
                 console.log( 'success>>', toJS(this.empStore.empData.submitTime) )
@@ -114,9 +119,9 @@ class AdminEmployee extends React.PureComponent {
 
     renderPrompt = (rowData) => {
         console.log('render prompt..', rowData);
-        this.props.employee.assignDriver = ''
+        this.props.employee.assignDriver = '';
         this.setState({ selectedDriver: rowData.vehicle, assignDisable: false })
-        return rowData.vehicle+ '             ▼';
+        return rowData.vehicle;
     }
 
     assignDriver = (empId) => {
@@ -144,7 +149,7 @@ class AdminEmployee extends React.PureComponent {
         let { isExpand, currOpenId, pickPlaceHolder, formatTime, 
             loginMin, driverList, assignDisable, defaultSelect, driverName } = this.state;
         let { employee, loginMinTime, loginMaxTime, isCheckIn,  } = this.props;
-        
+        loginMaxTime = isCheckIn ? employee.tripTime ? moment(employee.tripTime, 'HH:mm:ss').format('HH:mm') : loginMaxTime : loginMaxTime;
         
         return (
             <CardView
@@ -174,8 +179,10 @@ class AdminEmployee extends React.PureComponent {
                     (currOpenId == employee.empID) ?
                         <View style={styles.cardContent}>
                             <View style={styles.cardTextAddr}>
+                                    
                                 <Text style={[styles.cardText, styles.fontAddr]}>
                                     {employee.empHomeAddress}
+                                    
                                 </Text>
                             </View>
                             <View style={styles.cardAction}>
@@ -230,24 +237,29 @@ class AdminEmployee extends React.PureComponent {
                                 {(employee.status == 'ASSIGN' || employee.status == null || employee.status == 'BOOKED' )?
                                     (employee.assignDriver != '') ? 
                                     <View>
-                                        <ModalDropdown 
-                                            options={driverList}
-                                            renderRow={({ vehicle, status }) => 
-                                            <View style={styles.driverOption}>
-                                                {/* <Text style={styles.dropTextVisible}>{value} ({vehicle})</Text> */}
-                                                <Text style={styles.dropTextVisible}>{vehicle}</Text>
-                                                <Text style={styles.driverStatus}>{status}</Text>
-                                            </View>}
-                                            style={styles.driverDrop}
-                                            textStyle={styles.dropTextVisible}
-                                            defaultValue = {defaultSelect}
-                                            renderButtonText={this.renderPrompt}
-                                            // dropdownTextStyle={styles.dropdownText}
-                                            dropdownStyle={styles.dropdownStyle}
-                                        >
-                                        </ModalDropdown>
-                                    
-                                        <Text style={[styles.cardText, styles.textPadTop]}>
+                                        <View style = {styles.dropSec}>
+                                            <ModalDropdown 
+                                                options={driverList}
+                                                renderRow={({ vehicle, status }) => 
+                                                <View style={styles.driverOption}>
+                                                    {/* <Text style={styles.dropTextVisible}>{value} ({vehicle})</Text> */}
+                                                    <Text style={styles.dropTextVisible}>{vehicle}</Text>
+                                                    <Text style={styles.driverStatus}>{status}</Text>
+                                                </View>}
+                                                style={styles.driverDrop}
+                                                textStyle={styles.dropTextVisible}
+                                                defaultValue = {defaultSelect}
+                                                renderButtonText={this.renderPrompt}
+                                                // dropdownTextStyle={styles.dropdownText}
+                                                dropdownStyle={styles.dropdownStyle}
+                                            >
+                                            </ModalDropdown>
+                                            <Text style= {styles.dropImg}>
+                                            ▼
+                                            </Text>
+                                        </View>
+                                        
+                                        <Text style={[styles.cardText, styles.textPadTop, styles.textPadLeft]}>
                                             {driverName}
                                         </Text>
                                         
@@ -259,26 +271,31 @@ class AdminEmployee extends React.PureComponent {
                                             style={styles.buttonTrip}
                                             titleStyle={styles.titleStyle}
                                         />
+                                        
                                     </View>
                                     :
                                     <View>
-                                        <ModalDropdown 
-                                            options={driverList}
-                                            renderRow={({ vehicle, status }) => 
-                                            <View style={styles.driverOption}>
-                                                {/* <Text style={styles.dropTextVisible}>{value} ({vehicle})</Text> */}
-                                                <Text style={styles.dropTextVisible}>{vehicle}</Text>
-                                                <Text style={styles.driverStatus}>{status}</Text>
-                                            </View>}
-                                            style={styles.driverDrop}
-                                            textStyle={styles.dropTextVisible}
-                                            defaultValue = {defaultSelect}
-                                            renderButtonText={this.renderPrompt}
-                                            // dropdownTextStyle={styles.dropdownText}
-                                            dropdownStyle={styles.dropdownStyle}
-                                        >
-                                        </ModalDropdown>
-                                    
+                                        <View style = {styles.dropSec}>
+                                            <ModalDropdown 
+                                                options={driverList}
+                                                renderRow={({ vehicle, status }) => 
+                                                <View style={styles.driverOption}>
+                                                    {/* <Text style={styles.dropTextVisible}>{value} ({vehicle})</Text> */}
+                                                    <Text style={styles.dropTextVisible}>{vehicle}</Text>
+                                                    <Text style={styles.driverStatus}>{status}</Text>
+                                                </View>}
+                                                style={styles.driverDrop}
+                                                textStyle={styles.dropTextVisible}
+                                                defaultValue = {defaultSelect}
+                                                renderButtonText={this.renderPrompt}
+                                                // dropdownTextStyle={styles.dropdownText}
+                                                dropdownStyle={styles.dropdownStyle}
+                                            >
+                                            </ModalDropdown>
+                                            <Text style= {styles.dropImg}>
+                                            ▼
+                                            </Text>
+                                        </View>
                                         
                                         <RaisedTextButton
                                             title={STRCONSTANT.ASSIGN_TRIP}
@@ -289,6 +306,7 @@ class AdminEmployee extends React.PureComponent {
                                             titleStyle={styles.titleStyle}
                                             disabled={assignDisable}
                                         />
+                                       
                                         <RaisedTextButton
                                             title={STRCONSTANT.SEND_OTP}
                                             color={COLOR.BUTTON_COLOR_EMP}
@@ -324,6 +342,17 @@ const styles = StyleSheet.create({
         marginTop: 5,
         borderRadius: 10
     },
+    buttonHelp: {
+		borderRadius: 20,
+		// marginBottom: 20,
+		height: 25,
+		marginTop: 10,
+        // fontSize: 18,
+        width: wp('43%'),
+        // paddingTop: -15,
+        // paddingBottom: -15
+		// textTransform: 'none'
+	},
     cardViewChange: {
         // backgroundColor: '#94EBC5',
         backgroundColor: '#fff',
@@ -395,12 +424,15 @@ const styles = StyleSheet.create({
     textPadTop: {
         paddingTop: 2
     },
+    textPadLeft: {
+        paddingLeft: 7
+    },
     cardAction: {
         flexDirection: 'row'
     },
     titleStyle: {
         fontSize: 12,
-        textTransform: 'capitalize'
+        // textTransform: 'capitalize'
     },
     buttonTrip: {
         borderRadius: 20,
@@ -431,11 +463,13 @@ const styles = StyleSheet.create({
         height: 35,
     },
     dropdownStyle: {
-        width: wp('30%'),
+        width: wp('38%'),
         alignItems: 'center',
         borderWidth: 2,
         backgroundColor: '#EFEEEE',
-        
+        // marginRight: -1
+        marginLeft: 10,
+        height: hp('38%')
     },
     
     dropTextVisible:{
@@ -443,13 +477,23 @@ const styles = StyleSheet.create({
     },
     
     driverDrop:{
-        marginTop: 5
+        marginTop: 5,
+        paddingLeft: 7,
+        width: wp('38%')
     },
     driverOption: {
         borderBottomWidth: .4,
-        height: hp('5.5%'),
+        height: hp('6%'),
         paddingTop: 6,
-        width: wp('25%')
+        width: wp('35%')
+    },
+    dropSec: {
+        flexDirection: 'row'
+    },
+    dropImg: {
+        color: '#406353',
+        fontSize: 13,
+        paddingTop: 5
     }
 })
 

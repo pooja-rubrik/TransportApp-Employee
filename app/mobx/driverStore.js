@@ -18,12 +18,17 @@ class DriverStore {
         try {
             this.isLoading = true;
             console.log('vehicleNo>>', vehicleNo);
-            data = await DriverService.getDriverDataByVehicleNo(vehicleNo)
-            runInAction(() => {
-                this.isLoading = false;
-                console.log('is driver data>>', data)
-                this.driverData = data;
-            })
+            if(vehicleNo) {
+                data = await DriverService.getDriverDataByVehicleNo(vehicleNo)
+                runInAction(() => {
+                    this.isLoading = false;
+                    console.log('is driver data>>', data)
+                    this.driverData = data;
+                })
+            } else {
+                this.driverData = {}
+            }
+            
 
         } catch (e) {
             console.log('error driver data', e)

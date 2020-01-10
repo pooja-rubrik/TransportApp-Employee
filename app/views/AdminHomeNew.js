@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
 	StyleSheet, Alert,
-	View, ScrollView
+	View, 
 } from "react-native";
 import { signOut, EventEmitter, createConfig } from '@okta/okta-react-native';
 import { observer, inject } from "mobx-react";
@@ -18,7 +18,7 @@ import AdminSubSections from '../components/AdminSubSections';
 import EmpHomeData from '../components/EmpHomeData';
 import AdminSignupModal from '../components/AdminSignupModal';
 import Color from '../services/AppColor'
-import { widthPercentageToDP as wp  } from "react-native-responsive-screen";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 class AdminHomeNew extends Component {
     constructor(props) {
@@ -27,13 +27,15 @@ class AdminHomeNew extends Component {
 		this.usersStore =  this.props.rootStore.usersStore;
 		this.adminStore = this.props.rootStore.adminStore;
 		this.admId = this.usersStore.users.empDetail.empID;
+		this.userType = this.usersStore.users.empDetail.userType;
+		this.pickChangeData = {timePick:'', empid: ''}
     }
 
     state = {
         showAlertError: false,
         showAlertLoader: false,
         errorText: '',
-        alertTitle: 'Oops!',
+        alertTitle: 'ERROR!',
         showConfirm: false,
         showCancel: true,
         checkInTabVisible: true,
@@ -50,8 +52,17 @@ class AdminHomeNew extends Component {
         return {
             headerRight: (
                 <HeaderMenu>
-                    <Item title="Opt Out of Employee Role" show="never" onPress={() => params.optOut('optoutEmp')} />
-					<Item title="Opt Out of Admin Role" show="never" onPress={() => params.optOut('optoutAdmin')} />
+					{
+						this.userType != 'SERVICE' ?
+						<Item title="Opt Out of Employee Role" show="never" onPress={() => params.optOut('optoutEmp')} />
+						: null
+					}
+                    {
+						this.userType != 'SERVICE' ?
+						<Item title="Opt Out of Admin Role" show="never" onPress={() => params.optOut('optoutAdmin')} />
+						: null
+					}
+					
 					{/* <Item title="Opt Out of All Roles" show="never" onPress={() => params.optOut('optoutAll')} /> */}
                     <Item title="Sign Out" show="never" onPress={() => params.logout()} />
                 </HeaderMenu>
@@ -118,21 +129,26 @@ class AdminHomeNew extends Component {
 
 
 	submitSignup = (data) => {
-		this.usersStore.registerUser(this.usersStore.users.oktaDetail.userType, data).then(()=> {
-			console.log('signup>>>',toJS(this.usersStore.users.empDetail));
-			if(this.usersStore.users.empDetail.code == 200 || this.usersStore.users.empDetail.code == 201){
-				this.setState({adminModalVisible: false})
-				
-				this.setState({adminTabVisible: true, adminSubTab: 'cab-status'})
-				setTimeout(()=>{
-					this.setState({adminSubTab: 'admin-list'})
-				}, 1000)
-				
-				// this.setState({'errorText': 'User profile has been created'})
-				// this.showAlert('error')
-				
-			}
-		});
+		if(data.empID == '') {
+			Alert.alert('Employee ID is required!')
+		} else {
+			this.usersStore.registerUser(this.usersStore.users.oktaDetail.userType, data).then(()=> {
+				console.log('signup>>>',toJS(this.usersStore.users.empDetail));
+				if(this.usersStore.users.empDetail.code == 200 || this.usersStore.users.empDetail.code == 201){
+					this.setState({adminModalVisible: false})
+					
+					this.setState({adminTabVisible: true, adminSubTab: 'cab-status'})
+					setTimeout(()=>{
+						this.setState({adminSubTab: 'admin-list'})
+					}, 1000)
+					
+					// this.setState({'errorText': 'User profile has been created'})
+					// this.showAlert('error')
+					
+				}
+			});
+		}
+		
 	}
 
     showAlert = (type) => {
@@ -142,7 +158,7 @@ class AdminHomeNew extends Component {
 				showAlertError: true,
 				showConfirm: false,
 				errorText: this.state.errorText,
-				alertTitle: 'Oops!'
+				alertTitle: 'ERROR!'
 			});
 		} else if(type == 'confirm') {
 			this.setState({
@@ -152,11 +168,11 @@ class AdminHomeNew extends Component {
 				alertTitle: 'Confirm!'
 			});
 			
-		} else if(type == 'optoutEmp' || type == 'optoutAdmin' ) {
+		} else if(type == 'optoutEmp' || type == 'optoutAdmin' || type == 'pickChange') {
 			this.setState({
 				showAlertError: true,
 				showConfirm: true,
-				errorText: 'Please click Okay to confirm!', 
+				errorText: 'Press Okay to confirm!', 
 				alertTitle: 'Confirm!'
 			});
 		} else if(type == 'confirmDelete') {
@@ -229,15 +245,13 @@ class AdminHomeNew extends Component {
 					Alert.alert(this.adminStore.adminData.removeDriver.message ? this.adminStore.adminData.removeDriver.message : 'Something went wrong')
 				}
 			});
+		} else if( this.state.confirmAction == 'pickChange' ) {
+			this.child.callPickService(this.pickChangeData)
 		}
 	}
 
 	hideAlert = (type) => {
-		if (type == 'error') {
-			this.setState({
-				showAlertError: false
-			});
-        } else if(type == 'confirm' || type == 'optoutEmp' || type == 'optoutAdmin' || type == 'confirmDelete' || type == 'confirmDeleteDriver') { 
+		if(type == 'error' || type == 'confirm' || type == 'optoutEmp' || type == 'optoutAdmin' || type == 'confirmDelete' || type == 'confirmDeleteDriver' || type == 'pickChange') { 
             this.setState({
 				showAlertError: false
 			});
@@ -300,6 +314,12 @@ class AdminHomeNew extends Component {
 		this.showAlert(type);
 	}
 
+	confirmPickChange = (timePick, empid) => {
+		this.pickChangeData = {timePick, empid};
+		this.setState({'confirmAction': 'pickChange'})
+		this.showAlert('pickChange');
+	}
+
     render() {
 		console.disableYellowBox = true;
         let { 
@@ -308,28 +328,32 @@ class AdminHomeNew extends Component {
        } = this.state;
         return(
             <View style={styles.mainContainer}>
-				{/* <View style={styles.childContainer}>
-					<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
-					{
-						adminTabVisible?
-						
-						<ScrollView>
-							<AdminSubSections adminSubTab = {adminSubTab} adminSubSwitch = {this.adminSubSwitch} addDriver = {this.addDriver} showAlertChild ={this.showAlertChild}/>
-						</ScrollView>
-						
-						: <EmpHomeData />
-					}
-				</View> */}
+				
 				{
 					adminTabVisible?
 					<View style={styles.childContainer}>
-						<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
-						<ScrollView>
-							<AdminSubSections adminSubTab = {adminSubTab} adminSubSwitch = {this.adminSubSwitch} addDriver = {this.addDriver} showAlertChild ={this.showAlertChild}/>
-						</ScrollView>
+						{
+							this.userType != 'SERVICE' ?
+							<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
+							: null
+						}
+						
+						<AdminSubSections 
+							adminSubTab = {adminSubTab} 
+							adminSubSwitch = {this.adminSubSwitch} 
+							addDriver = {this.addDriver} 
+							showAlertChild ={this.showAlertChild} 
+							userType = {this.userType} 
+							confirmPickChange = {this.confirmPickChange}
+							ref={child => {this.child = child}}
+						/>
 					</View> : 
 					<View style = {styles.childContainerEmployee}>
-						<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
+						{
+							this.userType != 'SERVICE' ?
+							<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
+							: null
+						}
 						<EmpHomeData />
 					</View>
 					
@@ -399,6 +423,7 @@ const styles = StyleSheet.create({
 		backgroundColor: Color.HEADER_BG_COLOR
 	},
 	childContainer: { 
+		// flex: 2,
 		backgroundColor: '#fff', 
 		width: wp('97%'),
 		alignSelf: 'center',
@@ -406,7 +431,8 @@ const styles = StyleSheet.create({
 		borderTopRightRadius: 10,
         borderTopColor: '#fff',
 		borderTopWidth: 1,
-		marginTop: 10
+		marginTop: 10,
+		marginBottom: hp('36%')
 	},
 	childContainerEmployee: {
 		flex: 1,

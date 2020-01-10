@@ -93,22 +93,22 @@ class AdminEmployeeEmpList extends React.PureComponent {
                                         {employee.empPhoneNumber}
                                     </Text> */}
                                     <Text style={[styles.cardText, styles.textPadTop]}>
-                                        Check-In: {employee.login.loginTime && employee.login.loginTime != null ? moment(employee.login.loginTime, 'HH:mm:ss').format('HH:mm'): 'Cancelled'}
+                                        Check-In: {employee.login && employee.login.loginTime != null ? moment(employee.login.loginTime, 'HH:mm:ss').format('HH:mm'): 'Cancelled'}
                                             
                                     </Text>
                                     <Text style={[styles.cardText, styles.textPadTop]}>
-                                        {employee.login.status == 'BOOKED' ? 'Vehicle No: ' + employee.login.vehicleNo : employee.login.status == 'CANCEL' ? '' : 'Vehicle Not Assigned'}
+                                        {employee.login && employee.login.status == 'BOOKED' ? 'Vehicle No: ' + employee.login.vehicleNo : employee.login && employee.login.status == 'CANCEL' ? '' : 'Vehicle Not Assigned'}
                                     </Text>
                                     
                                     
                                 </View>
                                 <View style={styles.rightSec}>
                                     <Text style={[styles.cardText, styles.textPadTop]}>
-                                        Check-Out: {employee.logout.logoutTime && employee.logout.logoutTime != null ? moment(employee.logout.logoutTime, 'HH:mm:ss').format('HH:mm'): 'Cancelled'}
+                                        Check-Out: {employee.logout && employee.logout.logoutTime != null ? moment(employee.logout.logoutTime, 'HH:mm:ss').format('HH:mm'): 'Cancelled'}
                                             
                                     </Text>
                                     <Text style={[styles.cardText, styles.textPadTop]}>
-                                        {employee.logout.status == 'BOOKED' ? 'Vehicle No: ' + employee.logout.vehicleNo : employee.logout.status == 'CANCEL' ? '' : 'Vehicle Not Assigned'}
+                                        {employee.logout && employee.logout.status == 'BOOKED' ? 'Vehicle No: ' + employee.logout.vehicleNo : employee.logout && employee.logout.status == 'CANCEL' ? '' : 'Vehicle Not Assigned'}
                                     </Text>
                                 </View>
                             </View>

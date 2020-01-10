@@ -27,7 +27,7 @@ class EmpHome extends Component {
 			showAlertError: false,
 			showAlertLoader: false,
 			errorText: '',
-			alertTitle: 'Oops!',
+			alertTitle: 'ERROR!',
 			showConfirm: false,
 			showCancel: true,
 			confirmAction: 'confirm',
@@ -121,7 +121,10 @@ class EmpHome extends Component {
 	showAlert = (type) => {
 		if (type == 'error') {
 			this.setState({
-				showAlertError: true
+				showAlertError: true,
+				showConfirm: false,
+				errorText: this.state.errorText,
+				alertTitle: 'ERROR!'
 			});
 		} else if(type == 'confirm') {
 			this.setState({

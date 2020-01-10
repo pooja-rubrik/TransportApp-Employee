@@ -64,8 +64,9 @@ class ObservableUsersStore {
                 console.log(this.users.oktaDetail, loginName);
                 this.isLoading = true;
                 let regParam = ( loginName == "EMPLOYEE" ) ? 
-                    { empID: this.users.oktaDetail.empid, empHomeAddress:regData.homeAddress, empName: this.users.oktaDetail.name, empPhoneNumber: regData.contact, empEmail:this.users.oktaDetail.preferred_username, empType: 'EMPLOYEE'  }
+                    { empID: this.users.oktaDetail.empid, ...regData, empName: this.users.oktaDetail.name, empEmail: this.users.oktaDetail.preferred_username, empType: 'EMPLOYEE'  }
                     : regData
+                    console.log('regData>>', regParam)
                 data = await UsersService.registerUser( regParam, this.users.oktaDetail.accessToken )
                 runInAction( () => {
                     this.isLoading = false;
@@ -88,7 +89,8 @@ class ObservableUsersStore {
         try {
             if(this.users.oktaDetail){
                 this.isLoading = true; 
-                data = await UsersService.loginUser(this.users.oktaDetail.empid, this.users.oktaDetail.accessToken)
+                empId = this.users.oktaDetail.empid && this.users.oktaDetail.empid !== null && this.users.oktaDetail.empid !== '' ? this.users.oktaDetail.empid : '100000' 
+                data = await UsersService.loginUser(empId, this.users.oktaDetail.accessToken)
                 // data = await UsersService.loginUser(10225, loginName, this.users.oktaDetail.accessToken)
                 runInAction(() => {
                     this.isLoading = false;

@@ -39,13 +39,13 @@ export default {
     SUB_LINE: 'Enter Subject',
     UPDATE: 'Update',
     CANCELSTATUS: 'CANCELLED',
-    SIGNUP_ADMIN: 'CREATE',
+    SIGNUP_ADMIN: 'Add Admin',
     DEL_ROSTER: 'DELETE ROSTER',
     UPDATE_ROSTER: 'UPDATE ROSTER',
     SET_DEFAULT: 'SET AS DEFAULT',
     PHONE_NUM: 'Phone Number',
     EMERGENCY_CONTACT: 'Emergency Contact',
     HOME_ADDR: 'Home Address',
-    SEND_OTP: 'Send OTP',
-    RESEND_OTP: 'Resend OTP'
+    SEND_OTP: 'OTP',
+    RESEND_OTP: 'OTP'
 }

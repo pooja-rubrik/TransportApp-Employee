@@ -58,8 +58,15 @@ class AdminService {
         return res.body;
     }
 
-    addPickTime = async (pickTime, empid) => { //get all available driver for employee
-        apiURL = `${api.daily_login}/${empid}/${pickTime}`;
+    addPickTime = async (pickTime, empid, pickDate) => { //get all available driver for employee
+        console.log(pickDate, this.currentDate);
+        if(pickDate!=this.currentDate){
+            //next day api
+            apiURL = `${api.daily_login}/${empid}/${pickTime}`;
+        } else {
+            apiURL = `${api.daily_login}/${empid}/${pickTime}`;
+        }
+        
         const res = await ApiService.apiCall(apiURL, 'POST');
         ApiService.handleCommonError(res);
         return res.body;
