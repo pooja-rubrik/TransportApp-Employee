@@ -125,7 +125,8 @@ class CabStatus extends React.PureComponent {
                             futureDate = {1}
                             style = {styles.dateStyle}
                             iconStyle = {{left:5, height: 30, width: 30}}
-
+                            placeholderTextStyle = {{color: Color.CARD_TXT_COLOR}}
+                            dateTextStyle = {{color: Color.CARD_TXT_COLOR}}
                         />
                         <DateTime 
                             date = {selectTime} 
@@ -138,6 +139,8 @@ class CabStatus extends React.PureComponent {
                             minDate = {loginMinTime}
                             maxDate = {loginMaxTime}
                             minuteInterval={loginMin}
+                            placeholderTextStyle = {{color: Color.CARD_TXT_COLOR}}
+                            dateTextStyle = {{color: Color.CARD_TXT_COLOR}}
                         />
                         <View style={(platform == "ios") ? styles.iconOuterIOS: styles.iconOuter}>
                             
@@ -178,14 +181,15 @@ const styles = StyleSheet.create({
     },
     dateinputStyle: {
         marginLeft:0, 
-        backgroundColor: '#fff', 
+        backgroundColor: Color.TAB_BG_COLOR,
         paddingRight:20, 
         borderWidth: 0, 
         borderBottomLeftRadius: 10, 
+        
 	},
 	timeinputStyle: {
 		marginLeft:0, 
-        backgroundColor: '#fff', 
+        backgroundColor: Color.TAB_BG_COLOR,
 		paddingRight:0, 
 		paddingLeft: 10,
         borderWidth: 0, 
@@ -205,14 +209,14 @@ const styles = StyleSheet.create({
 		width: wp('5.5%')
 	},
 	iconOuter: {
-		backgroundColor: '#fff',
+		backgroundColor: Color.TAB_BG_COLOR,
 		width: wp('9%'),
 		padding:7,
         paddingTop:9,
         borderBottomRightRadius: 10
 	}, 
 	iconOuterIOS: {
-		backgroundColor: '#fff',
+		backgroundColor: Color.TAB_BG_COLOR,
 		height: hp('4.93%'),
 		width: wp('9%'),
 		padding:7,

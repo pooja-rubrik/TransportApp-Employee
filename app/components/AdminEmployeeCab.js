@@ -45,7 +45,10 @@ class AdminEmployee extends React.PureComponent {
             defaultSelect: 'Select Driver',
             driverName: ''
         }
-        console.log(this.props, toJS(this.adminStore))
+        // console.log(this.props, toJS(this.adminStore))
+    }
+    componentWillReceiveProps() {
+        this.setState({timePick: ''})
     }
 
     getAvailDriver = (tripDate = '', tripTime = '') => {
@@ -270,6 +273,7 @@ class AdminEmployee extends React.PureComponent {
                                             onPress={this.sendOTP}
                                             style={styles.buttonTrip}
                                             titleStyle={styles.titleStyle}
+                                            disabledTitleColor = {COLOR.BUTTON_FONT_COLOR_EMP}
                                         />
                                         
                                     </View>
@@ -281,7 +285,7 @@ class AdminEmployee extends React.PureComponent {
                                                 renderRow={({ vehicle, status }) => 
                                                 <View style={styles.driverOption}>
                                                     {/* <Text style={styles.dropTextVisible}>{value} ({vehicle})</Text> */}
-                                                    <Text style={styles.dropTextVisible}>{vehicle}</Text>
+                                                    <Text style={styles.dropTextVisibleHead}>{vehicle}</Text>
                                                     <Text style={styles.driverStatus}>{status}</Text>
                                                 </View>}
                                                 style={styles.driverDrop}
@@ -305,6 +309,8 @@ class AdminEmployee extends React.PureComponent {
                                             style={styles.buttonTrip}
                                             titleStyle={styles.titleStyle}
                                             disabled={assignDisable}
+                                            disabledTitleColor = {COLOR.BUTTON_FONT_COLOR_DISABLE}
+                                            disabledColor = {COLOR.BUTTON_BG_COLOR_DISABLE}
                                         />
                                        
                                         <RaisedTextButton
@@ -313,7 +319,7 @@ class AdminEmployee extends React.PureComponent {
                                             titleColor={COLOR.BUTTON_FONT_COLOR_EMP}
                                             onPress={this.sendOTP}
                                             style={styles.buttonTrip}
-                                            titleStyle={styles.titleStyle}
+                                            titleStyle={styles.titleStyleOTP}
                                         />
                                     </View>
                                     :
@@ -335,7 +341,7 @@ class AdminEmployee extends React.PureComponent {
 const styles = StyleSheet.create({
     cardView: {
         // backgroundColor: '#94EBC5',
-        backgroundColor: '#fff',
+        backgroundColor: COLOR.CARD_BG_COLOR,
         width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',
@@ -355,7 +361,7 @@ const styles = StyleSheet.create({
 	},
     cardViewChange: {
         // backgroundColor: '#94EBC5',
-        backgroundColor: '#fff',
+        backgroundColor: COLOR.CARD_BG_COLOR,
         width: wp('97%'),
         // height: hp('15%'),
         alignSelf: 'center',
@@ -407,10 +413,12 @@ const styles = StyleSheet.create({
     cardTextAddr: {
         borderBottomWidth: .5,
         borderBottomColor: '#9A9C9B',
-
+        paddingBottom: 5,
+        paddingTop: 5
     },
     cardText: {
-        color: '#406353'
+        // color: '#406353'
+        color: COLOR.CARD_TXT_COLOR
     },
     leftSec: {
         flexDirection: 'column',
@@ -432,7 +440,10 @@ const styles = StyleSheet.create({
     },
     titleStyle: {
         fontSize: 12,
-        // textTransform: 'capitalize'
+        textTransform: 'capitalize'
+    },
+    titleStyleOTP: {
+        fontSize: 12,
     },
     buttonTrip: {
         borderRadius: 20,
@@ -449,10 +460,10 @@ const styles = StyleSheet.create({
     timeinputStyle: {
 		marginLeft:0, 
         backgroundColor: '#fff', 
-		paddingRight:0, 
+		paddingRight:40, 
 		// paddingLeft: 10,
         borderWidth: 0, 
-        height: 22,
+        height: 20,
         borderRadius: 10,
         borderColor: '#333',
         borderWidth: .2
@@ -460,7 +471,8 @@ const styles = StyleSheet.create({
     timeStyle:{ 
         'width': wp('43%'), 
         marginBottom:0,
-        height: 35,
+        height: 25,
+        marginTop: -5
     },
     dropdownStyle: {
         width: wp('38%'),
@@ -473,7 +485,9 @@ const styles = StyleSheet.create({
     },
     
     dropTextVisible:{
-        color: '#406353',
+        // color: '#406353',
+        color: COLOR.CARD_TXT_COLOR,
+        fontSize: 13
     },
     
     driverDrop:{
@@ -491,9 +505,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     dropImg: {
-        color: '#406353',
+        color: COLOR.CARD_TXT_COLOR,
         fontSize: 13,
         paddingTop: 5
+    },
+    dropTextVisibleHead: {
+        color:COLOR.DROP_TXT_COLOR,
+        fontWeight: '700'
     }
 })
 

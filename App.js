@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import { createAppContainer } from 'react-navigation';
 import {
-  StatusBar, Alert
+  StatusBar, Alert, Text
 } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 // import Geocoder from 'react-native-geocoding';
@@ -15,6 +15,12 @@ const rootStore = new RootStore();
 // const AppContainer = createAppContainer(RootNavigator);
 
 class App extends Component {
+
+  constructor (props) {
+    super(props)
+    Text.defaultProps = Text.defaultProps || {}
+    Text.defaultProps.style =  { fontFamily: 'Helvetica' }
+  }
 
 	async componentDidMount() {
 		console.log('component mounted>>>>API', rootStore.mapStore.mapData.currentAPIKey );

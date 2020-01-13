@@ -29,7 +29,7 @@ class Login extends Component {
 		this.utilities  = this.usersStore.utilities;
 		this.loginName = 'EMPLOYEE';
 		this.state = {
-			empID: this.usersStore.users.empDetail.empID,
+			empID: '',
 			showAlertError: false,
 			showAlertLoader: false,
 			hasLoggedInOnce: false,
@@ -40,10 +40,10 @@ class Login extends Component {
 			alertTitle: 'ERROR!',
 			showConfirm: false,
 			showCancel: true,
-			loginMinTime: this.utilities.loginTime.split('-')[0],
-			loginMaxTime: this.utilities.loginTime.split('-')[1],
-			logoutMinTime: this.utilities.logoutTime.split('-')[0],
-			logoutMaxTime: this.utilities.logoutTime.split('-')[1],
+			loginMinTime: 0,
+			loginMaxTime: 0,
+			logoutMinTime: 0,
+			logoutMaxTime: 0,
 		};
 	}
 
@@ -101,6 +101,13 @@ class Login extends Component {
 				})
 				
 
+			})
+			this.setState({
+				empID: this.usersStore.users.empDetail.empID,
+				loginMinTime: this.utilities.loginTime.split('-')[0],
+				loginMaxTime: this.utilities.loginTime.split('-')[1],
+				logoutMinTime: this.utilities.logoutTime.split('-')[0],
+				logoutMaxTime: this.utilities.logoutTime.split('-')[1]
 			})
 
 		});
@@ -334,7 +341,8 @@ const styles = StyleSheet.create({
 		marginTop: 10
 	},
 	titleStyle:{
-		fontSize: 18
+		fontSize: 18,
+		textTransform: 'capitalize'
 	}
 
 

@@ -62,7 +62,7 @@ class AdminService {
         console.log(pickDate, this.currentDate);
         if(pickDate!=this.currentDate){
             //next day api
-            apiURL = `${api.daily_login}/${empid}/${pickTime}`;
+            apiURL = `${api.next_day_login}/${empid}/${pickTime}`;
         } else {
             apiURL = `${api.daily_login}/${empid}/${pickTime}`;
         }

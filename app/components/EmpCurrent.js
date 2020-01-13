@@ -1,7 +1,7 @@
 import React from "react";
 import {
 	Text, StyleSheet,
-	View, TouchableOpacity
+	View, TouchableOpacity, ColorPropType
 } from "react-native";
 import { observer, inject } from "mobx-react";
 import { toJS } from 'mobx';
@@ -26,7 +26,7 @@ class EmpCurrent extends React.PureComponent {
             loginMin: 30,
             formatTime: 'HH:mm',
         }
-        
+        this.currentDate = moment().format('YYYY-MM-DD');
         console.log(this.empStore.empData.dailyLogin);
     }
 
@@ -81,7 +81,7 @@ class EmpCurrent extends React.PureComponent {
                 >
                     <View style={styles.cardHead}>
                         <Text style={styles.headText}>
-                            Current Date
+                            Today's Trip
                         </Text>
                     </View>
                     <View>
@@ -139,7 +139,7 @@ class EmpCurrent extends React.PureComponent {
 const styles = StyleSheet.create({
     cardView:{
         // backgroundColor: '#C4DCC8',
-        backgroundColor: '#fff',
+        backgroundColor: COLOR.CARD_BG_COLOR,
         width: wp('97%'),
         // height: hp('12%'),
         alignSelf: 'center',
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
     },
     cardLeftView: {
-        backgroundColor: '#fff',
+        backgroundColor: COLOR.CARD_BG_COLOR,
         width: wp('48%'),
         borderRadius: 10,
         marginTop: 3,
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     leftText: {
-        color: '#455147',
+        color: COLOR.CARD_TXT_COLOR,
         fontSize: 13.5,
         paddingTop: 3,
         paddingLeft: 3
@@ -212,7 +212,8 @@ const styles = StyleSheet.create({
     },
     accountMsg: {
         marginLeft: 10,
-        marginTop: 8
+        marginTop: 8,
+        color: COLOR.HEADER_TXT_COLOR
     }
 
 })

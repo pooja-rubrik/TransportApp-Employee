@@ -235,6 +235,12 @@ class EmpHomeData extends React.PureComponent {
                                 </MapView.Callout>
                         </MapView.Marker>
                     </MapView>
+					{/* OTP  */}
+					{/* <View style={styles.otpView}>
+						<Text style = {styles.otpText}>
+							121212
+						</Text>
+					</View> */}
                 </View>
                 <View style={styles.contentSection}>
 					<View style = {styles.checkInContainer}>
@@ -345,9 +351,26 @@ const styles = StyleSheet.create({
 	},
 	checkInContainer: {
 		height: hp('6%'), 
-		backgroundColor: '#fff', 
+		backgroundColor: Color.TAB_BG_COLOR, 
 		borderBottomLeftRadius: 10, 
 		borderBottomRightRadius: 10
+	},
+	otpView: {
+		top:10,
+		right: 10,
+		position: 'absolute',
+		backgroundColor: Color.HEADER_BG_COLOR, 
+		height: 40, 
+		width: 80, 
+		borderColor: '#333', 
+		borderRadius: 8, 
+		alignItems: 'center', 
+		paddingTop: 8
+	},
+	otpText: {
+		fontSize: 20, 
+		color: '#fff', 
+		fontWeight:'bold'
 	}
 })
 export default inject("rootStore")(observer(EmpHomeData));

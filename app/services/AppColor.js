@@ -1,6 +1,6 @@
 export default {
     // HEADER_BG_COLOR: 'rgb(2, 33, 37)',
-    HEADER_BG_COLOR: '#175454',
+    HEADER_BG_COLOR: '#9A9D9F',
     HEADER_FONT_COLOR: '#fff',
     BUTTON_COLOR: '#1D7263',
     BUTTON_FONT_COLOR: 'rgb(250,253,252)',
@@ -15,6 +15,14 @@ export default {
     BUTTON_FONT_COLOR_EMP: '#fff',
     MODAL_BG: '#DFF0E2',
     MODAL_BTN: '#1E7667',
-    ACTIVE_TXT_COLOR: '#1D4E55',
-    HEADER_TXT_COLOR: '#175356'
+    ACTIVE_TXT_COLOR: '#00bacc',
+    INACTIVE_TXT_COLOR: '#fff',
+    HEADER_TXT_COLOR: '#fff',
+    CARD_BG_COLOR: '#022125',
+    TAB_BG_COLOR: '#022125',
+    CARD_TXT_COLOR: '#fff',
+    BUTTON_FONT_COLOR_DISABLE: '#E2F1E4',
+    BUTTON_BG_COLOR_DISABLE: '#9A9D9F',
+    TAB_SEPARATOR: '#9A9D9F',
+    DROP_TXT_COLOR: '#333'
 }

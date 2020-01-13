@@ -61,7 +61,7 @@ export default class AdminEmpList extends React.PureComponent {
 
 const styles = StyleSheet.create({
     cardView: {
-        backgroundColor: '#fff',
+        backgroundColor: Color.CARD_BG_COLOR,
         width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',

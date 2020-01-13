@@ -93,7 +93,7 @@ export default class AdminEmpListCab extends React.PureComponent {
 
 const styles = StyleSheet.create({
     cardView: {
-        backgroundColor: '#fff',
+        backgroundColor: Color.CARD_BG_COLOR,
         width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     headText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#375346',
+        color: Color.HEADER_TXT_COLOR,
         paddingTop: 6,
         paddingBottom: 6
     },

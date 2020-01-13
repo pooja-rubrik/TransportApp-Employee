@@ -189,7 +189,7 @@ class EmpRoster extends React.PureComponent {
 }
 const styles = StyleSheet.create({
     cardView:{
-        backgroundColor: '#fff',
+        backgroundColor: COLOR.CARD_BG_COLOR,
         width: wp('97%'),
         // height: hp('14%'),
         alignSelf: 'center',

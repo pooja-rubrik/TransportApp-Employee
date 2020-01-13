@@ -88,7 +88,7 @@ export default class ProfileModal extends React.PureComponent {
 	    return (
             <Overlay visible={this.props.profileModalVisible} onClose={this.closeModalFunc} 
                 animationType="zoomIn" containerStyle={{backgroundColor: 'rgba(37, 8, 10, 0.4)'}}
-                childrenWrapperStyle={{backgroundColor: '#eee'}}
+                childrenWrapperStyle={{backgroundColor: COLOR.HEADER_BG_COLOR, borderRadius: 15}}
                 animationDuration={500} closeOnTouchOutside>
                {/* <View> */}
                     <View style={styles.modalView} >
@@ -155,12 +155,12 @@ export default class ProfileModal extends React.PureComponent {
 
 const styles = StyleSheet.create({
     modalView: {
-		backgroundColor: COLOR.MODAL_BG,
+		backgroundColor: COLOR.HEADER_BG_COLOR,
 		// padding: 20,
 		borderRadius: 5,
         // height: hp('40%'),
-        // marginTop: -20,
-        // marginBottom: -20
+        marginTop: -10,
+        marginBottom: -10,
         alignSelf: 'center'
 	},
 	closeText: {

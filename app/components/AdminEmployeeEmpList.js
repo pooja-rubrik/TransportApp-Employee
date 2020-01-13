@@ -122,7 +122,7 @@ class AdminEmployeeEmpList extends React.PureComponent {
 }
 const styles = StyleSheet.create({
     cardView: {
-        backgroundColor: '#fff',
+        backgroundColor: Color.CARD_BG_COLOR,
         width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     cardViewChange: {
-        backgroundColor: '#fff',
+        backgroundColor: Color.CARD_BG_COLOR,
         width: wp('97%'),
         // height: hp('15%'),
         alignSelf: 'center',
@@ -161,13 +161,13 @@ const styles = StyleSheet.create({
     headTextIOS: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#375346',
+        color: Color.HEADER_TXT_COLOR,
         paddingTop: 10,
     },
     headText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#375346',
+        color: Color.HEADER_TXT_COLOR,
         paddingTop: 6,
         paddingBottom: 6
     },

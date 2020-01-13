@@ -289,7 +289,8 @@ const styles = StyleSheet.create({
         fontSize: platform == 'ios'?18: 14
     },
 	titleStyle:{
-		fontSize: 18
+        fontSize: 18,
+        textTransform: 'capitalize'
 	}
 
 })

@@ -47,7 +47,7 @@ export default class AdminSubSections extends React.PureComponent {
             <View style = {{backgroundColor: Color.HEADER_BG_COLOR, }}>
                 {
                     userType == 'SERVICE' ?
-                    <View style={{flexDirection: 'row'} }>
+                    <View style={styles.adminTabService }>
                         <TouchableOpacity onPress= {() => this.adminSubSwitch('cab-status')}>
                             <View style={ adminSubTab == 'cab-status' ? [currentTab == 'cab-status' || currentTab == 'emp-list' ? styles.singleTab : styles.singleTabChangeFirst, styles.activeTab, styles.adminOnlyFirst]: [currentTab == 'cab-status' || currentTab == 'emp-list' ? styles.singleTab : styles.singleTabChangeFirst, styles.inActiveTab, styles.adminOnlyFirst]}>
                                 <Image style={styles.subTabImg} source={cabStatusIcon} />
@@ -113,12 +113,19 @@ export default class AdminSubSections extends React.PureComponent {
 const styles = StyleSheet.create({
     adminTab:{
         flexDirection: 'row',
-        borderTopWidth: .5,
-        borderTopColor: '#333',
-        borderBottomWidth: .5,
-        borderBottomColor: '#333',
+        borderTopWidth: 1,
+        borderTopColor:Color.TAB_SEPARATOR,
+        borderBottomWidth: 1,
+        borderBottomColor:Color.TAB_SEPARATOR,
         paddingTop:0.5,
         paddingBottom:.5,
+    },
+    adminTabService: {
+        flexDirection: 'row',
+        // borderTopWidth: .5,
+        // borderTopColor: '#333',
+        borderBottomWidth: 1,
+        borderBottomColor:Color.TAB_SEPARATOR,
     },
     adminOnlyFirst: {
         borderTopLeftRadius: 10
@@ -149,10 +156,10 @@ const styles = StyleSheet.create({
         paddingBottom: 5
     },
     activeTab: {
-        backgroundColor: '#AAADAF'
+        backgroundColor: '#005781'
     },
     inActiveTab: {
-        backgroundColor: '#fff'
+        backgroundColor: Color.TAB_BG_COLOR
     },
     subTabImg: {
         height: wp('21.3%'),

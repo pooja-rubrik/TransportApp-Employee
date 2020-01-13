@@ -8,7 +8,8 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import moment from 'moment';
 import { observer, inject } from "mobx-react";
 import { toJS } from 'mobx';
-import deleteDriverIcon from '../assets/icons/removeuser.png'
+import deleteDriverIcon from '../assets/icons/removeuser.png';
+import Color from '../services/AppColor'
 
 const platform = Platform.OS;
 class AdminAdmin extends React.PureComponent {
@@ -109,7 +110,7 @@ class AdminAdmin extends React.PureComponent {
 }
 const styles = StyleSheet.create({
     cardView: {
-        backgroundColor: '#fff',
+        backgroundColor: Color.CARD_BG_COLOR,
         width: wp('97%'),
         height: hp('5%'),
         alignSelf: 'center',
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     cardViewChange: {
-        backgroundColor: '#fff',
+        backgroundColor: Color.CARD_BG_COLOR,
         width: wp('97%'),
         // height: hp('15%'),
         alignSelf: 'center',
@@ -131,30 +132,30 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     statusIcon: {
-        height: 30,
-        width: 30,
+        height: 20,
+        width: 20,
         right: 0,
     },
     iconView: {
         right: 10,
-        paddingTop: 3,
+        paddingTop: 7,
 
     },
     iconViewIOS: {
         right: 10,
-        paddingTop: 3,
+        paddingTop: 7,
 
     },
     headTextIOS: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#375346',
+        color: Color.HEADER_TXT_COLOR,
         paddingTop: 10,
     },
     headText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#375346',
+        color: Color.HEADER_TXT_COLOR,
         paddingTop: 6,
         paddingBottom: 6
     },
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
 
     },
     cardText: {
-        color: '#406353',
+        color: Color.CARD_TXT_COLOR,
     },
     leftSec: {
         flexDirection: 'column',

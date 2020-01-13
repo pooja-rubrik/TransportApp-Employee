@@ -196,7 +196,7 @@ class ObservableUsersStore {
         this.users.filterEmployees = [];
         empIDs.forEach(empid => {
             let employee = this.users.allemps.filter(emp => { return (emp.empID == empid.empid) });
-            console.log(employee)
+            // console.log(employee)
             if(employee.length !== 0) {
                 employee[0].status = empid.status;
                 employee[0].tripTime = empid.loginTime ? empid.loginTime : empid.logoutTime;

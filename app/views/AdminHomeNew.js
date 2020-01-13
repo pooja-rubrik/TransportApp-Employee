@@ -48,17 +48,17 @@ class AdminHomeNew extends Component {
 
     static navigationOptions = ({ navigation }) => {
 		const { params = {} } = navigation.state;
-		
+		console.log('userType>>>>>', navigation, params.userType )
         return {
             headerRight: (
                 <HeaderMenu>
 					{
-						this.userType != 'SERVICE' ?
+						params.userType != 'SERVICE' ?
 						<Item title="Opt Out of Employee Role" show="never" onPress={() => params.optOut('optoutEmp')} />
 						: null
 					}
                     {
-						this.userType != 'SERVICE' ?
+						params.userType != 'SERVICE' ?
 						<Item title="Opt Out of Admin Role" show="never" onPress={() => params.optOut('optoutAdmin')} />
 						: null
 					}
@@ -77,7 +77,8 @@ class AdminHomeNew extends Component {
 		this.props.navigation.setParams({ title: 'Cab Status' })
 		this.props.navigation.setParams({
 			logout: this.logoutProfile,
-            optOut: this.optOutEmp,
+			optOut: this.optOutEmp,
+			userType: this.usersStore.users.empDetail.userType
 		});
 		//okta config and callbacks
 		createConfig({
@@ -331,7 +332,7 @@ class AdminHomeNew extends Component {
 				
 				{
 					adminTabVisible?
-					<View style={styles.childContainer}>
+					<View style={this.userType != 'SERVICE' ? styles.childContainer : styles.childContainerService}>
 						{
 							this.userType != 'SERVICE' ?
 							<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
@@ -424,26 +425,37 @@ const styles = StyleSheet.create({
 	},
 	childContainer: { 
 		// flex: 2,
-		backgroundColor: '#fff', 
+		backgroundColor: Color.TAB_BG_COLOR, 
 		width: wp('97%'),
 		alignSelf: 'center',
 		borderTopLeftRadius: 10,
 		borderTopRightRadius: 10,
-        borderTopColor: '#fff',
+        borderTopColor: Color.TAB_BG_COLOR,
 		borderTopWidth: 1,
 		marginTop: 10,
 		marginBottom: hp('36%')
 	},
 	childContainerEmployee: {
 		flex: 1,
-		backgroundColor: '#fff', 
+		backgroundColor: Color.TAB_BG_COLOR, 
 		width: wp('97%'),
 		alignSelf: 'center',
 		borderTopLeftRadius: 10,
 		borderTopRightRadius: 10,
-        borderTopColor: '#fff',
+        borderTopColor: Color.TAB_BG_COLOR,
 		borderTopWidth: 1,
 		marginTop: 10
+	},
+	childContainerService: {
+		backgroundColor: Color.TAB_BG_COLOR, 
+		width: wp('97%'),
+		alignSelf: 'center',
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+        borderTopColor: Color.TAB_BG_COLOR,
+		borderTopWidth: 1,
+		marginTop: 10,
+		marginBottom: hp('25%')
 	},
 	fab: {
       position: 'absolute',
