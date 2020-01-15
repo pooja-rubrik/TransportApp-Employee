@@ -246,7 +246,7 @@ class AdminEmployee extends React.PureComponent {
                                                 renderRow={({ vehicle, status }) => 
                                                 <View style={styles.driverOption}>
                                                     {/* <Text style={styles.dropTextVisible}>{value} ({vehicle})</Text> */}
-                                                    <Text style={styles.dropTextVisible}>{vehicle}</Text>
+                                                    <Text style={styles.dropTextVisibleHead}>{vehicle}</Text>
                                                     <Text style={styles.driverStatus}>{status}</Text>
                                                 </View>}
                                                 style={styles.driverDrop}
@@ -272,7 +272,7 @@ class AdminEmployee extends React.PureComponent {
                                             titleColor={COLOR.BUTTON_FONT_COLOR_EMP}
                                             onPress={this.sendOTP}
                                             style={styles.buttonTrip}
-                                            titleStyle={styles.titleStyle}
+                                            titleStyle={styles.titleStyleOTP}
                                             disabledTitleColor = {COLOR.BUTTON_FONT_COLOR_EMP}
                                         />
                                         
