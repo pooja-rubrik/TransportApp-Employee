@@ -14,5 +14,11 @@ export default {
     REDIRECT_URL: 'com.rubrik.oktapreview:/login',
     ENDSESSION_URL: 'com.rubrik.oktapreview:/logout',
     DISCOVERY_URL: 'https://rubrik.oktapreview.com',
-    SCOPE: ["openid", "profile", "offline_access"]
+    SCOPE: ["openid", "profile", "offline_access"],
+    AUTH: {
+        client_id: 'QDngfamKdYW2iiAme7utetpFe9IzEL2n',
+        client_secret: 'ddMcKQTdwKYz7KH1hMuXzWAXbBQBhvtQ',
+        grant_type: 'client_credentials',
+        scope: 'phone'
+    }
 };

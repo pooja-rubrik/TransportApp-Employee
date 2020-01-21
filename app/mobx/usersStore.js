@@ -100,6 +100,7 @@ class ObservableUsersStore {
                     console.log('login>>', data)
                     StorageService.storeData('okta_data', toJS(this.users.oktaDetail));
                     StorageService.storeData('emp_data', toJS(this.users.empDetail));
+                    
                 })
             }
         } catch (e) {
@@ -195,7 +196,7 @@ class ObservableUsersStore {
     @action async filterEmployeeForAssign(empIDs) {
         this.users.filterEmployees = [];
         empIDs.forEach(empid => {
-            let employee = this.users.allemps.filter(emp => { return (emp.empID == empid.empid) });
+            let employee = this.users.allemps ? this.users.allemps.filter(emp => { return (emp.empID == empid.empid) }) : [];
             // console.log(employee)
             if(employee.length !== 0) {
                 employee[0].status = empid.status;

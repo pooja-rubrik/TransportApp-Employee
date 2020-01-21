@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
     },
     driverOption: {
         borderBottomWidth: .4,
-        height: hp('6%'),
+        height: hp('7%'),
         paddingTop: 6,
         width: wp('35%')
     },

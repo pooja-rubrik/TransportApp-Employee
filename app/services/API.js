@@ -30,7 +30,8 @@ const api = {
     driver_emp_list: '/driver/trip/vehicle',
     driver_trip_list: '/driver/trip/list',
     driver_trip: '/driver/trip',
-    employee_delete: '/employee/details'
+    employee_delete: '/employee/details',
+    token_generate_url: 'https://apitest1.rubrik.com/v1/oauth2/token'
 }
 
 export default api;

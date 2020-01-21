@@ -72,29 +72,35 @@ class Login extends Component {
 					// data.userType = this.loginName;
 					this.usersStore.addOktaDetail(data).then( () => {
 						this.usersStore.getEmployee().then( () => {
-							if(this.usersStore.users.empDetail.status == 404) {
-								this.setState({signupModalVisible: true})
-							} else {
-								if(this.usersStore.users.empDetail.userType == 'EMPLOYEE') {
-									this.loginName = 'EMPLOYEE'
-									data.userType = this.loginName;
-									console.log('data for okta>>', data)
-									this.usersStore.addOktaDetail(data);
-									this.navigateHome();
+							this.usersStore.getAllEmployee();
+                        	this.usersStore.getUtility().then(() => {
+								console.log('userid>>>', this.usersStore.users.oktaDetail.empid)
+								this.setState({
+									empID: this.usersStore.users.oktaDetail.empid,
+									loginMinTime: this.usersStore.utilities.loginTime.split('-')[0],
+									loginMaxTime: this.usersStore.utilities.loginTime.split('-')[1],
+									logoutMinTime: this.usersStore.utilities.logoutTime.split('-')[0],
+									logoutMaxTime: this.usersStore.utilities.logoutTime.split('-')[1]
+								})
+								if(this.usersStore.users.empDetail.status == 404) {
+									this.setState({signupModalVisible: true})
 								} else {
-									this.loginName = 'ADMIN'
-									// this.usersStore.getAdmin().then( () => {
+									if(this.usersStore.users.empDetail.userType == 'EMPLOYEE') {
+										this.loginName = 'EMPLOYEE'
 										data.userType = this.loginName;
 										console.log('data for okta>>', data)
 										this.usersStore.addOktaDetail(data);
-										// if(this.usersStore.users.empDetail.status == 404) {
-										// 	this.setState({adminModalVisible: true})
-										// } else {
-											this.navigateAdmin();
-										// }
-									// })
+										this.navigateHome();
+									} else {
+										this.loginName = 'ADMIN'
+										data.userType = this.loginName;
+										console.log('data for okta>>', data)
+										this.usersStore.addOktaDetail(data);
+										this.navigateAdmin();
+									}
 								}
-							}
+							});
+							
 						
 						});
 					});
@@ -102,13 +108,7 @@ class Login extends Component {
 				
 
 			})
-			this.setState({
-				empID: this.usersStore.users.empDetail.empID,
-				loginMinTime: this.utilities.loginTime.split('-')[0],
-				loginMaxTime: this.utilities.loginTime.split('-')[1],
-				logoutMinTime: this.utilities.logoutTime.split('-')[0],
-				logoutMaxTime: this.utilities.logoutTime.split('-')[1]
-			})
+			
 
 		});
 
@@ -182,6 +182,7 @@ class Login extends Component {
 			this.usersStore.registerUser(this.loginName, data.employee).then(()=>{
 				if(this.loginName == 'EMPLOYEE'){
 					if(this.usersStore.users.empDetail.code == 200 || this.usersStore.users.empDetail.code == 201){
+						console.log('userid 2nd check>>>', this.usersStore.users.oktaDetail.empid, this.state.empID)
 						this.empStore.setDefaultTime( this.state.empID, moment(data.checkIn, 'HH:mm').format('HH:mm:ss'), true ).then( () => {
 							console.log('default time checkin>>', toJS(this.empStore.empData.defaultTime))
 							if( this.empStore.empData.defaultTime.code == 200 || this.empStore.empData.defaultTime.code == 201 ) {
