@@ -41,7 +41,7 @@ export default class AdminSubSections extends React.PureComponent {
     }
 
     render() {
-        let {adminSubTab, userType} = this.props;
+        let {adminSubTab, userType, firstLaunch} = this.props;
         let {currentTab} = this.state;
         return (
             <View style = {{backgroundColor: Color.HEADER_BG_COLOR, }}>
@@ -99,7 +99,7 @@ export default class AdminSubSections extends React.PureComponent {
                 }
                 <ScrollView>
                 {
-                    currentTab == 'cab-status' ? <CabStatus confirmPickChange = {this.props.confirmPickChange} ref={child => {this.cabStatus = child}}/> :
+                    currentTab == 'cab-status' ? <CabStatus confirmPickChange = {this.props.confirmPickChange} ref={child => {this.cabStatus = child}} firstLaunch = {firstLaunch}/> :
                     currentTab == 'emp-list' ? <EmpList /> :
                     currentTab == 'driver-list' ? <DriverList addDriver = {this.addDriver} showAlert = {this.showAlert}/> : <AdminList showAlert = {this.showAlert}/>
                 }

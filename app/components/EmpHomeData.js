@@ -270,7 +270,7 @@ class EmpHomeData extends React.PureComponent {
 						<Portal>
 							<FAB.Group
 								open={this.state.open}
-								fabStyle = {{fontSize:30}}
+								fabStyle = {{fontSize:30, zIndex: 999}}
 								// icon='keyboard-arrow-up'
 								// icon='arrow-upward'
 								icon='more-horiz'
@@ -322,7 +322,8 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex:1,
 		// backgroundColor: '#E2F1E4',
-		backgroundColor: Color.HEADER_BG_COLOR
+		backgroundColor: Color.HEADER_BG_COLOR,
+		
 	},
 	mapContainer: {
 		width: wp('97%'),
@@ -341,7 +342,8 @@ const styles = StyleSheet.create({
     },
     contentSection: {
         // backgroundColor: '#E2F1E4',
-        flex:2
+		flex:2,
+		// zIndex: 99
 	},
 	floatPlus: {
 		// backgroundColor: 'red'

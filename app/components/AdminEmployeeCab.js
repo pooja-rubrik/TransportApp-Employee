@@ -17,7 +17,10 @@ import statusIconBook from '../assets/icons/cabbooked.png'
 import statusIconNotBook from '../assets/icons/cabnotbooked.png'
 import STRCONSTANT from '../services/StringConstants';
 import COLOR from '../services/AppColor';
+import  deviceInfo  from '../stylesheets/AppDimensions';
 
+const screenHgt = deviceInfo.DEVICE_HEIGHT;
+const hightVariation = deviceInfo.HEIGHT_VARIATION
 
 const platform = Platform.OS;
 class AdminEmployee extends React.PureComponent {
@@ -343,7 +346,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#94EBC5',
         backgroundColor: COLOR.CARD_BG_COLOR,
         width: wp('97%'),
-        height: hp('5%'),
+        height: screenHgt >= hightVariation ? hp('5%') : hp('6%'),
         alignSelf: 'center',
         marginTop: 5,
         borderRadius: 10

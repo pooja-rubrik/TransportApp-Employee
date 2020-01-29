@@ -2,15 +2,7 @@ import { createStackNavigator, createAppContainer, createSwitchNavigator } from 
 
 // import pages
 import Login from './views/Login';
-import Home from './views/Home';
-import Profile from './views/Profile';
-import AdminHome from './views/AdminHome';
 import AdminHomeNew from './views/AdminHomeNew';
-import UpdateRoster from './views/UpdateRoster';
-import AdminLoginLogout from './views/AdminLoginLogout';
-import AdminEmpList from './views/AdminEmpList';
-import AdminDriverList from './views/AdminDriverList';
-import AdminAssignDriver from './views/AdminAssignDriver';
 import AuthLoadingScreen from './views/AuthLoading';
 import DriverRegister from './views/DriverRegister';
 
@@ -21,11 +13,7 @@ import EmpHome from './views/EmpHome';
 
 const EmpAppStack = createStackNavigator(
   {
-    EmpHomeScreen: {screen: EmpHome},
-    HomeScreen: { screen: Home },
-    ProfileScreen: { screen: Profile },
-    UpdateRosterScreen: { screen: UpdateRoster },
-    
+    EmpHomeScreen: {screen: EmpHome},    
   },
   {
     defaultNavigationOptions: {
@@ -45,11 +33,6 @@ const EmpAppStack = createStackNavigator(
 const AdminAppStack = createStackNavigator(
   {
     AdminHomeNewScreen: { screen: AdminHomeNew },
-    AdminHomeScreen: { screen: AdminHome },
-    AdminLoginLogoutScreen: { screen: AdminLoginLogout },
-    AdminEmpListScreen: { screen: AdminEmpList },
-    AdminDriverListScreen: { screen: AdminDriverList },
-    AdminAssignDriverScreen: { screen: AdminAssignDriver },
     DriverRegisterScreen: { screen: DriverRegister },   
   },
   {
@@ -91,7 +74,6 @@ export default createAppContainer(createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
     EmpApp: EmpAppStack,
-    // DriverApp: DriverAppStack,
     AdminApp: AdminAppStack,
     Auth: AuthStack,
   },
@@ -99,5 +81,3 @@ export default createAppContainer(createSwitchNavigator(
     initialRouteName: "AuthLoading",
   }
 ));
-
-// export default RootNavigator;

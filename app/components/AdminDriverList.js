@@ -7,7 +7,11 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import CardView from 'react-native-cardview'
 import AdminDriver from './AdminDriver';
 import Color from '../services/AppColor'
+import  deviceInfo  from '../stylesheets/AppDimensions';
 
+// const platform = Platform.OS;
+const screenHgt = deviceInfo.DEVICE_HEIGHT;
+const hightVariation = deviceInfo.HEIGHT_VARIATION
 const platform = Platform.OS;
 
 export default class AdminDriverList extends React.PureComponent {
@@ -66,7 +70,7 @@ const styles = StyleSheet.create({
     cardView: {
         backgroundColor: Color.CARD_BG_COLOR,
         width: wp('97%'),
-        height: hp('5%'),
+        height: screenHgt >= hightVariation ? hp('5%') : hp('6%'),
         alignSelf: 'center',
         marginTop: 5,
         borderRadius: 10

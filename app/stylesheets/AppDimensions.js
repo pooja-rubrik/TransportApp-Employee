@@ -50,5 +50,6 @@ export default {
   BUTTON_WIDTH: deviceWidth * 0.82,
   BUTTON_FONT_SIZE: scaledSize(20),
   DEVICE_HEIGHT: deviceHeight,
-  DEVICE_WIDTH: deviceWidth
+  DEVICE_WIDTH: deviceWidth,
+  HEIGHT_VARIATION: 610,
 };

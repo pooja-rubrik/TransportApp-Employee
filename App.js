@@ -9,6 +9,8 @@ import SplashScreen from 'react-native-splash-screen';
 import RootStore, { Provider } from './app/mobx/store';
 import RootNavigator from './app/RootNavigator';
 import { firebase } from '@react-native-firebase/messaging';
+import StorageService from './app/services/StorageService';
+import ApiService from './app/services/ApiService';
 
 const rootStore = new RootStore();
 
@@ -22,12 +24,23 @@ class App extends Component {
     Text.defaultProps.style =  { fontFamily: 'Helvetica' }
   }
 
-	async componentDidMount() {
+	async componentWillMount() {
 		console.log('component mounted>>>>API', rootStore.mapStore.mapData.currentAPIKey );
     SplashScreen.hide();
       // Geocoder.init(rootStore.mapStore.mapData.currentAPIKey);
-      await rootStore.usersStore.getAllEmployee();
-      await rootStore.usersStore.getUtility();
+      await StorageService.retrieveData('oAuthHeader').then( data => {
+        if(data) {
+          console.log('usertoken22>>>>',JSON.parse(data),rootStore.usersStore.users.oktaDetail.accessToken);
+          (async () => {
+              // console.log('usertoken>>>>',data);
+              await ApiService.addHeader(JSON.parse(data), rootStore.usersStore.users.oktaDetail.accessToken)
+              await rootStore.usersStore.getAllEmployee();
+              await rootStore.usersStore.getUtility();
+            })();
+        }
+        
+      })
+      
       this.checkPermission();
       // this.messageListener();
   }
@@ -44,9 +57,9 @@ class App extends Component {
     const fcmToken = await firebase.messaging().getToken();
     if (fcmToken) {
       console.log('token fcm>>>>',fcmToken);
-      this.showAlert('Your Firebase Token is:', fcmToken);
+      // this.showAlert('Your Firebase Token is:', fcmToken);
     } else {
-      this.showAlert('Failed', 'No token received');
+      // this.showAlert('Failed', 'No token received');
     }
   }
   requestPermission = async () => {

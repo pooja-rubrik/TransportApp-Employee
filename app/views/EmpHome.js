@@ -51,7 +51,7 @@ class EmpHome extends Component {
 
     };
     
-	componentDidMount() {
+	async componentDidMount() {
 		console.log('utilities>>>', toJS(this.utilities));
 		this.props.navigation.setParams({
 			// handleMenu: this.navigateMenu,
@@ -59,14 +59,7 @@ class EmpHome extends Component {
             optOut: this.optOutEmp,
 		});
 		//okta config and callbacks
-		createConfig({
-			clientId: `${Constants.CLIENTID}`,
-			redirectUri: `${Constants.REDIRECT_URL}`,
-			endSessionRedirectUri: `${Constants.ENDSESSION_URL}`,
-			discoveryUri:`${Constants.DISCOVERY_URL}`,
-			scopes: Constants.SCOPE,
-			requireHardwareBackedKeyStore: true
-		});
+		
 		
 		this.signOutSuccess = EventEmitter.addListener('signOutSuccess', (e: Event) => {
 			console.log('sign out>>', e)
@@ -87,7 +80,15 @@ class EmpHome extends Component {
 			this.setState({ errorText: 'Failed to log in' + e.error_message})
             this.showAlert('error')
 		});
-
+		await createConfig({
+			clientId: `${Constants.CLIENTID}`,
+			redirectUri: `${Constants.REDIRECT_URL}`,
+			endSessionRedirectUri: `${Constants.ENDSESSION_URL}`,
+			discoveryUri:`${Constants.DISCOVERY_URL}`,
+			scopes: Constants.SCOPE,
+			requireHardwareBackedKeyStore: false
+		});
+		this.checkAuthentication();
 		// //get lat longs from string address
 		// this.setMapMarker();
 		
@@ -97,12 +98,18 @@ class EmpHome extends Component {
 		//set daily logout data
 		// this.setDailyLogout();
 	}
-
+	async checkAuthentication() {
+		const result = await isAuthenticated();
+		console.log('checking auth>>>>>',result);
+		// if (result.authenticated !== this.state.authenticated) {
+		// 	this.setState({authenticated: result.authenticated});
+		// }
+	}
 	// navigateMenu = (pageName) => {
 	// 	this.props.navigation.navigate(pageName);
 	// }
 
-	logoutProfile = () => {
+	logoutProfile = async () => {
 		signOut();
 	}
 	

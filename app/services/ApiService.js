@@ -83,6 +83,7 @@ class ApiService {
                 await StorageService.retrieveData('okta_data').then( data => {  
                     const userToken = data ? JSON.parse(data).accessToken : {};
                     const userType = data ? JSON.parse(data).userType : '';
+                    console.log(userToken, userType)
                     if( userToken && userType && Object.entries(userToken).length !== 0 ) {
                         (async () => {
                             await this.buildHeaders(userToken);
@@ -171,7 +172,7 @@ class ApiService {
         }
     }
 
-    addHeader = ( token, oktaToken ) => {
+    addHeader = async ( token, oktaToken ) => {
         console.log('add header>>', token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         axios.defaults.headers.common['oktaToken'] = oktaToken;

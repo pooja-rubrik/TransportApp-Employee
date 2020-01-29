@@ -13,6 +13,12 @@ import CheckInTab from '../components/CheckInTabs';
 import AdminEmpListCab from './AdminEmpListCab';
 import cancelTime from '../assets/icons/cancel.png';
 import Color from '../services/AppColor';
+import  deviceInfo  from '../stylesheets/AppDimensions';
+
+const screenHgt = deviceInfo.DEVICE_HEIGHT;
+const hightVariation = deviceInfo.HEIGHT_VARIATION
+
+let dataDelay;
 
 const platform = Platform.OS;
 
@@ -41,7 +47,16 @@ class CabStatus extends React.PureComponent {
     }
 
     componentDidMount() {
-		this.getAssignData('', this.state.assignType, '');
+        if(!this.props.firstLaunch) {
+            console.log('first timeout>>>>>>>')
+            dataDelay = setTimeout(() => { //waiting for all employee data to store in db
+                this.getAssignData('', this.state.assignType, '');
+            }, 1000)
+        } else {
+            console.log('not first>>>>');
+            this.getAssignData('', this.state.assignType, '');
+        }
+        
 	}
 
     tabSwitch = (tab) => {
@@ -105,6 +120,14 @@ class CabStatus extends React.PureComponent {
         console.log(pickChangeData)
         this.adminEmpCab.callPickService(pickChangeData)
     }
+
+    componentWillUnmount() {
+		if (dataDelay) {
+			clearTimeout(dataDelay);
+		}
+
+	}
+
     
     render() {
         let {checkInTabVisible, selectDate, datePlaceHolder, timePlaceHolder, format, selectTime, 
@@ -112,6 +135,7 @@ class CabStatus extends React.PureComponent {
         return (
             
                 <View style = {{flex:1}}>
+                    {/* <Text>{screenHgt}</Text> */}
                     <CheckInTab checkInTabVisible = {checkInTabVisible} tabSwitch = {this.tabSwitch}/>
                     <View style={styles.filterSection}>
                         <DateTime 
@@ -124,7 +148,7 @@ class CabStatus extends React.PureComponent {
                             inputStyle = {styles.dateinputStyle}
                             futureDate = {1}
                             style = {styles.dateStyle}
-                            iconStyle = {{left:5, height: 30, width: 30}}
+                            iconStyle = {styles.dateIconStyle}
                             placeholderTextStyle = {{color: Color.CARD_TXT_COLOR}}
                             dateTextStyle = {{color: Color.CARD_TXT_COLOR}}
                         />
@@ -134,7 +158,7 @@ class CabStatus extends React.PureComponent {
                             placeholder = {timePlaceHolder}
                             format = {formatTime}
                             inputStyle = {styles.timeinputStyle}
-                            iconStyle = {{left:5, height: 30, width: 30}}
+                            iconStyle = {styles.dateIconStyle}
                             style = {styles.timeStyle}
                             minDate = {loginMinTime}
                             maxDate = {loginMaxTime}
@@ -177,15 +201,14 @@ const styles = StyleSheet.create({
         
         backgroundColor: Color.HEADER_BG_COLOR,
         height: hp('5%'),
-       
     },
     dateinputStyle: {
         marginLeft:0, 
         backgroundColor: Color.TAB_BG_COLOR,
         paddingRight:20, 
         borderWidth: 0, 
-        borderBottomLeftRadius: 10, 
-        
+        borderBottomLeftRadius: screenHgt >= hightVariation ? 10: 22, 
+        paddingBottom: screenHgt >= hightVariation ? 0 : 10
 	},
 	timeinputStyle: {
 		marginLeft:0, 
@@ -193,12 +216,17 @@ const styles = StyleSheet.create({
 		paddingRight:0, 
 		paddingLeft: 10,
         borderWidth: 0, 
-        
-	},
+        paddingBottom: screenHgt >= hightVariation ? 0 : 10
+    },
+    dateIconStyle: {
+        left:5, 
+        height: screenHgt >= hightVariation ? 30 : 22,
+        width: screenHgt >= hightVariation ? 30 : 22,
+        bottom: screenHgt >= hightVariation ? 5 : 15
+    },
     dateStyle:{ 
 		flex:1,
         'width': wp('49%'), 
-
 	},
 	timeStyle:{ 
         'width': wp('40%'), 
@@ -212,7 +240,7 @@ const styles = StyleSheet.create({
 		backgroundColor: Color.TAB_BG_COLOR,
 		width: wp('9%'),
 		padding:7,
-        paddingTop:9,
+        paddingTop:screenHgt >= hightVariation ? 9 : 4,
         borderBottomRightRadius: 10
 	}, 
 	iconOuterIOS: {

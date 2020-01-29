@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         //paddingLeft: 6,
         paddingRight:6,
-        paddingBottom:10
+        paddingBottom:10,
+        zIndex: 99
     },
     cardHead: {
         paddingTop:5,

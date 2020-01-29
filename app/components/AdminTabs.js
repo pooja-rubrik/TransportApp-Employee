@@ -5,6 +5,10 @@ import {
 } from "react-native";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Color from '../services/AppColor'
+import  deviceInfo  from '../stylesheets/AppDimensions';
+
+const screenHgt = deviceInfo.DEVICE_HEIGHT;
+const hightVariation = deviceInfo.HEIGHT_VARIATION
 
 export default class AdminTab extends React.PureComponent {
 
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
     singleTab: {
         width: wp('48%'),
         alignItems: 'center',
-        paddingTop: 14,
+        paddingTop: screenHgt >= hightVariation ? 14 : 6,
         height: hp('5%'),
         // textDecorationLine: 'underline'
     },

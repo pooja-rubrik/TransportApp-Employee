@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
 	View, StyleSheet,
-	Image, TextInput, Alert
+	Image, TextInput, Alert, Platform
 } from "react-native";
 import { RaisedTextButton } from 'react-native-material-buttons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -20,6 +20,7 @@ import STRCONSTANT from '../services/StringConstants';
 import { deviceType } from '../stylesheets/AppDimensions';
 import EmpSignupModal from '../components/EmpSignupModal';
 import AdminSignupModal from '../components/AdminSignupModal';
+const platform = Platform.OS;
 
 class Login extends Component {
 	constructor(props) {
@@ -50,25 +51,21 @@ class Login extends Component {
 	
 
 
-	componentDidMount() {
-		createConfig({
-			clientId: `${Constants.CLIENTID}`,
-			redirectUri: `${Constants.REDIRECT_URL}`,
-			endSessionRedirectUri: `${Constants.ENDSESSION_URL}`,
-			discoveryUri:`${Constants.DISCOVERY_URL}`,
-			scopes: Constants.SCOPE,
-			requireHardwareBackedKeyStore: true
-		});
+	async componentDidMount() {
 		
 		this.signInSuccess = EventEmitter.addListener('signInSuccess', (e: Event) => {
-			console.log(e)
+			console.log('login success>>>',e)
 			this.hideAlert('loader');
 			isAuthenticated().then((auth) => {
 				// console.log(auth.authenticated, e.access_token, e)
 				this.setState({ accessToken: e.access_token })
 				getUser().then( (data) => {
-					console.log('user>>>', data);
+					if(platform == 'android' ) {
+						data = JSON.parse(data);
+					}
+					
 					data.accessToken = this.state.accessToken;
+					console.log( data, this.state.accessToken);
 					// data.userType = this.loginName;
 					this.usersStore.addOktaDetail(data).then( () => {
 						this.usersStore.getEmployee().then( () => {
@@ -124,16 +121,31 @@ class Login extends Component {
 			this.hideAlert('loader');
 			console.log('user has cancelled', e)
 			// Alert.alert('Failed to log in', e.error_message);
-			this.setState({ errorText: 'Failed to log in' + e.error_message})
+			this.setState({ errorText: 'Failed to log in'})
             this.showAlert('error')
 		});
+		await createConfig({
+			clientId: `${Constants.CLIENTID}`,
+			redirectUri: `${Constants.REDIRECT_URL}`,
+			endSessionRedirectUri: `${Constants.ENDSESSION_URL}`,
+			discoveryUri:`${Constants.DISCOVERY_URL}`,
+			scopes: Constants.SCOPE,
+			requireHardwareBackedKeyStore: false
+		});
+		this.checkAuthentication();
 	}
 
-	authorize = () => {
-		this.showAlert('loader');
-		signIn().then(()=>{
-			// this.hideAlert('loader');
-		});
+	async checkAuthentication() {
+		const result = await isAuthenticated();
+		console.log('checking auth>>>>>',result);
+		// if (result.authenticated !== this.state.authenticated) {
+		// 	this.setState({authenticated: result.authenticated});
+		// }
+	}
+
+	authorize = async () => {
+		// this.showAlert('loader');
+		signIn()
 	}
 
 
@@ -283,6 +295,7 @@ class Login extends Component {
                     confirmText="Okay"
 					cancelButtonColor="#1A3E50"
 					confirmButtonColor = "#FFFFFF"
+					alertContainerStyle = {{zIndex: 999, position: 'absolute'}}
                     contentContainerStyle = {{backgroundColor: COLOR.HEADER_BG_COLOR}}
                     cancelButtonTextStyle = {{color: '#fff', fontSize: 15}}
 					cancelButtonStyle = {{borderWidth: .5, borderColor: '#fff', width: wp('20%'), alignItems: 'center'}}
@@ -334,6 +347,7 @@ const styles = StyleSheet.create({
 		width: wp('95%'),
 		marginTop: -20,
 		alignSelf: 'center',
+		zIndex: 99
 	},
 	buttonHelp: {
 		borderRadius: 20,

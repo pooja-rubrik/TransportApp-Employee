@@ -20,6 +20,7 @@ import AdminSignupModal from '../components/AdminSignupModal';
 import Color from '../services/AppColor'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 
+
 class AdminHomeNew extends Component {
     constructor(props) {
         super(props);
@@ -44,6 +45,7 @@ class AdminHomeNew extends Component {
 		confirmAction: 'confirm',
 		otherAdmId: 0,
 		adminModalVisible: false,
+		firstLaunch: null
     };
 
     static navigationOptions = ({ navigation }) => {
@@ -104,6 +106,17 @@ class AdminHomeNew extends Component {
 			this.setState({ errorText: 'Failed to log in' + e.error_message})
             this.showAlert('error')
 		});
+		StorageService.retrieveData("alreadyLaunched").then(value => {
+			console.log('check already launch>>', value)
+            if(value){
+				StorageService.storeData('alreadyLaunched', true); 
+				this.setState({firstLaunch: true});
+            }
+            else{
+                 this.setState({firstLaunch: false});
+			}
+		}) 
+		
 	}
 	
 	loginRedirect = () => {
@@ -149,7 +162,6 @@ class AdminHomeNew extends Component {
 				}
 			});
 		}
-		
 	}
 
     showAlert = (type) => {
@@ -325,7 +337,7 @@ class AdminHomeNew extends Component {
 		console.disableYellowBox = true;
         let { 
              showAlertError, showAlertLoader, errorText, alertTitle, showCancel, 
-            showConfirm, adminTabVisible, adminSubTab
+            showConfirm, adminTabVisible, adminSubTab, firstLaunch
        } = this.state;
         return(
             <View style={styles.mainContainer}>
@@ -347,6 +359,7 @@ class AdminHomeNew extends Component {
 							userType = {this.userType} 
 							confirmPickChange = {this.confirmPickChange}
 							ref={child => {this.child = child}}
+							firstLaunch = {firstLaunch}
 						/>
 					</View> : 
 					<View style = {styles.childContainerEmployee}>
