@@ -54,45 +54,69 @@ class EmpRoster extends React.PureComponent {
         if(!this.state.timePickValue){
             Alert.alert(`Please enter check-in time.`);
         } else {
-            this.empStore.setDefaultTime( this.empId, moment(this.state.timePickValue, 'HH:mm').format('HH:mm:ss'), this.props.isCheckIn ).then( () => {
-                console.log('default time update>>', toJS(this.empStore.empData.defaultTime))
-                if( this.empStore.empData.defaultTime.code == 200 || this.empStore.empData.defaultTime.code == 201 ) {
-                    this.props.isCheckIn ? Alert.alert(`User default Check In time has been updated`):
-                    Alert.alert(`User default Check Out time has been updated`);
-                }
-            })
+            this.props.showConfirm('confirmHome', '', 'updateDefault' )
         }
+    }
+
+    callUpdateDefault = () => {
+        this.empStore.setDefaultTime( this.empId, moment(this.state.timePickValue, 'HH:mm').format('HH:mm:ss'), this.props.isCheckIn ).then( () => {
+            console.log('default time update>>', toJS(this.empStore.empData.defaultTime))
+            if( this.empStore.empData.defaultTime.code == 200 || this.empStore.empData.defaultTime.code == 201 ) {
+                this.props.isCheckIn ? Alert.alert(`Default Check In time has been updated`):
+                Alert.alert(`Default Check Out time has been updated`);
+            }
+        })
     }
     
     updateRoster = () => {
         console.log(this.state.fromPickValue, this.state.toPickValue, this.state.timePickValue)
-        if(!this.state.timePickValue){
+        if( !this.state.fromPickValue) {
+            Alert.alert(`Please enter from date.`);
+        } else if( !this.state.toPickValue) {
+            Alert.alert(`Please enter to date.`);
+        } else if ( !this.state.timePickValue ) {
             Alert.alert(`Please enter check-in time.`);
         } else {
-            type = this.props.isCheckIn? 'pick': 'drop'
-            timeParam = (this.props.isCheckIn) ? {fromDate: this.state.fromPickValue, toDate: this.state.toPickValue, loginTime: moment(this.state.timePickValue, 'HH:mm').format('HH:mm:ss'), empID: this.empId, status: 'ASSIGN'}
-                        : {fromDate: this.state.fromPickValue, toDate: this.state.toPickValue, logoutTime: moment(this.state.timePickValue, 'HH:mm').format('HH:mm:ss'), empID: this.empId, status: 'ASSIGN'}
-            this.empStore.updateRoster( this.empId, timeParam, type ).then( () => {
-                console.log(toJS(this.empStore.empData.updateRoster))
-                if( this.empStore.empData.updateRoster.code == 200 ) {
-                    Alert.alert(`User ${type} time has been updated`);
-                }
-            });
+           this.props.showConfirm('confirmHome', '', 'updateRoster' )
+            
         }
         
-	}
+    }
+    
+    callUpdateRoster = () => {
+        type = this.props.isCheckIn? 'pick': 'drop'
+        timeParam = (this.props.isCheckIn) ? {fromDate: this.state.fromPickValue, toDate: this.state.toPickValue, loginTime: moment(this.state.timePickValue, 'HH:mm').format('HH:mm:ss'), empID: this.empId, status: 'ASSIGN'}
+                    : {fromDate: this.state.fromPickValue, toDate: this.state.toPickValue, logoutTime: moment(this.state.timePickValue, 'HH:mm').format('HH:mm:ss'), empID: this.empId, status: 'ASSIGN'}
+        this.empStore.updateRoster( this.empId, timeParam, type ).then( () => {
+            console.log(toJS(this.empStore.empData.updateRoster))
+            if( this.empStore.empData.updateRoster.code == 200 ) {
+                Alert.alert(`Trip updated successfully.`);
+            }
+        });        
+    }
 
 	cancelRoster = () => {
         console.log(this.state.fromPickValue, this.state.toPickValue)
+        if( !this.state.fromPickValue) {
+            Alert.alert(`Please enter from date.`);
+        } else if( !this.state.toPickValue) {
+            Alert.alert(`Please enter to date.`);
+        } else {
+            this.props.showConfirm('confirmHome', '', 'cancelRoster' )
+        }
+        
+    }
+    
+    callCancelRoster = () => {
         type = this.props.isCheckIn? 'pick': 'drop'
-		timeParam = {fromDate: this.state.fromPickValue, toDate: this.state.toPickValue, empID: this.empId, status: 'CANCEL'}
-		this.empStore.cancelRoster( this.empId, timeParam, type ).then( () => {
-			console.log(this.empStore.empData.cancelRoster)
-			if( this.empStore.empData.cancelRoster.code == 200 ) {
-				Alert.alert(`User ${type} time has been cancelled`);
-			}
-		});
-	}
+        timeParam = {fromDate: this.state.fromPickValue, toDate: this.state.toPickValue, empID: this.empId, status: 'CANCEL'}
+        this.empStore.cancelRoster( this.empId, timeParam, type ).then( () => {
+            console.log(this.empStore.empData.cancelRoster)
+            if( this.empStore.empData.cancelRoster.code == 200 ) {
+                Alert.alert(`Trip cancelled successfully`);
+            }
+        });
+    }
     
 
     render() {
@@ -247,8 +271,8 @@ const styles = StyleSheet.create({
     buttonTrip: {
         borderRadius: 20,
         // marginBottom: 20,
-        height: 19,
-        marginTop: 5,
+        height: 21,
+        marginTop: 4,
         width: wp('45%'),
         // marginLeft: 60
     },

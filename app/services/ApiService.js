@@ -48,33 +48,6 @@ class ApiService {
                 const body = res.data;
                 return { status, body };
             }
-            // if(token){
-            //     this.buildHeaders(token).then(()=>{
-            //         console.log('headers build>>>>>>')
-            //         (async () => {
-            //             const res  = await axios({
-            //                 method: method,
-            //                 url: url,
-            //                 data: params
-            //             })
-            //             console.log(res)
-            //             const status = res.status;
-            //             const body = res.data;
-            //             return { status, body };
-            //         })();
-            //     })
-            // } else {
-            //     const res  = await axios({
-            //         method: method,
-            //         url: url,
-            //         data: params
-            //     })
-            //     console.log(res)
-            //     const status = res.status;
-            //     const body = res.data;
-            //     return { status, body };
-            // }
-            
             
         } catch(error) {
             console.log('error>>>', error)
@@ -94,10 +67,12 @@ class ApiService {
                         //redirect to login
                     }
                 })
+            } else {
+                const status = error.response.status;
+                const body = error.response.data;
+                return { status, body };
             }
-            const status = error.response.status;
-            const body = error.response.data;
-            return { status, body };
+            
         }
         
         
@@ -105,44 +80,20 @@ class ApiService {
 
     
     buildHeaders = async ( token = false ) => {
-        // console.log(token)
+        console.log('go to build headers>>>',token)
         return new Promise((resolve, reject) => {
-
-            isAuthenticated().then( (auth) => {
-                console.log(auth);
-                if( auth.authenticated ) {
-                    this.getTokenFromAPI().then( (data) => {
-                        console.log('get token res>>>', data.body.access_token)
-                        if(data.status == 200 && data.body.access_token) {
-                            StorageService.storeData('oAuthHeader', data.body.access_token);
-                            this.addHeader(data.body.access_token, token)
-                            console.log('header add check>>');
-                            resolve(true);
-                        }
-                    }, error =>{
-                        reject(false);
-                        console.log('error getting token');
-                    });
-                    // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                } else {
-                    refreshTokens().then( (token) => {
-                        console.log('refreshed token', token)
-                        this.getTokenFromAPI().then( (data) => {
-                            if(data.status == 200 && data.body.access_token) {
-                                StorageService.storeData('oAuthHeader', data.body.access_token);
-                                this.addHeader(data.body.access_token, token)
-                                console.log('header add check>>');
-                                resolve(true);
-                            }
-                        }, error =>{
-                            console.log('error getting token');
-                            reject(false);
-                        });
-                        //axios.defaults.headers.common['Authorization'] = `Bearer ${token.access_token}`;
-                    })
+            this.getTokenFromAPI().then( (data) => {
+                console.log('get token res>>>', data.body.access_token)
+                if(data.status == 200 && data.body.access_token) {
+                    StorageService.storeData('oAuthHeader', data.body.access_token);
+                    this.addHeader(data.body.access_token, token)
+                    console.log('header add check>>');
+                    resolve(true);
                 }
-            
-            })
+            }, error =>{
+                reject(false);
+                console.log('error getting token');
+            });
         })
        
     }

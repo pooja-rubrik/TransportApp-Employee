@@ -48,7 +48,11 @@ class EmpCurrent extends React.PureComponent {
     }
 
     onChangeDate = (date) => {
-		//submit value
+        this.props.showConfirm('confirmHome', date, 'pickDrop')
+    }
+    
+    callConfirmAction = (data) => {
+        date = data.date;
 		console.log('>>>>>>', date, moment(date, 'HH:mm').format('HH:mm:ss'))
 		date = moment(date, 'HH:mm').format('HH:mm:ss')
         changeType = this.props.isCheckIn ? 'pick': 'drop'
@@ -57,13 +61,12 @@ class EmpCurrent extends React.PureComponent {
             this.setState( {timePick: date} );
         }
     }
-    // componentWillReceiveProps() {
-    //     console.log(this.props.driverData.vehicleNo? this.props.driverData.vehicleNo: '');
-    // }
     
     cancelTime = () => {
         cancelType = this.props.isCheckIn ? 'pick': 'drop'
-        this.props.cancelTime(cancelType);
+        this.props.showConfirm('confirmHome', cancelType, 'cancelTime' )
+        // cancelType = this.props.isCheckIn ? 'pick': 'drop'
+        // this.props.cancelTime(cancelType);
     }
 
     render() {
@@ -201,7 +204,7 @@ const styles = StyleSheet.create({
     buttonTrip: {
         borderRadius: 20,
         // marginBottom: 20,
-        height: 19,
+        height: 21,
         marginTop: 0,
         width: wp('43%'),
         // marginLeft: 60

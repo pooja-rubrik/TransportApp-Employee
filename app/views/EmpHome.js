@@ -7,7 +7,7 @@ import {
 import { observer, inject } from "mobx-react";
 import { toJS } from 'mobx';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { signOut, EventEmitter, createConfig } from '@okta/okta-react-native';
+import { signOut, EventEmitter, createConfig, isAuthenticated } from '@okta/okta-react-native';
 
 import Constants from '../services/Constants';
 import StorageService from '../services/StorageService';
@@ -42,6 +42,11 @@ class EmpHome extends Component {
         return {
             headerRight: (
                 <HeaderMenu>
+					{
+						platform == 'android' ?
+						<Item title="Profile" show="never" onPress={() => params.handleMenu('ProfileScreen')} />
+						: null
+					}
                     <Item title="Opt Out" show="never" onPress={() => params.optOut()} />
                     <Item title="Sign Out" show="never" onPress={() => params.logout()} />
                 </HeaderMenu>
@@ -54,9 +59,9 @@ class EmpHome extends Component {
 	async componentDidMount() {
 		console.log('utilities>>>', toJS(this.utilities));
 		this.props.navigation.setParams({
-			// handleMenu: this.navigateMenu,
-            logout: this.logoutProfile,
-            optOut: this.optOutEmp,
+			logout: this.logoutProfile,
+			optOut: this.optOutEmp,
+			handleMenu: this.navigateMenu,
 		});
 		//okta config and callbacks
 		
@@ -105,10 +110,11 @@ class EmpHome extends Component {
 		// 	this.setState({authenticated: result.authenticated});
 		// }
 	}
-	// navigateMenu = (pageName) => {
-	// 	this.props.navigation.navigate(pageName);
-	// }
 
+	navigateMenu = (pageName) => {
+		this.props.navigation.navigate(pageName);
+	}
+	
 	logoutProfile = async () => {
 		signOut();
 	}

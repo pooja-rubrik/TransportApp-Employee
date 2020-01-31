@@ -46,13 +46,15 @@ class AdminEmployee extends React.PureComponent {
             selectedDriver: '',
             assignDisable: true,
             defaultSelect: 'Select Driver',
-            driverName: ''
+            driverName: '',
+            statusBook: this.props.employee.status
         }
         // console.log(this.props, toJS(this.adminStore))
     }
     componentWillReceiveProps() {
-        this.setState({timePick: ''})
+        this.setState({timePick: '', statusBook: this.props.employee.status})
     }
+    
 
     getAvailDriver = (tripDate = '', tripTime = '') => {
         this.adminStore.getDriverListByTime( tripDate, tripTime).then(()=> {
@@ -66,23 +68,50 @@ class AdminEmployee extends React.PureComponent {
     }
 
     callPickService = (pickChangeData) => {
-        this.adminStore.addPickTime(`${pickChangeData.timePick}:00`, pickChangeData.empid, this.props.checkInDate).then(() => {
-            console.log(this.adminStore.adminData.pickData);
-            // this.props.refreshEmployee()
-            if(this.adminStore.adminData.pickData.code == 200 ){
+        if(pickChangeData == 'cancel'){
+            console.log('cancelled pick');
+            this.setState({timePick: ''})
+        } else {
+            this.adminStore.addPickTime(`${pickChangeData.timePick}:00`, pickChangeData.empid, this.props.checkInDate).then(() => {
+                console.log(this.adminStore.adminData.pickData);
+                // this.props.refreshEmployee()
                 
-                this.props.showMessage('Pickup time has been updated.')
+                if(this.adminStore.adminData.pickData.code == 200 ){
+                    this.props.employee.pickupTime = pickChangeData.timePick;
+                    // Alert.alert(this.props.employee.pickupTime)
+                    this.setState({timePick: pickChangeData.timePick})
+                    Alert.alert('Pickup time has been updated.')
+                    
+                }  else {
+                    Alert.alert('Something went wrong!')
+                }
                 
-            }  else {
-                Alert.alert('Something went wrong!')
-            }
-            
-        })
+            })
+        }
+        
     }
     
+    callDriverAssign = (driverData) => {
+        assignType = this.props.assignType == 'Assign Login' ? 'LOGIN':'LOGOUT'
+        param  = {empID: driverData.empid, type: assignType, tripDay: this.props.checkInDate, vehicleNumber: driverData.selectedDriver};
+        this.adminStore.assignDriver( param ).then(()=> {
+            console.log(toJS(this.adminStore.adminData.assignDriver))
+            this.setState({assignDisable: true})
+            if(this.adminStore.adminData.assignDriver.code == 200) {
+                // this.props.refreshEmployee();
+                this.props.employee.status = 'BOOKED';
+                this.callDriverData(driverData.selectedDriver);
+                Alert.alert('Driver has been assigned successfully.')
+            } else {
+                Alert.alert('Please try again!')
+            }
+            
+        });
+    }
 
     expandCard = (isExpand, currId, tripTime) => {
-        console.log('>>>>>>', isExpand, currId, this.state.currOpenId)
+        console.log('>>>>>>', isExpand, currId, this.state.currOpenId, this.props.employee.pickupTime)
+        this.setState({timePick: this.props.employee.pickupTime, statusBook: this.props.employee.status})
         if (this.state.currOpenId == currId) {
             this.setState({
                 currOpenId: ''
@@ -107,9 +136,10 @@ class AdminEmployee extends React.PureComponent {
     onChangePick = (timePick, empid, changeType = '') => {
         //api hit
         //refresh data
+        console.log(timePick)
         if(changeType == ''){
+            this.setState({timePick: timePick})
             this.props.confirmPickChange(timePick, empid);
-            
         } else {
             this.empStore.submitEmpTime( `${timePick}:00`, empid, 'ASSIGN', 'drop' ).then( () => {
                 console.log( 'success>>', toJS(this.empStore.empData.submitTime) )
@@ -131,20 +161,13 @@ class AdminEmployee extends React.PureComponent {
     }
 
     assignDriver = (empId) => {
-        assignType = this.props.assignType == 'Assign Login' ? 'LOGIN':'LOGOUT'
-        param  = {empID: empId, type: assignType, tripDay: this.props.checkInDate, vehicleNumber: this.state.selectedDriver};
-        this.adminStore.assignDriver( param ).then(()=> {
-            console.log(toJS(this.adminStore.adminData.assignDriver))
-            this.setState({assignDisable: true})
-            if(this.adminStore.adminData.assignDriver.code == 200) {
-                this.props.refreshEmployee();
-                this.callDriverData(this.state.selectedDriver);
-                Alert.alert('Driver has been assigned successfully.')
-            } else {
-                Alert.alert('Please try again!')
-            }
-			
-		});
+        console.log(this.props.employee.pickupTime, this.state.timePick)
+        if(this.state.timePick == '' || this.state.timePick == null) {
+            Alert.alert('Please select pick time first.')
+        } else {
+            this.props.confirmDriverAssign(empId, this.state.selectedDriver);
+        }
+        
     }
 
     sendOTP = () => {
@@ -153,7 +176,7 @@ class AdminEmployee extends React.PureComponent {
 
     render() {
         let { isExpand, currOpenId, pickPlaceHolder, formatTime, 
-            loginMin, driverList, assignDisable, defaultSelect, driverName } = this.state;
+            loginMin, driverList, assignDisable, defaultSelect, driverName, timePick, statusBook } = this.state;
         let { employee, loginMinTime, loginMaxTime, isCheckIn,  } = this.props;
         loginMaxTime = isCheckIn ? employee.tripTime ? moment(employee.tripTime, 'HH:mm:ss').format('HH:mm') : loginMaxTime : loginMaxTime;
         
@@ -212,7 +235,7 @@ class AdminEmployee extends React.PureComponent {
                                     {(employee.status == 'ASSIGN' || employee.status == null || employee.status == 'BOOKED' ) ?
                                         isCheckIn ?
                                             <DateTime 
-                                                date = {employee.pickupTime} 
+                                                date = {timePick} 
                                                 changeDate = {(timePick) => {this.onChangePick( timePick, employee.empID );}} 
                                                 placeholder = {pickPlaceHolder}
                                                 format = {formatTime}
@@ -348,7 +371,7 @@ const styles = StyleSheet.create({
         width: wp('97%'),
         height: screenHgt >= hightVariation ? hp('5%') : hp('6%'),
         alignSelf: 'center',
-        marginTop: 5,
+        marginBottom: 5,
         borderRadius: 10
     },
     buttonHelp: {
@@ -368,7 +391,7 @@ const styles = StyleSheet.create({
         width: wp('97%'),
         // height: hp('15%'),
         alignSelf: 'center',
-        marginTop: 5,
+        marginBottom: 5,
         paddingBottom: 10,
         
     },

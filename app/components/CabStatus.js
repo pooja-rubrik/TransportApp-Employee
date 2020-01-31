@@ -121,6 +121,11 @@ class CabStatus extends React.PureComponent {
         this.adminEmpCab.callPickService(pickChangeData)
     }
 
+    callDriverAssign = (empid) => {
+        console.log(empid)
+        this.adminEmpCab.callDriverAssign(empid)
+    }
+
     componentWillUnmount() {
 		if (dataDelay) {
 			clearTimeout(dataDelay);
@@ -188,6 +193,7 @@ class CabStatus extends React.PureComponent {
                         showMessage = {this.showMessage}
                         confirmPickChange = {this.props.confirmPickChange}
                         ref={child => {this.adminEmpCab = child}}
+                        confirmDriverAssign = {this.props.confirmDriverAssign}
                     />
                 </View>
             
@@ -198,7 +204,7 @@ const styles = StyleSheet.create({
     filterSection: {
         // flex:1,
         flexDirection:'row',
-        
+        marginBottom: platform == 'android' ? 5 : 0,
         backgroundColor: Color.HEADER_BG_COLOR,
         height: hp('5%'),
     },
@@ -241,11 +247,12 @@ const styles = StyleSheet.create({
 		width: wp('9%'),
 		padding:7,
         paddingTop:screenHgt >= hightVariation ? 9 : 4,
-        borderBottomRightRadius: 10
+        borderBottomRightRadius: 10,
+        height:screenHgt >= hightVariation ? hp('5.3%'): hp('4.9%'),
 	}, 
 	iconOuterIOS: {
 		backgroundColor: Color.TAB_BG_COLOR,
-		height: hp('4.93%'),
+		height:screenHgt >= 880? hp('4.5%'): hp('4.9%'),
 		width: wp('9%'),
 		padding:7,
         paddingTop:9,

@@ -5,6 +5,8 @@ import Login from './views/Login';
 import AdminHomeNew from './views/AdminHomeNew';
 import AuthLoadingScreen from './views/AuthLoading';
 import DriverRegister from './views/DriverRegister';
+import Profile from './views/Profile';
+import AdminProfile from './views/AdminProfile';
 
 //import constants
 import COLOR from './services/AppColor';
@@ -14,6 +16,7 @@ import EmpHome from './views/EmpHome';
 const EmpAppStack = createStackNavigator(
   {
     EmpHomeScreen: {screen: EmpHome},    
+    ProfileScreen: {screen: Profile}
   },
   {
     defaultNavigationOptions: {
@@ -34,6 +37,7 @@ const AdminAppStack = createStackNavigator(
   {
     AdminHomeNewScreen: { screen: AdminHomeNew },
     DriverRegisterScreen: { screen: DriverRegister },   
+    AdminProfileScreen: {screen: AdminProfile}
   },
   {
     defaultNavigationOptions: {

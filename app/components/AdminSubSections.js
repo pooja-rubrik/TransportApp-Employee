@@ -40,6 +40,11 @@ export default class AdminSubSections extends React.PureComponent {
         this.cabStatus.callPickService(pickChangeData)
     }
 
+    callDriverAssign = (empid) => {
+        // console.log('callDriverAssign')
+        this.cabStatus.callDriverAssign(empid)
+    }
+
     render() {
         let {adminSubTab, userType, firstLaunch} = this.props;
         let {currentTab} = this.state;
@@ -99,7 +104,7 @@ export default class AdminSubSections extends React.PureComponent {
                 }
                 <ScrollView>
                 {
-                    currentTab == 'cab-status' ? <CabStatus confirmPickChange = {this.props.confirmPickChange} ref={child => {this.cabStatus = child}} firstLaunch = {firstLaunch}/> :
+                    currentTab == 'cab-status' ? <CabStatus confirmPickChange = {this.props.confirmPickChange} confirmDriverAssign = {this.props.confirmDriverAssign} ref={child => {this.cabStatus = child}} firstLaunch = {firstLaunch}/> :
                     currentTab == 'emp-list' ? <EmpList /> :
                     currentTab == 'driver-list' ? <DriverList addDriver = {this.addDriver} showAlert = {this.showAlert}/> : <AdminList showAlert = {this.showAlert}/>
                 }

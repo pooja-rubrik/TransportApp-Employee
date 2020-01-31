@@ -333,7 +333,8 @@ const styles = StyleSheet.create({
 	logoStyles: {
 		alignSelf: 'center',
 		width: wp('45%'),
-		height: hp('34%')
+		height: wp('45%'),
+		marginTop: 50
 	},
 	textFieldStylesOwn: {
 		backgroundColor: 'white',
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
 	},
 	TextInputView: {
 		width: wp('95%'),
-		marginTop: -20,
+		marginTop: 20,
 		alignSelf: 'center',
 		zIndex: 99
 	},

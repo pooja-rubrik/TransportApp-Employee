@@ -17,6 +17,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustomIcon from '../components/CustomIcon.js'
 import ProfileModal from '../components/ProfileModal';
 import Color from '../services/AppColor';
+const platform = Platform.OS;
 
 class EmpHomeData extends React.PureComponent {
 
@@ -131,6 +132,7 @@ class EmpHomeData extends React.PureComponent {
 
 
 	cancelTime = (cancelType) => {
+		console.log('cancel>>');
 		this.submitChange(null, 'CANCEL', cancelType);
 	}
 
@@ -144,7 +146,7 @@ class EmpHomeData extends React.PureComponent {
 				} else {
 					this.setDailyLogout();
 				}
-				Alert.alert( submitType == 'ASSIGN' ? 'Time updated successfully.' : 'Time cancelled successfully.' )
+				Alert.alert( submitType == 'ASSIGN' ? 'Trip updated successfully.' : 'Trip cancelled successfully' )
 			} else {
 				Alert.alert( 'Something went wrong.' )
 			}
@@ -200,7 +202,23 @@ class EmpHomeData extends React.PureComponent {
 			}
 
         })
-    }
+	}
+	
+	callConfirmAction = (data) => {
+		console.log('data>>', data);
+		if(data.type == 'pickDrop' ) {
+			this.empCurrent.callConfirmAction(data)
+		} else if ( data.type == 'cancelTime' ) {
+			this.cancelTime(data.date);
+		} else if ( data.type == 'updateRoster' ) {
+			this.empRoster.callUpdateRoster();
+		} else if ( data.type == 'cancelRoster' ) {
+			this.empRoster.callCancelRoster();
+		} else if ( data.type == 'updateDefault' )  {
+			this.empRoster.callUpdateDefault();
+		}
+		
+	}
     
     render() {
        let { 
@@ -254,11 +272,15 @@ class EmpHomeData extends React.PureComponent {
 						loginMaxTime = {this.state.loginMaxTime}
 						cancelTime = {this.cancelTime}
 						accountStatus = {this.state.accountStatus}
+						showConfirm = {this.props.showConfirm}
+						ref={child => {this.empCurrent = child}}
 					/>
 					<EmpRoster
 						isCheckIn={checkInTabVisible} 
 						loginMinTime = {this.state.loginMinTime} 
 						loginMaxTime = {this.state.loginMaxTime}
+						showConfirm = {this.props.showConfirm}
+						ref={child => {this.empRoster = child}}
 					/>
 					
                 </View>
@@ -266,51 +288,58 @@ class EmpHomeData extends React.PureComponent {
 					<ProfileModal profileModalVisible = {profileModalVisible} closeModalFunc = {this.closeModalFunc} submitProfile = {this.submitProfile} profileField = {profileField} profileData = {toJS(profileData)}/>
 				</View>
 				{/* <View style={{ position: 'relative' }}> */}
-					<Provider >
-						<Portal>
-							<FAB.Group
-								open={this.state.open}
-								fabStyle = {{fontSize:30, zIndex: 999}}
-								// icon='keyboard-arrow-up'
-								// icon='arrow-upward'
-								icon='more-horiz'
-								theme={{ colors: { accent: Color.BUTTON_COLOR_EMP } }}
-								actions={[
-									{
-										icon: ()=><CustomIcon name='contact_new'  size={26} color = "#fff"/> ,
-										// icon: ()=><MaterialIconsCom name="home-map-marker" size={28} color="#fff"  />,  
-										style : { backgroundColor: '#228574', paddingRight:6, paddingBottom: 6, padding:4},
-										onPress: () => { }
-									},
-									{
-										icon: ()=><MaterialIcons name="call" size={20} color="#fff"  />,  
-										// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
-										style : { backgroundColor: '#228574',padding:4},
-										onPress: () => { this.floatIconBtn('phone_number');}
-									},
-									{
-										icon: ()=><CustomIcon name='emergency_new'  size={33} color = "#fff"/> ,  
-										// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
-										style : {paddingRight: 8, paddingBottom: 8, backgroundColor: '#228574'},
-										onPress: () => { this.floatIconBtn('emergency_contact');}
-									},
-									{
-										icon: ()=><CustomIcon name='location_new'  size={33} color = "#fff"/> ,  
-										// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
-										style : { backgroundColor: '#228574', alignItem:'center',paddingRight: 8, paddingBottom: 8,},
-										onPress: () => { this.floatIconBtn('address');}
-									}
-								]}
-								onStateChange={({ open }) => this.setState({ open })}
-								onPress={() => {
-									if (this.state.open) {
-										// do something if the speed dial is open
-										console.log('open>>')
-									}
-								}}
-							/>
-						</Portal>
-					</Provider>
+					{
+						platform == 'ios' ? 
+						<Provider >
+							<Portal>
+								<FAB.Group
+									open={this.state.open}
+									fabStyle = {{fontSize:30, zIndex: 999}}
+									// icon='keyboard-arrow-up'
+									// icon='arrow-upward'
+									icon='more-horiz'
+									theme={{ colors: { accent: Color.BUTTON_COLOR_EMP } }}
+									actions={[
+										{
+											icon: ()=><CustomIcon name='contact_new'  size={26} color = "#fff"/> ,
+											// icon: ()=><MaterialIconsCom name="home-map-marker" size={28} color="#fff"  />,  
+											style : { backgroundColor: '#228574', paddingRight:6, paddingBottom: 6, padding:4},
+											onPress: () => { }
+										},
+										{
+											icon: ()=><MaterialIcons name="call" size={20} color="#fff"  />,  
+											// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
+											style : { backgroundColor: '#228574',padding:4},
+											onPress: () => { this.floatIconBtn('phone_number');}
+										},
+										{
+											icon: ()=><CustomIcon name='emergency_new'  size={33} color = "#fff"/> ,  
+											// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
+											style : {paddingRight: 8, paddingBottom: 8, backgroundColor: '#228574'},
+											onPress: () => { this.floatIconBtn('emergency_contact');}
+										},
+										{
+											icon: ()=><CustomIcon name='location_new'  size={33} color = "#fff"/> ,  
+											// icon: ()=> <Image source = {contactImg} height = {10} width = {10}/>,
+											style : { backgroundColor: '#228574', alignItem:'center',paddingRight: 8, paddingBottom: 8,},
+											onPress: () => { this.floatIconBtn('address');}
+										}
+									]}
+									onStateChange={({ open }) => this.setState({ open })}
+									onPress={() => {
+										if (this.state.open) {
+											// do something if the speed dial is open
+											console.log('open>>')
+										}
+									}}
+								/>
+							</Portal>
+						</Provider>
+						:
+						null
+					}
+
+					
 				{/* </View> */}
 				
 				

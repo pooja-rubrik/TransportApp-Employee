@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
 	StyleSheet, Alert,
-	View, 
+	View, Platform
 } from "react-native";
 import { signOut, EventEmitter, createConfig } from '@okta/okta-react-native';
 import { observer, inject } from "mobx-react";
@@ -19,7 +19,8 @@ import EmpHomeData from '../components/EmpHomeData';
 import AdminSignupModal from '../components/AdminSignupModal';
 import Color from '../services/AppColor'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
-
+import Ionicons from 'react-native-vector-icons/Ionicons';
+const platform = Platform.OS;
 
 class AdminHomeNew extends Component {
     constructor(props) {
@@ -30,6 +31,8 @@ class AdminHomeNew extends Component {
 		this.admId = this.usersStore.users.empDetail.empID;
 		this.userType = this.usersStore.users.empDetail.userType;
 		this.pickChangeData = {timePick:'', empid: ''}
+		this.assignDriverData = {empid: '', selectedDriver: ''}
+		this.empHomeData = { date: '', type :''}
     }
 
     state = {
@@ -64,11 +67,23 @@ class AdminHomeNew extends Component {
 						<Item title="Opt Out of Admin Role" show="never" onPress={() => params.optOut('optoutAdmin')} />
 						: null
 					}
-					
+					{
+						platform == 'android' ?
+						<Item title="Profile" show="never" onPress={() => params.handleMenu('AdminProfileScreen')} />
+						: null
+					}
 					{/* <Item title="Opt Out of All Roles" show="never" onPress={() => params.optOut('optoutAll')} /> */}
                     <Item title="Sign Out" show="never" onPress={() => params.logout()} />
                 </HeaderMenu>
-            ),
+			),
+			// headerLeft: <Ionicons 
+			// 				name={'ios-refresh-circle'}
+			// 				name={'ios-refresh-circle'} 
+			// 				size={28} 
+			// 				color="#fff"
+			// 				style={styles.icon}
+			// 				onPress={ () => { params.refreshPage() }} 
+			// 			/>,
             title: typeof(navigation.state.params)==='undefined' || typeof(navigation.state.params.title) === 'undefined' ? 'find': navigation.state.params.title,
             
         };
@@ -80,7 +95,8 @@ class AdminHomeNew extends Component {
 		this.props.navigation.setParams({
 			logout: this.logoutProfile,
 			optOut: this.optOutEmp,
-			userType: this.usersStore.users.empDetail.userType
+			userType: this.usersStore.users.empDetail.userType,
+			handleMenu: this.navigateMenu,
 		});
 		//okta config and callbacks
 		createConfig({
@@ -117,6 +133,10 @@ class AdminHomeNew extends Component {
 			}
 		}) 
 		
+	}
+
+	navigateMenu = (pageName) => {
+		this.props.navigation.navigate(pageName);
 	}
 	
 	loginRedirect = () => {
@@ -181,7 +201,7 @@ class AdminHomeNew extends Component {
 				alertTitle: 'Confirm!'
 			});
 			
-		} else if(type == 'optoutEmp' || type == 'optoutAdmin' || type == 'pickChange') {
+		} else if(type == 'optoutEmp' || type == 'optoutAdmin' || type == 'pickChange' || type == 'driverAssign' || type == 'confirmHome') {
 			this.setState({
 				showAlertError: true,
 				showConfirm: true,
@@ -260,15 +280,24 @@ class AdminHomeNew extends Component {
 			});
 		} else if( this.state.confirmAction == 'pickChange' ) {
 			this.child.callPickService(this.pickChangeData)
+		} else if( this.state.confirmAction == 'driverAssign' ) {
+			this.child.callDriverAssign(this.assignDriverData )
+		} else if( this.state.confirmAction == 'confirmHome') {
+			this.home.callConfirmAction(this.empHomeData);
 		}
 	}
 
 	hideAlert = (type) => {
-		if(type == 'error' || type == 'confirm' || type == 'optoutEmp' || type == 'optoutAdmin' || type == 'confirmDelete' || type == 'confirmDeleteDriver' || type == 'pickChange') { 
+		if(type == 'error' || type == 'confirm' || type == 'optoutEmp' || type == 'optoutAdmin' || type == 'pickChange' || type == 'confirmDelete' || type == 'confirmDeleteDriver' || type == 'driverAssign' || type == 'confirmHome') { 
             this.setState({
 				showAlertError: false
 			});
 			//logic of logout
+		} else if(type == 'pickChangeCancel') {
+			this.child.callPickService('cancel')
+			this.setState({
+				showAlertError: false
+			});
 		} else {
 			this.setState({
 				showAlertLoader: false
@@ -333,6 +362,19 @@ class AdminHomeNew extends Component {
 		this.showAlert('pickChange');
 	}
 
+	confirmDriverAssign = (empid, selectedDriver) => {
+		console.log(empid);
+		this.assignDriverData = {empid, selectedDriver}
+		this.setState({'confirmAction': 'driverAssign'})
+		this.showAlert('driverAssign');
+	}
+
+	showConfirmHome = (action, date, type) => {
+		this.empHomeData = {date, type};
+		this.setState({'confirmAction': action})
+		this.showAlert(action);
+	}
+
     render() {
 		console.disableYellowBox = true;
         let { 
@@ -360,6 +402,7 @@ class AdminHomeNew extends Component {
 							confirmPickChange = {this.confirmPickChange}
 							ref={child => {this.child = child}}
 							firstLaunch = {firstLaunch}
+							confirmDriverAssign = {this.confirmDriverAssign}
 						/>
 					</View> : 
 					<View style = {styles.childContainerEmployee}>
@@ -368,7 +411,10 @@ class AdminHomeNew extends Component {
 							<AdminTab adminTabVisible = {adminTabVisible} adminSwitch = {this.adminSwitch}/>
 							: null
 						}
-						<EmpHomeData />
+						<EmpHomeData 
+							ref={home => {this.home = home}}
+							showConfirm = {this.showConfirmHome}
+						/>
 					</View>
 					
 				}
@@ -409,7 +455,12 @@ class AdminHomeNew extends Component {
 					cancelButtonColor="#1A3E50"
 					confirmButtonColor = "#FFFFFF"
 					onCancelPressed={() => {
-						this.hideAlert('error');
+						if(this.state.confirmAction == 'pickChange') {
+							this.hideAlert('pickChangeCancel');
+						} else {
+							this.hideAlert(this.state.confirmAction);
+						}
+						
                     }}
                     onConfirmPressed={(data) => { this.confirmBtnAlert()}}
 					contentContainerStyle = {{backgroundColor: Color.HEADER_BG_COLOR}}
@@ -446,8 +497,11 @@ const styles = StyleSheet.create({
         borderTopColor: Color.TAB_BG_COLOR,
 		borderTopWidth: 1,
 		marginTop: 10,
-		marginBottom: hp('36%')
+		marginBottom: platform == 'ios' ? hp('36%') : hp('40%')
 	},
+	icon: {
+        paddingLeft: 10
+    },
 	childContainerEmployee: {
 		flex: 1,
 		backgroundColor: Color.TAB_BG_COLOR, 
