@@ -98,7 +98,7 @@ class AdminEmployee extends React.PureComponent {
             console.log(toJS(this.adminStore.adminData.assignDriver))
             this.setState({assignDisable: true})
             if(this.adminStore.adminData.assignDriver.code == 200) {
-                // this.props.refreshEmployee();
+                this.props.refreshEmployee();
                 this.props.employee.status = 'BOOKED';
                 this.callDriverData(driverData.selectedDriver);
                 Alert.alert('Driver has been assigned successfully.')
@@ -232,11 +232,11 @@ class AdminEmployee extends React.PureComponent {
                                     }
                                     
                                     <View>
-                                    {(employee.status == 'ASSIGN' || employee.status == null || employee.status == 'BOOKED' ) ?
+                                    {( employee.status == 'ASSIGN' || employee.status == null || employee.status == 'BOOKED' ) ?
                                         isCheckIn ?
                                             <DateTime 
                                                 date = {timePick} 
-                                                changeDate = {(timePick) => {this.onChangePick( timePick, employee.empID );}} 
+                                                changeDate = {(timePick) => { this.onChangePick( timePick, employee.empID ); }} 
                                                 placeholder = {pickPlaceHolder}
                                                 format = {formatTime}
                                                 inputStyle = {styles.timeinputStyle}
@@ -401,8 +401,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     statusIcon: {
-        height: 28,
-        width: 34,
+        height: screenHgt >= hightVariation ? 28 : 22,
+        width: screenHgt >= hightVariation ? 34 : 28,
         right: 0,
     },
     iconView: {
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     },
     driverOption: {
         borderBottomWidth: .4,
-        height: hp('7%'),
+        height: platform == 'ios' ? hp('7%') : hp('8.5%'),
         paddingTop: 6,
         width: wp('35%')
     },

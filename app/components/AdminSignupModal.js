@@ -1,19 +1,26 @@
 import React from "react";
 import Modal from "react-native-modal";
-import { View, Text, TouchableOpacity, StyleSheet, TextInput} from "react-native";
+import { 
+    View, Text, 
+    TouchableOpacity, Platform,
+    StyleSheet, TextInput
+} from "react-native";
 import { RaisedTextButton } from 'react-native-material-buttons';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 // import { TextField } from 'react-native-material-textfield';
 
 import COLOR from '../services/AppColor';
 import STRCONSTANT from '../services/StringConstants';
+import  deviceInfo  from '../stylesheets/AppDimensions';
+
+const platform = Platform.OS;
+const screenHgt = deviceInfo.DEVICE_HEIGHT;
+const hightVariation = deviceInfo.HEIGHT_VARIATION
 
 export default class AdminSignupModal extends React.PureComponent {
     
     state = {
-        // empName: '',
         empID: '',
-        // empEmail: '',
         empType: 'ADMIN'
     }
 
@@ -50,39 +57,17 @@ export default class AdminSignupModal extends React.PureComponent {
                     
                    
                     <View style={styles.TextInputView}>
-                        {/* <View> */}
-                            <TextInput
-                                label=''
-                                value={`${empID}`}
-                                style={styles.textInputStyles}
-                                labelFontSize={0}
-                                onChangeText={(empID) => this.setState({ empID })}
-                                placeholder='Employee Id'
-                                autoCapitalize = {'none'}
-                                autoCorrect = {false}
-                            />
-                            {/* <TextInput
-                                label=''
-                                value={`${empEmail}`}
-                                style={styles.textInputStyles}
-                                labelFontSize={0}
-                                onChangeText={(empEmail) => this.setState({ empEmail })}
-                                placeholder='Email'
-                                autoCapitalize = {'none'}
-                                autoCorrect = {false}
-                            />
-                            
-                            <TextInput
-                                label=''
-                                value={`${empName}`}
-                                style={styles.textInputStyles}
-                                labelFontSize={0}
-                                onChangeText={(empName) => this.setState({ empName })}
-                                placeholder='Employee Name'
-                                autoCapitalize = {'none'}
-                                autoCorrect = {false}
-                            /> */}
-                        {/* </View> */}
+                        <TextInput
+                            label=''
+                            value={`${empID}`}
+                            style={styles.textInputStyles}
+                            labelFontSize={0}
+                            onChangeText={(empID) => this.setState({ empID })}
+                            placeholder='Employee Id'
+                            autoCapitalize = {'none'}
+                            autoCorrect = {false}
+                        />
+                           
                         <View style={styles.ButtonSubmit}>
                             <RaisedTextButton
                                 title={STRCONSTANT.SIGNUP_ADMIN}
@@ -109,7 +94,7 @@ const styles = StyleSheet.create({
 		backgroundColor: COLOR.HEADER_BG_COLOR,
 		padding: 20,
 		borderRadius: 5,
-        height: hp('19%'),
+        //height: hp('19%'),
         borderColor: '#333',
         borderWidth: 1,
 	},
@@ -123,8 +108,8 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		borderWidth: 1,
 		borderColor: COLOR.BUTTON_COLOR_EMP,
-		marginRight: -15,
-		marginTop: -15
+		// marginRight: -15,
+		// marginTop: -15
 	},
 	ButtonSubmit: {
         alignSelf: 'center'
@@ -132,15 +117,15 @@ const styles = StyleSheet.create({
 	buttonEmail: {
 		borderRadius: 20,
 		width: wp('85%'),
-        height: hp('4%'),
+        height: platform == 'ios'? hp('5%'): screenHgt >= hightVariation ? hp('5.5%') : hp('5.9%'),
         marginTop: 10
     },
 	textInputStyles: {
 		borderRadius: 20,
 		backgroundColor: 'white',
-		fontSize: 18,
+		fontSize: platform == 'ios'?18: screenHgt >= hightVariation ? 14: 11,
 		paddingLeft: 10,
-		height: hp('4%'),
+		height: platform == 'ios'? hp('5%'): screenHgt >= hightVariation ? hp('5.5%') : hp('5.9%'),
 		width: wp('85%'),
         marginTop: 5
 	},

@@ -163,7 +163,7 @@ class EmpRoster extends React.PureComponent {
                                 placeholderTextStyle = {{ paddingRight:50 }}
 								iconStyle = {{left:0, height: 20, width: 20}}
 								style = {styles.timeStyle}
-                                dayAhead = {2}
+                                dayAhead = {1}
                             />
                             <DateTime 
                                 date = {timePickValue} 

@@ -19,7 +19,7 @@ import EmpHomeData from '../components/EmpHomeData';
 import AdminSignupModal from '../components/AdminSignupModal';
 import Color from '../services/AppColor'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
-import Ionicons from 'react-native-vector-icons/Ionicons';
+// import Ionicons from 'react-native-vector-icons/Ionicons';
 const platform = Platform.OS;
 
 class AdminHomeNew extends Component {
@@ -179,6 +179,9 @@ class AdminHomeNew extends Component {
 					// this.setState({'errorText': 'User profile has been created'})
 					// this.showAlert('error')
 					
+				} else {
+					// this.setState({'errorText': 'Error'})
+					// this.showAlert('error')
 				}
 			});
 		}
@@ -497,7 +500,7 @@ const styles = StyleSheet.create({
         borderTopColor: Color.TAB_BG_COLOR,
 		borderTopWidth: 1,
 		marginTop: 10,
-		marginBottom: platform == 'ios' ? hp('36%') : hp('40%')
+		marginBottom: platform == 'ios' ? hp('36%') : 0
 	},
 	icon: {
         paddingLeft: 10

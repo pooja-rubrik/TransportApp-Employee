@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     filterSection: {
         // flex:1,
         flexDirection:'row',
-        marginBottom: platform == 'android' ? 5 : 0,
+        marginBottom: platform == 'android' ? screenHgt < hightVariation ? 18 : 5 : 0,
         backgroundColor: Color.HEADER_BG_COLOR,
         height: hp('5%'),
     },
@@ -213,8 +213,8 @@ const styles = StyleSheet.create({
         backgroundColor: Color.TAB_BG_COLOR,
         paddingRight:20, 
         borderWidth: 0, 
-        borderBottomLeftRadius: screenHgt >= hightVariation ? 10: 22, 
-        paddingBottom: screenHgt >= hightVariation ? 0 : 10
+        borderBottomLeftRadius: 10, 
+        //paddingBottom: screenHgt >= hightVariation ? 0 : 10
 	},
 	timeinputStyle: {
 		marginLeft:0, 
@@ -222,13 +222,13 @@ const styles = StyleSheet.create({
 		paddingRight:0, 
 		paddingLeft: 10,
         borderWidth: 0, 
-        paddingBottom: screenHgt >= hightVariation ? 0 : 10
+        //paddingBottom: screenHgt >= hightVariation ? 0 : 10
     },
     dateIconStyle: {
         left:5, 
         height: screenHgt >= hightVariation ? 30 : 22,
         width: screenHgt >= hightVariation ? 30 : 22,
-        bottom: screenHgt >= hightVariation ? 5 : 15
+        bottom: screenHgt >= hightVariation ? 5 : 10
     },
     dateStyle:{ 
 		flex:1,
@@ -246,9 +246,9 @@ const styles = StyleSheet.create({
 		backgroundColor: Color.TAB_BG_COLOR,
 		width: wp('9%'),
 		padding:7,
-        paddingTop:screenHgt >= hightVariation ? 9 : 4,
+        paddingTop: 9,
         borderBottomRightRadius: 10,
-        height:screenHgt >= hightVariation ? hp('5.3%'): hp('4.9%'),
+        height:screenHgt >= hightVariation ? hp('5.3%'): hp('7.5%'),
 	}, 
 	iconOuterIOS: {
 		backgroundColor: Color.TAB_BG_COLOR,

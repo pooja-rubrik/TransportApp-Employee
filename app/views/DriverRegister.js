@@ -15,7 +15,11 @@ import logo from '../assets/icons/logorubrik.png';
 import COLOR from '../services/AppColor';
 import STRCONSTANT from '../services/StringConstants';
 import { deviceType } from '../stylesheets/AppDimensions';
+import  deviceInfo  from '../stylesheets/AppDimensions';
+
 const platform = Platform.OS;
+const screenHgt = deviceInfo.DEVICE_HEIGHT;
+const hightVariation = deviceInfo.HEIGHT_VARIATION
 
 class DriverRegister extends Component {
 	constructor(props) {
@@ -120,6 +124,10 @@ class DriverRegister extends Component {
             } )
         }
     }
+
+    vehicleNoRemSpace = (vehicleNo) => {
+        this.setState({'vehicleNo': vehicleNo.replace(/\s/g, '')})
+    }
     
     render() {
         console.disableYellowBox = true;
@@ -161,7 +169,7 @@ class DriverRegister extends Component {
                         <TextInput
                             label=''
                             value={`${vehicleNo}`}
-                            onChangeText={(vehicleNo) => this.setState({ vehicleNo })}
+                            onChangeText={(vehicleNo) => this.vehicleNoRemSpace(vehicleNo)}
                             style={styles.textFieldStylesOwn}
                             labelFontSize={18}
                             autoFocus={true}
@@ -169,7 +177,7 @@ class DriverRegister extends Component {
                             placeholderTextColor={COLOR.PLACEHOLDER}
                             lineWidth={0}
                             activeLineWidth={0}
-                            autoCapitalize='none'
+                            autoCapitalize='characters'
                             autoCorrect={false}
                         />
                         <TextInput
@@ -254,29 +262,29 @@ class DriverRegister extends Component {
 const styles = StyleSheet.create({
     logoStyles: {
 		alignSelf: 'center',
-		width: wp('45%'),
-		height: hp('34%')
+		width: wp('38%'),
+		height: wp('38%'),
 	},
 	textFieldStylesOwn: {
 		backgroundColor: 'white',
 		paddingLeft: 10,
-		height: hp('5%'),
+		height: platform == 'ios'? hp('5%'): screenHgt >= hightVariation ? hp('5.5%') : hp('5.9%'),
 		borderRadius: 20,
 		marginTop: 5,
         borderWidth: 0,
-        fontSize: platform == 'ios'?18: 14
+        fontSize: platform == 'ios'?18: screenHgt >= hightVariation ? 14: 11
 
 	},
 	TextInputView: {
 		width: wp('95%'),
         alignSelf: 'center',
-        marginTop: -30
+        marginTop: platform == 'ios'?-30 : 0
 	},
 	buttonHelp: {
 		borderRadius: 20,
 		height: (deviceType == 'iphone') ? 40 : 50,
         marginTop: platform == 'ios' ? 25 : 15,
-        // bottom: 0,
+        bottom: platform == 'ios' ? 0 : 10,
         fontSize: 18
 	},
     textAreaStyles: {
@@ -286,7 +294,8 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingTop: 10,
         height: 150,
-        fontSize: platform == 'ios'?18: 14
+        fontSize: platform == 'ios'?18: screenHgt >= hightVariation ? 14: 11,
+        textAlignVertical: "top"
     },
 	titleStyle:{
         fontSize: 18,

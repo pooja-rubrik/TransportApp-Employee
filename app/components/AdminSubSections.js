@@ -13,6 +13,7 @@ import EmpList from '../components/EmpList';
 import DriverList from '../components/DriverList';
 import AdminList from '../components/AdminList';
 import Color from '../services/AppColor'
+const platform = Platform.OS;
 
 export default class AdminSubSections extends React.PureComponent {
 
@@ -102,7 +103,7 @@ export default class AdminSubSections extends React.PureComponent {
                         
                     </View>
                 }
-                <ScrollView>
+                <ScrollView style = {platform == 'android' ? styles.scrollViewAnd: null}>
                 {
                     currentTab == 'cab-status' ? <CabStatus confirmPickChange = {this.props.confirmPickChange} confirmDriverAssign = {this.props.confirmDriverAssign} ref={child => {this.cabStatus = child}} firstLaunch = {firstLaunch}/> :
                     currentTab == 'emp-list' ? <EmpList /> :
@@ -131,6 +132,9 @@ const styles = StyleSheet.create({
         // borderTopColor: '#333',
         borderBottomWidth: 1,
         borderBottomColor:Color.TAB_SEPARATOR,
+    },
+    scrollViewAnd: {
+        height: hp('65%')
     },
     adminOnlyFirst: {
         borderTopLeftRadius: 10
